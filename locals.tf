@@ -356,5 +356,14 @@ locals {
     production  = true
   }
 
+  k2hb_metric_name_number_of_successfully_processed_batches = "The number of batches successfully processed"
+  k2hb_metric_name_number_of_successfully_processed_records = "The number of records successfully processed"
+  k2hb_metric_name_speed_of_successfully_processed_batches  = "The speed of successfully process batches"
+  k2hb_metric_name_messages_written_to_dlq                  = "Number of messages being written to DLQ"
+  k2hb_metric_name_timeouts_reading_kafka                   = "Number of timeout occurrences when reading from Kafka exceeds threshold"
+  k2hb_metric_name_failures_writing_hbase                   = "Number of errors writing to Hbase"
+  k2hb_metric_name_timeouts_connecting_hbase                = "Number of timeout occurrences when connecting to Hbase exceeds threshold"
+  k2hb_metric_name_lag_per_partition                        = "Consumer lag (records todo) per partition"
+  k2hb_metric_name_failed_batches                           = "Number of failed batches"
 
 }

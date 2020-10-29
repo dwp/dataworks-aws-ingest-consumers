@@ -159,7 +159,10 @@ data "aws_iam_policy_document" "k2hb_common" {
       "logs:PutLogEvents",
       "logs:DescribeLogStreams"
     ]
-    resources = [aws_cloudwatch_log_group.k2hb_ec2_equality_logs.arn]
+    resources = [
+      data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_logs.arn,
+      data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.arn
+    ]
   }
 
   statement {
@@ -171,7 +174,7 @@ data "aws_iam_policy_document" "k2hb_common" {
     ]
 
     resources = [
-      aws_secretsmanager_secret.metadata_store_k2hbwriter.arn,
+      data.terraform_remote_state.ingest.outputs.metadata_store.credentials.metadata_store_k2hbwriter.arn,
     ]
   }
 
@@ -268,14 +271,14 @@ resource "aws_iam_role_policy_attachment" "k2hb_common_ssm" {
 
 # This updates the broker security group to let us in
 resource "aws_security_group_rule" "k2hb_common_ec2_to_stub_ucfs_kafka" {
-  count                    = local.deploy_stub_broker[local.environment] ? length(local.stub_ucfs_kafka_ports) : 0
+  count                    = data.terraform_remote_state.ingest.outputs.stub_ucfs.deploy_stub_broker[local.environment] ? length(data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports) : 0
   description              = "K2HB Common ec2 to stub broker"
   type                     = "ingress"
   source_security_group_id = aws_security_group.k2hb_common.id
   protocol                 = "tcp"
-  from_port                = local.stub_ucfs_kafka_ports[count.index]
-  to_port                  = local.stub_ucfs_kafka_ports[count.index]
-  security_group_id        = aws_security_group.stub_ucfs_kafka.id
+  from_port                = data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports[count.index]
+  to_port                  = data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports[count.index]
+  security_group_id        = data.terraform_remote_state.ingest.outputs.stub_ucfs.sg_id
 }
 
 resource "aws_security_group" "k2hb_common" {
@@ -333,79 +336,79 @@ resource "aws_security_group_rule" "ingress_k2hb_common_to_internet" {
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_stub_broker" {
-  count             = local.k2hb_data_source_is_ucfs[local.environment] ? 0 : 1
+  count             = data.terraform_remote_state.ingest.outputs.locals.k2hb_data_source_is_ucfs[local.environment] ? 0 : 1
   description       = "Allow k2hb to reach stub Kafka brokers"
   type              = "egress"
-  from_port         = local.kafka_broker_port[local.environment]
-  to_port           = local.kafka_broker_port[local.environment]
+  from_port         = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
+  to_port           = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
   protocol          = "tcp"
-  cidr_blocks       = aws_subnet.stub_ucfs.*.cidr_block
+  cidr_blocks       = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets.cidr_block
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_broker" {
-  count             = local.k2hb_data_source_is_ucfs[local.environment] ? 1 : 0
+  count             = data.terraform_remote_state.ingest.outputs.locals.k2hb_data_source_is_ucfs[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach UCFS Kafka brokers (Ireland)"
   type              = "egress"
-  from_port         = local.kafka_broker_port[local.environment]
-  to_port           = local.kafka_broker_port[local.environment]
+  from_port         = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
+  to_port           = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
   protocol          = "tcp"
-  cidr_blocks       = local.ucfs_broker_cidr_blocks[local.environment]
+  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_broker_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_london_broker" {
-  count             = local.k2hb_data_source_is_ucfs[local.environment] ? 1 : 0
+  count             = data.terraform_remote_state.ingest.outputs.locals.k2hb_data_source_is_ucfs[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach UCFS Kafka brokers (London)"
   type              = "egress"
-  from_port         = local.kafka_broker_port[local.environment]
-  to_port           = local.kafka_broker_port[local.environment]
+  from_port         = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
+  to_port           = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
   protocol          = "tcp"
-  cidr_blocks       = local.ucfs_london_broker_cidr_blocks[local.environment]
+  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_broker_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_ireland_dns_tcp" {
-  count             = local.peer_with_ucfs[local.environment] ? 1 : 0
+  count             = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach ucfs DNS name servers"
   type              = "egress"
   from_port         = 53
   to_port           = 53
   protocol          = "tcp"
-  cidr_blocks       = local.ucfs_nameservers_cidr_blocks[local.environment]
+  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_ireland_dns_udp" {
-  count             = local.peer_with_ucfs[local.environment] ? 1 : 0
+  count             = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach ucfs DNS name servers"
   type              = "egress"
   from_port         = 53
   to_port           = 53
   protocol          = "udp"
-  cidr_blocks       = local.ucfs_nameservers_cidr_blocks[local.environment]
+  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_london_dns_tcp" {
-  count             = local.peer_with_ucfs_london[local.environment] ? 1 : 0
+  count             = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs_london[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach UCFS DNS (London)"
   type              = "egress"
   from_port         = 53
   to_port           = 53
   protocol          = "tcp"
-  cidr_blocks       = local.ucfs_london_nameservers_cidr_blocks[local.environment]
+  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_london_dns_udp" {
-  count             = local.peer_with_ucfs_london[local.environment] ? 1 : 0
+  count             = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs_london[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach UCFS DNS (London)"
   type              = "egress"
   from_port         = 53
   to_port           = 53
   protocol          = "udp"
-  cidr_blocks       = local.ucfs_london_nameservers_cidr_blocks[local.environment]
+  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 
@@ -415,7 +418,7 @@ resource "aws_security_group_rule" "k2hb_common_egress_emr_master_zookeeper" {
   from_port                = 2181
   to_port                  = 2181
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.emr_hbase_master.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
   security_group_id        = aws_security_group.k2hb_common.id
 }
 
@@ -426,7 +429,7 @@ resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_master_zookee
   to_port                  = 2181
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = aws_security_group.emr_hbase_master.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
 }
 
 resource "aws_security_group_rule" "k2hb_common_egress_emr_master_16000" {
@@ -435,7 +438,7 @@ resource "aws_security_group_rule" "k2hb_common_egress_emr_master_16000" {
   from_port                = 16000
   to_port                  = 16000
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.emr_hbase_master.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
   security_group_id        = aws_security_group.k2hb_common.id
 }
 
@@ -446,7 +449,7 @@ resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_master_16000"
   to_port                  = 16000
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = aws_security_group.emr_hbase_master.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
 }
 
 resource "aws_security_group_rule" "k2hb_common_egress_emr_slaves_16000" {
@@ -455,7 +458,7 @@ resource "aws_security_group_rule" "k2hb_common_egress_emr_slaves_16000" {
   from_port                = 16000
   to_port                  = 16000
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.emr_hbase_slave.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
   security_group_id        = aws_security_group.k2hb_common.id
 }
 
@@ -466,7 +469,7 @@ resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_slaves_16000"
   to_port                  = 16000
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = aws_security_group.emr_hbase_slave.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
 }
 
 resource "aws_security_group_rule" "k2hb_common_egress_emr_master_16020" {
@@ -475,7 +478,7 @@ resource "aws_security_group_rule" "k2hb_common_egress_emr_master_16020" {
   from_port                = 16020
   to_port                  = 16020
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.emr_hbase_master.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
   security_group_id        = aws_security_group.k2hb_common.id
 }
 
@@ -486,7 +489,7 @@ resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_master_16020"
   to_port                  = 16020
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = aws_security_group.emr_hbase_master.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
 }
 
 resource "aws_security_group_rule" "k2hb_common_egress_emr_slaves_16020" {
@@ -495,7 +498,7 @@ resource "aws_security_group_rule" "k2hb_common_egress_emr_slaves_16020" {
   from_port                = 16020
   to_port                  = 16020
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.emr_hbase_slave.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
   security_group_id        = aws_security_group.k2hb_common.id
 }
 
@@ -506,7 +509,7 @@ resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_slaves_16020"
   to_port                  = 16020
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = aws_security_group.emr_hbase_slave.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
 }
 
 resource "aws_security_group_rule" "k2hb_common_egress_emr_master_16030" {
@@ -515,7 +518,7 @@ resource "aws_security_group_rule" "k2hb_common_egress_emr_master_16030" {
   from_port                = 16030
   to_port                  = 16030
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.emr_hbase_master.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
   security_group_id        = aws_security_group.k2hb_common.id
 }
 
@@ -526,7 +529,7 @@ resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_master_16030"
   to_port                  = 16030
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = aws_security_group.emr_hbase_master.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
 }
 
 resource "aws_security_group_rule" "k2hb_common_egress_emr_slaves_16030" {
@@ -535,7 +538,7 @@ resource "aws_security_group_rule" "k2hb_common_egress_emr_slaves_16030" {
   from_port                = 16030
   to_port                  = 16030
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.emr_hbase_slave.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
   security_group_id        = aws_security_group.k2hb_common.id
 }
 
@@ -546,7 +549,7 @@ resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_slaves_16030"
   to_port                  = 16030
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = aws_security_group.emr_hbase_slave.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
 }
 
 resource "aws_security_group_rule" "k2hb_common_egress_metadata_store" {
@@ -555,7 +558,7 @@ resource "aws_security_group_rule" "k2hb_common_egress_metadata_store" {
   from_port                = 3306
   to_port                  = 3306
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.metadata_store.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.rds.sg_id
   security_group_id        = aws_security_group.k2hb_common.id
 }
 
@@ -565,6 +568,6 @@ resource "aws_security_group_rule" "metadata_store_from_k2hb_common" {
   to_port                  = 3306
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = aws_security_group.metadata_store.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.metadata_store.rds.sg_id
   description              = "Metadata store from K2HB ec2"
 }
