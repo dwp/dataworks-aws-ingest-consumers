@@ -120,7 +120,7 @@ data "aws_iam_policy_document" "k2hb_common" {
     ]
 
     resources = [
-      aws_kms_key.input_bucket_cmk.arn,
+      data.terraform_remote_state.ingest.outputs.input_bucket_cmk.arn,
     ]
   }
 
@@ -282,7 +282,7 @@ resource "aws_security_group" "k2hb_common" {
   name                   = "k2hb_common"
   description            = "Contains rules for k2hb consumers"
   revoke_rules_on_delete = true
-  vpc_id                 = module.vpc.vpc.id
+  vpc_id                 = data.terraform_remote_state.ingest.outputs.vpc.vpc.id
 
   tags = merge(
     local.common_tags,
@@ -295,7 +295,7 @@ resource "aws_security_group" "k2hb_common" {
 resource "aws_security_group_rule" "k2hb_common_to_s3" {
   description       = "Allow kafka-to-hbase to reach S3 (for the jar)"
   type              = "egress"
-  prefix_list_ids   = [module.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
@@ -305,7 +305,7 @@ resource "aws_security_group_rule" "k2hb_common_to_s3" {
 resource "aws_security_group_rule" "k2hb_common_to_s3_http" {
   description       = "Allow kafka-to-hbase to reach S3 (for Yum) http"
   type              = "egress"
-  prefix_list_ids   = [module.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 80
   to_port           = 80
@@ -315,7 +315,7 @@ resource "aws_security_group_rule" "k2hb_common_to_s3_http" {
 resource "aws_security_group_rule" "egress_k2hb_common_to_internet" {
   description              = "Allow k2hb access to Internet Proxy (for ACM-PCA)"
   type                     = "egress"
-  source_security_group_id = aws_security_group.internet_proxy_endpoint.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.internet_proxy.sg
   protocol                 = "tcp"
   from_port                = 3128
   to_port                  = 3128
@@ -329,7 +329,7 @@ resource "aws_security_group_rule" "ingress_k2hb_common_to_internet" {
   protocol                 = "tcp"
   from_port                = 3128
   to_port                  = 3128
-  security_group_id        = aws_security_group.internet_proxy_endpoint.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.internet_proxy.sg
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_stub_broker" {

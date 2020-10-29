@@ -38,8 +38,8 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     private_key_alias     = "k2hb"
     truststore_aliases    = local.kafka_consumer_truststore_aliases[local.environment]
     truststore_certs      = local.kafka_consumer_truststore_certs[local.environment]
-    internet_proxy        = aws_vpc_endpoint.internet_proxy.dns_entry[0].dns_name
-    non_proxied_endpoints = join(",", module.vpc.no_proxy_list)
+    internet_proxy        = data.terraform_remote_state.ingest.outputs.internet_proxy.host
+    non_proxied_endpoints = join(",", data.terraform_remote_state.ingest.outputs.vpc.vpc.no_proxy_list)
     s3_artefact_bucket_id = data.terraform_remote_state.management_artefact.outputs.artefact_bucket.id
 
     hbase_master_url                                 = aws_route53_record.hbase.fqdn
@@ -85,7 +85,7 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     k2hb_rds_username                                = var.metadata_store_k2hbwriter_username
     k2hb_rds_password_secret_name                    = aws_secretsmanager_secret.metadata_store_k2hbwriter.name
     k2hb_rds_database_name                           = aws_rds_cluster.metadata_store.database_name
-    k2hb_rds_table_name                              = local.metadata_store_table_names.ucfs
+    k2hb_rds_table_name                              = data.terraform_remote_state.ingest.outputs.metadata_store_table_names.main
     k2hb_rds_endpoint                                = aws_rds_cluster.metadata_store.endpoint
     k2hb_rds_port                                    = aws_rds_cluster.metadata_store.port
     k2hb_kafka_topic_regex                           = local.kafka_consumer_main_topics_regex[local.environment]
@@ -99,13 +99,13 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     k2hb_kafka_report_frequency                      = local.k2hb_report_frequency[local.environment]
     k2hb_qualified_table_pattern                     = local.k2hb_main_data_qualified_table_pattern
     k2hb_check_existence                             = local.k2hb_check_existence[local.environment]
-    k2hb_aws_s3_archive_bucket                       = aws_s3_bucket.corporate_storage_bucket.id
+    k2hb_aws_s3_archive_bucket                       = data.terraform_remote_state.ingest.outputs.corporate_storage_bucket.id
     k2hb_aws_s3_archive_directory                    = "${local.corporate_storage_directory_prefix}/${local.corporate_storage_bucket_directory.ucfs_main}"
     k2hb_aws_s3_batch_puts                           = "true"
     k2hb_validator_schema                            = local.k2hb_validator_schema.ucfs
     k2hb_write_to_metadata_store                     = local.k2hb_main_ha_cluster_write_to_metadata_store[local.environment]
     k2hb_manifest_bucket                             = data.terraform_remote_state.internal_compute.outputs.manifest_bucket.id
-    k2hb_manifest_prefix                             = local.k2hb_manifest_folder_main
+    k2hb_manifest_prefix                             = data.terraform_remote_state.ingest.outputs.k2hb_manifest_write_locations.main_prefix
     k2hb_write_manifests                             = local.k2hb_write_manifests_main[local.environment]
     k2hb_auto_commit_metadata_store_inserts          = local.k2hb_auto_commit_metadata_store_inserts_main[local.environment]
   }))
@@ -167,7 +167,7 @@ resource "aws_autoscaling_group" "k2hb_main_ha_cluster" {
   health_check_grace_period = 600
   health_check_type         = "EC2"
   force_delete              = true
-  vpc_zone_identifier       = aws_subnet.business_data.*.id
+  vpc_zone_identifier       = data.terraform_remote_state.ingest.outputs.ingestion_subnets.id
 
   launch_template {
     id      = aws_launch_template.k2hb_main_ha_cluster.id
@@ -287,7 +287,7 @@ data "aws_iam_policy_document" "k2hb_main" {
     ]
 
     resources = [
-      aws_kms_key.input_bucket_cmk.arn,
+      data.terraform_remote_state.ingest.outputs.input_bucket_cmk.arn,
     ]
   }
 
@@ -443,7 +443,7 @@ resource "aws_security_group" "k2hb_main" {
   name                   = "k2hb_main"
   description            = "Contains rules for k2hb"
   revoke_rules_on_delete = true
-  vpc_id                 = module.vpc.vpc.id
+  vpc_id                 = data.terraform_remote_state.ingest.outputs.vpc.vpc.id
 
   tags = merge(
     local.common_tags,
@@ -456,7 +456,7 @@ resource "aws_security_group" "k2hb_main" {
 resource "aws_security_group_rule" "k2hb_main_to_s3" {
   description       = "Allow kafka-to-hbase to reach S3 (for the jar)"
   type              = "egress"
-  prefix_list_ids   = [module.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
@@ -466,7 +466,7 @@ resource "aws_security_group_rule" "k2hb_main_to_s3" {
 resource "aws_security_group_rule" "k2hb_main_to_s3_http" {
   description       = "Allow kafka-to-hbase to reach S3 (for Yum) http"
   type              = "egress"
-  prefix_list_ids   = [module.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 80
   to_port           = 80
@@ -509,7 +509,7 @@ resource "aws_security_group_rule" "k2hb_main_to_ucfs_london_broker" {
 resource "aws_security_group_rule" "egress_k2hb_main_to_internet" {
   description              = "Allow k2hb access to Internet Proxy (for ACM-PCA)"
   type                     = "egress"
-  source_security_group_id = aws_security_group.internet_proxy_endpoint.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.internet_proxy.sg
   protocol                 = "tcp"
   from_port                = 3128
   to_port                  = 3128
@@ -523,7 +523,7 @@ resource "aws_security_group_rule" "ingress_k2hb_main_to_internet" {
   protocol                 = "tcp"
   from_port                = 3128
   to_port                  = 3128
-  security_group_id        = aws_security_group.internet_proxy_endpoint.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.internet_proxy.sg
 }
 
 resource "aws_security_group_rule" "k2hb_main_to_dns_name_servers_tcp" {
@@ -658,27 +658,6 @@ resource "aws_security_group_rule" "metadata_store_from_k2hb_ec2_main" {
   source_security_group_id = aws_security_group.k2hb_main.id
   security_group_id        = aws_security_group.metadata_store.id
   description              = "Metadata store from K2HB ec2"
-}
-
-# Current log group as-at Aug 2020. Do not change the resource name or logical name
-resource "aws_cloudwatch_log_group" "k2hb_ec2_logs" {
-  name              = "/aws/ec2/main/k2hb"
-  retention_in_days = 180
-  tags              = local.common_tags
-}
-
-# Old ECS log group - left as CI can't delete it. DW-4728 to remove
-resource "aws_cloudwatch_log_group" "k2hb_logs" {
-  name              = "/aws/ecs/main/k2hb"
-  retention_in_days = 180
-  tags              = local.common_tags
-}
-
-# Old ECS log group - left as CI can't delete it. DW-4728 to remove
-resource "aws_cloudwatch_log_group" "k2h_consumer_logs" {
-  name              = "/aws/ecs/main/kafka-to-hbase-consumer"
-  retention_in_days = 180
-  tags              = local.common_tags
 }
 
 # These are the security group rules for the EMR connection from this k2hb
