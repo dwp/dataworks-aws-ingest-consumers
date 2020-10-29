@@ -1,0 +1,30 @@
+
+/var/log/k2hb/k2hb.out {
+    copytruncate
+    missingok
+    notifempty
+    maxsize 1024k
+    rotate 10
+    daily
+    create 0640 k2hb k2hb
+}
+
+/var/log/k2hb/k2hb.err {
+    copytruncate
+    missingok
+    notifempty
+    maxsize 1024k
+    rotate 10
+    daily
+    create 0640 k2hb k2hb
+}
+
+/var/log/k2hb/nohup.out {
+    copytruncate
+    missingok
+    notifempty
+    maxsize 1024k
+    rotate 10
+    daily
+    create 0640 k2hb k2hb
+}
