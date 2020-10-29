@@ -85,7 +85,7 @@ resource "aws_launch_template" "k2hb_equality" {
     k2hb_rds_username                                = data.terraform_remote_state.ingest.outputs.metadata_store.credentials.metadata_store_k2hbwriter_username
     k2hb_rds_password_secret_name                    = data.terraform_remote_state.ingest.outputs.metadata_store.credentials.metadata_store_k2hbwriter.name
     k2hb_rds_database_name                           = data.terraform_remote_state.ingest.outputs.metadata_store.rds.database_name
-    k2hb_rds_table_name                              = data.terraform_remote_state.ingest.outputs.metadata_store_table_names.main
+    k2hb_rds_table_name                              = data.terraform_remote_state.ingest.outputs.metadata_store_table_names.equality
     k2hb_rds_endpoint                                = data.terraform_remote_state.ingest.outputs.metadata_store.rds.endpoint
     k2hb_rds_port                                    = data.terraform_remote_state.ingest.outputs.metadata_store.rds.port
     k2hb_kafka_topic_regex                           = local.kafka_consumer_equality_topics_regex[local.environment]
@@ -443,7 +443,7 @@ resource "aws_security_group" "k2hb_equality" {
   name                   = "k2hb_equality"
   description            = "Contains rules for k2hb equalities"
   revoke_rules_on_delete = true
-  vpc_id                 = data.terraform_remote_state.ingest.outputs.vpc.vpc.id
+  vpc_id                 = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
 
   tags = merge(
     local.common_tags,
@@ -456,7 +456,7 @@ resource "aws_security_group" "k2hb_equality" {
 resource "aws_security_group_rule" "k2hb_equality_to_s3" {
   description       = "Allow kafka-to-hbase to reach S3 (for the jar)"
   type              = "egress"
-  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
@@ -466,7 +466,7 @@ resource "aws_security_group_rule" "k2hb_equality_to_s3" {
 resource "aws_security_group_rule" "k2hb_equality_to_s3_http" {
   description       = "Allow kafka-to-hbase to reach S3 (for Yum) http"
   type              = "egress"
-  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 80
   to_port           = 80

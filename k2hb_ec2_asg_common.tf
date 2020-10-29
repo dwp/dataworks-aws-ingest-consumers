@@ -285,7 +285,7 @@ resource "aws_security_group" "k2hb_common" {
   name                   = "k2hb_common"
   description            = "Contains rules for k2hb consumers"
   revoke_rules_on_delete = true
-  vpc_id                 = data.terraform_remote_state.ingest.outputs.vpc.vpc.id
+  vpc_id                 = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
 
   tags = merge(
     local.common_tags,
@@ -298,7 +298,7 @@ resource "aws_security_group" "k2hb_common" {
 resource "aws_security_group_rule" "k2hb_common_to_s3" {
   description       = "Allow kafka-to-hbase to reach S3 (for the jar)"
   type              = "egress"
-  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
@@ -308,7 +308,7 @@ resource "aws_security_group_rule" "k2hb_common_to_s3" {
 resource "aws_security_group_rule" "k2hb_common_to_s3_http" {
   description       = "Allow kafka-to-hbase to reach S3 (for Yum) http"
   type              = "egress"
-  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 80
   to_port           = 80
