@@ -412,144 +412,26 @@ resource "aws_security_group_rule" "k2hb_common_to_ucfs_london_dns_udp" {
   security_group_id = aws_security_group.k2hb_common.id
 }
 
-resource "aws_security_group_rule" "k2hb_common_egress_emr_master_zookeeper" {
-  description              = "Allow k2hb outbound requests to HBase zookeeper"
+resource "aws_security_group_rule" "k2hb_common_egress_hbase" {
+  for_each                 = { for hbase_emr_port in local.hbase_emr_ports : hbase_emr_port.port => hbase_emr_port }
+  description              = "Allow outbound requests to ${each.value.name}"
   type                     = "egress"
-  from_port                = 2181
-  to_port                  = 2181
+  from_port                = each.value.port
+  to_port                  = each.value.port
   protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.emr_common_sg.id
   security_group_id        = aws_security_group.k2hb_common.id
 }
 
-resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_master_zookeeper" {
-  description              = "Allow inbound zookeeper requests from k2hb"
+resource "aws_security_group_rule" "k2hb_common_ingress_hbase" {
+  for_each                 = { for hbase_emr_port in local.hbase_emr_ports : hbase_emr_port.port => hbase_emr_port }
+  description              = "Allow inbound requests from ${each.value.name}"
   type                     = "ingress"
-  from_port                = 2181
-  to_port                  = 2181
+  from_port                = each.value.port
+  to_port                  = each.value.port
   protocol                 = "tcp"
+  security_group_id        = data.terraform_remote_state.ingest.outputs.emr_common_sg.id
   source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
-}
-
-resource "aws_security_group_rule" "k2hb_common_egress_emr_master_16000" {
-  description              = "Allow outbound requests to HBase master"
-  type                     = "egress"
-  from_port                = 16000
-  to_port                  = 16000
-  protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
-  security_group_id        = aws_security_group.k2hb_common.id
-}
-
-resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_master_16000" {
-  description              = "Allow inbound HBase master requests from k2hb"
-  type                     = "ingress"
-  from_port                = 16000
-  to_port                  = 16000
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
-}
-
-resource "aws_security_group_rule" "k2hb_common_egress_emr_slaves_16000" {
-  description              = "Allow outbound requests to HBase slaves"
-  type                     = "egress"
-  from_port                = 16000
-  to_port                  = 16000
-  protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
-  security_group_id        = aws_security_group.k2hb_common.id
-}
-
-resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_slaves_16000" {
-  description              = "Allow inbound HBase slave requests from k2hb"
-  type                     = "ingress"
-  from_port                = 16000
-  to_port                  = 16000
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
-}
-
-resource "aws_security_group_rule" "k2hb_common_egress_emr_master_16020" {
-  description              = "Allow outbound requests to HBase master"
-  type                     = "egress"
-  from_port                = 16020
-  to_port                  = 16020
-  protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
-  security_group_id        = aws_security_group.k2hb_common.id
-}
-
-resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_master_16020" {
-  description              = "Allow inbound HBase master requests from k2hb"
-  type                     = "ingress"
-  from_port                = 16020
-  to_port                  = 16020
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
-}
-
-resource "aws_security_group_rule" "k2hb_common_egress_emr_slaves_16020" {
-  description              = "Allow outbound requests to HBase slaves"
-  type                     = "egress"
-  from_port                = 16020
-  to_port                  = 16020
-  protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
-  security_group_id        = aws_security_group.k2hb_common.id
-}
-
-resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_slaves_16020" {
-  description              = "Allow inbound HBase slave requests from k2hb"
-  type                     = "ingress"
-  from_port                = 16020
-  to_port                  = 16020
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
-}
-
-resource "aws_security_group_rule" "k2hb_common_egress_emr_master_16030" {
-  description              = "Allow outbound requests to HBase master"
-  type                     = "egress"
-  from_port                = 16030
-  to_port                  = 16030
-  protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
-  security_group_id        = aws_security_group.k2hb_common.id
-}
-
-resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_master_16030" {
-  description              = "Allow inbound HBase master requests from k2hb"
-  type                     = "ingress"
-  from_port                = 16030
-  to_port                  = 16030
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.master_sg_id
-}
-
-resource "aws_security_group_rule" "k2hb_common_egress_emr_slaves_16030" {
-  description              = "Allow outbound reqests to HBase slaves"
-  type                     = "egress"
-  from_port                = 16030
-  to_port                  = 16030
-  protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
-  security_group_id        = aws_security_group.k2hb_common.id
-}
-
-resource "aws_security_group_rule" "emr_server_ingress_k2hb_common_slaves_16030" {
-  description              = "Allow inbound HBase slave requests from k2hb"
-  type                     = "ingress"
-  from_port                = 16030
-  to_port                  = 16030
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.slave_sg_id
 }
 
 resource "aws_security_group_rule" "k2hb_common_egress_metadata_store" {

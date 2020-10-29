@@ -366,4 +366,22 @@ locals {
   k2hb_metric_name_lag_per_partition                        = "Consumer lag (records todo) per partition"
   k2hb_metric_name_failed_batches                           = "Number of failed batches"
 
+  hbase_emr_ports = [
+    {
+      name : "HBase zookeeper"
+      port : 2181
+    },
+    {
+      name : "HBase master"
+      port : 16000
+    },
+    {
+      name : "HBase RegionServer"
+      port : 16020
+    },
+    {
+      name : "HBase RegionServer Info"
+      port : 16030
+    },
+  ]
 }
