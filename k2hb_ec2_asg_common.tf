@@ -457,7 +457,7 @@ resource "aws_security_group_rule" "metadata_store_from_k2hb_common" {
   description              = "Metadata store from K2HB ec2"
 }
 
-resource "aws_security_group_rule" "k2hb_common to vpc_endpoints" {
+resource "aws_security_group_rule" "k2hb_common_to_vpc_endpoints" {
   type                     = "egress"
   from_port                = 443
   to_port                  = 443
