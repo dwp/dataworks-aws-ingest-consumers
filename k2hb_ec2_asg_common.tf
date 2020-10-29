@@ -457,16 +457,6 @@ resource "aws_security_group_rule" "metadata_store_from_k2hb_common" {
   description              = "Metadata store from K2HB ec2"
 }
 
-resource "aws_security_group_rule" "vpc_endpoints_from_k2hb_common" {
-  type                     = "ingress"
-  from_port                = 443
-  to_port                  = 443
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
-  description              = "VPC endpoints from K2HB ec2"
-}
-
 resource "aws_security_group_rule" "k2hb_common to vpc_endpoints" {
   type                     = "egress"
   from_port                = 443
@@ -474,5 +464,15 @@ resource "aws_security_group_rule" "k2hb_common to vpc_endpoints" {
   protocol                 = "tcp"
   source_security_group_id = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
   security_group_id        = aws_security_group.k2hb_common.id
+  description              = "K2HB ec2 to VPC endpoints"
+}
+
+resource "aws_security_group_rule" "vpc_endpoints_from_k2hb_common" {
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.k2hb_common.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
   description              = "VPC endpoints from K2HB ec2"
 }
