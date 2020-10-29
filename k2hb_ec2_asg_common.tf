@@ -1,19 +1,21 @@
 
-resource "aws_acm_certificate" "kafka_to_hbase" {
-  certificate_authority_arn = data.terraform_remote_state.certificate_authority.outputs.root_ca.arn
-  domain_name               = "consumer.ucfs.${local.env_prefix[local.environment]}dataworks.dwp.gov.uk"
-
-  options {
-    certificate_transparency_logging_preference = "DISABLED"
-  }
-
-  tags = merge(
-    local.common_tags,
-    {
-      Name = "k2hb-cert"
-    },
-  )
-}
+# Currently deployed by aws-ingest but must be moved here using Terraform import
+#
+#resource "aws_acm_certificate" "kafka_to_hbase" {
+#  certificate_authority_arn = data.terraform_remote_state.certificate_authority.outputs.root_ca.arn
+#  domain_name               = "consumer.ucfs.${local.env_prefix[local.environment]}dataworks.dwp.gov.uk"
+#
+#  options {
+#    certificate_transparency_logging_preference = "DISABLED"
+#  }
+#
+#  tags = merge(
+#    local.common_tags,
+#    {
+#      Name = "k2hb-cert"
+#    },
+#  )
+#}
 
 resource "aws_iam_instance_profile" "k2hb_common" {
   name = "k2hb_common"
@@ -29,7 +31,8 @@ data "aws_iam_policy_document" "k2hb_common" {
       "acm:*Certificate",
     ]
 
-    resources = [aws_acm_certificate.kafka_to_hbase.arn]
+    resources = [data.terraform_remote_state.ingest.outputs.k2hb_cert.arn]
+
   }
 
   statement {

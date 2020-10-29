@@ -34,7 +34,7 @@ resource "aws_launch_template" "k2hb_equality" {
       ),
     )
 
-    acm_cert_arn          = aws_acm_certificate.kafka_to_hbase.arn
+    acm_cert_arn          = data.terraform_remote_state.ingest.outputs.k2hb_cert.arn
     private_key_alias     = "k2hb"
     truststore_aliases    = local.kafka_consumer_truststore_aliases[local.environment]
     truststore_certs      = local.kafka_consumer_truststore_certs[local.environment]
