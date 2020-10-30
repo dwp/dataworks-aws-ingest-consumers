@@ -30,8 +30,17 @@ jobs:
 
       - in_parallel:
         - .: (( inject meta.plan.terraform-output-ingest ))
+          config:
+            params:
+              TF_WORKSPACE: default
         - .: (( inject meta.plan.terraform-output-internal-compute ))
+          config:
+            params:
+              TF_WORKSPACE: default
         - .: (( inject meta.plan.terraform-output-snapshot-sender ))
+          config:
+            params:
+              TF_WORKSPACE: default
 
       - .: (( inject meta.plan.run-behave-job ))
         task: data-streaming-tests
