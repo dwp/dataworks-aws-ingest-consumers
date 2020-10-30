@@ -4,7 +4,7 @@ data "local_file" "amazon_root_ca1_pem" {
 
 resource "aws_s3_bucket_object" "amazon_root_ca1_pem" {
   bucket     = data.terraform_remote_state.common.outputs.config_bucket.id
-  key        = "component/k2hb/AmazonRootCA1.pem"
+  key        = "component/k2hb-temp/AmazonRootCA1.pem"
   content    = data.local_file.amazon_root_ca1_pem.content
   kms_key_id = data.terraform_remote_state.common.outputs.config_bucket_cmk.arn
 
