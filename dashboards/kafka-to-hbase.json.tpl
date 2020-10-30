@@ -433,6 +433,52 @@
         "region": "eu-west-2",
         "title": "${reconciliation_metric_name_failed_to_be_reconciled}"
       }
+    },
+    {
+      "type": "metric",
+      "x": 18,
+      "y": 3,
+      "width": 6,
+      "height": 3,
+      "properties": {
+        "title": "Unreconciled records after specified age",
+        "annotations": {
+          "alarms": [
+              "${number_of_unreconciled_records_after_specified_age_alarm_arn}"
+          ]
+        },
+        "view": "singleValue"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 18,
+      "y": 6,
+      "width": 6,
+      "height": 3,
+      "properties": {
+        "metrics": [
+          [
+            "${reconciled_lambda_namespace}",
+            "${number_of_reconciled_records_metric_name}",
+            {
+              "label": "Reconciled"
+            }
+          ],
+          [
+            "${unreconciled_lambda_namespace}",
+            "${number_of_unreconciled_records_metric_name}",
+            {
+              "label": "Unreconciled"
+            }
+          ]
+        ],
+        "view": "singleValue",
+        "region": "eu-west-2",
+        "title": "Counts of Records",
+        "stat": "Average",
+        "period": 300
+      }
     }
   ]
 }
