@@ -4,13 +4,24 @@ jobs:
       - get: dataworks-aws-ingest-consumers-pr
         trigger: true
         version: every
+
       - put: dataworks-aws-ingest-consumers-pr
         params:
           path: dataworks-aws-ingest-consumers-pr
           status: pending
+
+      - get: dw-al2-hardened-ami
+
+      - get: k2hb-release
+        version:
+          tag: ((k2hb_version))
+        passed:
+          - mirror-k2hb
+
       - .: (( inject meta.plan.terraform-bootstrap ))
         input_mapping:
           dataworks-aws-ingest-consumers: dataworks-aws-ingest-consumers-pr
+
       - .: (( inject meta.plan.terraform-plan ))
         input_mapping:
           dataworks-aws-ingest-consumers: dataworks-aws-ingest-consumers-pr

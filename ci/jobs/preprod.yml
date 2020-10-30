@@ -1,21 +1,28 @@
 jobs:
-  - name: development
+  - name: preprod
     max_in_flight: 1
     plan:
       - get: dw-al2-hardened-ami
         trigger: true
+        passed:
+          - qa
 
       - get: dataworks-aws-ingest-consumers
         trigger: true
+        passed:
+          - qa
 
       - get: k2hb-release
         version:
           tag: ((k2hb_version))
         trigger: true
         passed:
-          - mirror-k2hb
+          - qa
 
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta.plan.terraform-apply ))
+        params:
+          TF_WORKSPACE: 'preprod'
       - .: (( inject meta.plan.terraform-plan ))
-
+        params:
+          TF_WORKSPACE: 'preprod'

@@ -13,6 +13,7 @@ meta:
           TF_CLI_ARGS_apply: -lock-timeout=300s
           TF_CLI_ARGS_plan: -lock-timeout=300s
           TF_VAR_costcode: ((dataworks.costcode))
+
     terraform-bootstrap:
       task: terraform-bootstrap
       config:
@@ -37,6 +38,7 @@ meta:
           - name: terraform-bootstrap
       params:
         AWS_REGION: eu-west-2
+
     terraform-apply:
       task: terraform-apply
       .: (( inject meta.plan.terraform-common-config ))
@@ -47,6 +49,8 @@ meta:
             - -exc
             - |
               cp ../terraform-bootstrap/terraform.tf .
+              export TF_VAR_al2_hardened_ami_id=$(cat ../dw-al2-hardened-ami/id)
+              export TF_VAR_k2hb_version=$(cat ../k2hb-release/version)
               terraform workspace show
               terraform init
               terraform plan -out terraform.plan
@@ -55,6 +59,7 @@ meta:
         inputs:
           - name: dataworks-aws-ingest-consumers
           - name: terraform-bootstrap
+
     terraform-plan:
       task: terraform-plan
       .: (( inject meta.plan.terraform-common-config ))
@@ -66,6 +71,8 @@ meta:
             - |
               cp ../terraform-bootstrap/terraform.tf .
               terraform workspace show
+              export TF_VAR_al2_hardened_ami_id=$(cat ../dw-al2-hardened-ami/id)
+              export TF_VAR_k2hb_version=$(cat ../k2hb-release/version)
               terraform init
               terraform plan $DETAILED_EXITCODE
           dir: dataworks-aws-ingest-consumers
@@ -75,3 +82,55 @@ meta:
       params:
         DETAILED_EXITCODE: -detailed-exitcode
 
+    terraform-output-management:
+      task: terraform-output-management
+      .: (( inject meta.plan.terraform-common-config ))
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.terraform_repository))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
+        params:
+          TF_WORKSPACE: management
+        run:
+          path: sh
+          dir: aws-management-infrastructure
+          args:
+            - -exc
+            - |
+              terraform init
+              terraform workspace show
+              terraform output --json > ../terraform-output-management/outputs.json
+        inputs:
+          - name: aws-management-infrastructure
+        outputs:
+          - name: terraform-output-management
+
+    mirror-jar:
+      task: mirror-jar
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.docker_awscli_repository))
+            version: ((dataworks.docker_awscli_version))
+            tag: ((dataworks.docker_awscli_version))
+        inputs:
+          - name: terraform-output-management
+          - name: jar-release
+        params:
+          AWS_REGION: ((dataworks.aws_region))
+          AWS_DEFAULT_REGION: ((dataworks.aws_region))
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              source /assume-role
+              set +x
+              export BUCKET=`cat terraform-output-management/outputs.json | jq -r ".artefact_bucket.value.id"`
+              aws s3 cp jar-release/*.${RELEASE_EXTENSION} s3://${BUCKET}/${ARTEFACT_DIR}/

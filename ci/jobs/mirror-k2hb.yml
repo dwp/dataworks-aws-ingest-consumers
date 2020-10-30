@@ -1,0 +1,18 @@
+jobs:
+  - name: mirror-k2hb
+    plan:
+      - get: aws-management-infrastructure
+      - get: k2hb-release
+        trigger: true
+        params:
+          globs:
+            - "*.tar.gz"
+      - .: (( inject meta.plan.terraform-output-management ))
+      - .: (( inject meta.plan.mirror-jar ))
+        input_mapping:
+          jar-release: k2hb-release
+        config:
+          params:
+            ARTEFACT_DIR: "kafka-to-hbase"
+            AWS_ROLE_ARN: arn:aws:iam::((dataworks.aws_management_acc)):role/ci
+            RELEASE_EXTENSION: "tar.gz"
