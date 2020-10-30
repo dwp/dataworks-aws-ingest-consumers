@@ -8,7 +8,7 @@ jobs:
             passed:
               - preprod
           - get: aws-ingestion
-            trigger: true
+            trigger: false
             passed:
               - preprod
           - get: aws-dataworks-e2e-framework

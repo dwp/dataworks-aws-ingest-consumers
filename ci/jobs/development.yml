@@ -8,7 +8,7 @@ jobs:
         - get: aws-internal-compute
           trigger: false
         - get: aws-ingestion
-          trigger: true
+          trigger: false
         - get: aws-dataworks-e2e-framework
           trigger: false
         - get: aws-snapshot-sender

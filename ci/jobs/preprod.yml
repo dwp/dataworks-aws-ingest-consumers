@@ -8,7 +8,7 @@ jobs:
             passed:
               - qa
           - get: aws-ingestion
-            trigger: true
+            trigger: false
             passed:
               - qa
           - get: aws-dataworks-e2e-framework

@@ -3,21 +3,15 @@ jobs:
     plan:
       - in_parallel:
           - put: meta
-            resource: meta-development
+            resource: meta-qa
           - get: aws-internal-compute
-            trigger: false
           - get: aws-ingestion
-            trigger: true
           - get: aws-dataworks-e2e-framework
-            trigger: false
           - get: aws-snapshot-sender
-            trigger: false
           - get: dw-al2-hardened-ami
-            trigger: true
           - get: k2hb-release
             version:
               tag: ((k2hb_version))
-            trigger: true
             passed:
               - mirror-k2hb
           - get: dataworks-aws-ingest-consumers-pr
