@@ -59,6 +59,8 @@ meta:
         inputs:
           - name: dataworks-aws-ingest-consumers
           - name: terraform-bootstrap
+          - name: k2hb-release
+          - name: dw-al2-hardened-ami
 
     terraform-plan:
       task: terraform-plan
@@ -79,6 +81,8 @@ meta:
         inputs:
           - name: dataworks-aws-ingest-consumers
           - name: terraform-bootstrap
+          - name: k2hb-release
+          - name: dw-al2-hardened-ami
       params:
         DETAILED_EXITCODE: -detailed-exitcode
 
