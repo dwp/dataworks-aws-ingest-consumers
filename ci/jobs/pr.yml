@@ -17,10 +17,11 @@ jobs:
           - get: dataworks-aws-ingest-consumers-pr
             trigger: true
             version: every
-          - put: dataworks-aws-ingest-consumers-pr
-            params:
-              path: dataworks-aws-ingest-consumers-pr
-              status: pending
+
+      - put: dataworks-aws-ingest-consumers-pr
+        params:
+          path: dataworks-aws-ingest-consumers-pr
+          status: pending
 
       - .: (( inject meta.plan.terraform-bootstrap ))
         input_mapping:
