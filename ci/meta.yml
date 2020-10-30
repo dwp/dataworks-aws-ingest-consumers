@@ -60,6 +60,8 @@ meta:
               terraform apply -auto-approve terraform.plan
           dir: dataworks-aws-ingest-consumers
         inputs:
+          - name: k2hb-release
+          - name: dw-al2-hardened-ami
           - name: dataworks-aws-ingest-consumers
           - name: terraform-bootstrap
 
@@ -80,6 +82,8 @@ meta:
               terraform plan $DETAILED_EXITCODE
           dir: dataworks-aws-ingest-consumers
         inputs:
+          - name: k2hb-release
+          - name: dw-al2-hardened-ami
           - name: dataworks-aws-ingest-consumers
           - name: terraform-bootstrap
       params:
