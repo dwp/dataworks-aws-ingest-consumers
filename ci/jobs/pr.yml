@@ -1,22 +1,27 @@
 jobs:
   - name: dataworks-aws-ingest-consumers-pr
     plan:
-      - get: dataworks-aws-ingest-consumers-pr
-        trigger: true
-        version: every
+      - in_parallel:
+          - put: meta
+            resource: meta-qa
+          - get: aws-internal-compute
+          - get: aws-ingestion
+          - get: aws-dataworks-e2e-framework
+          - get: aws-snapshot-sender
+          - get: dw-al2-hardened-ami
+          - get: k2hb-release
+            version:
+              tag: ((k2hb_version))
+            passed:
+              - mirror-k2hb
+          - get: dataworks-aws-ingest-consumers-pr
+            trigger: true
+            version: every
 
       - put: dataworks-aws-ingest-consumers-pr
         params:
           path: dataworks-aws-ingest-consumers-pr
           status: pending
-
-      - get: dw-al2-hardened-ami
-
-      - get: k2hb-release
-        version:
-          tag: ((k2hb_version))
-        passed:
-          - mirror-k2hb
 
       - .: (( inject meta.plan.terraform-bootstrap ))
         input_mapping:

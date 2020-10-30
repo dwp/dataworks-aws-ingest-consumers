@@ -11,6 +11,10 @@ groups:
     jobs:
       - dataworks-aws-ingest-consumers-pr
 
+  - name: update-pipeline
+    jobs:
+      - update-pipeline
+
   - name: mirror-artefact
     jobs:
       - mirror-k2hb
