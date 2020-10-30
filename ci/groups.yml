@@ -3,6 +3,14 @@ groups:
     jobs:
       - development
       - qa
+      - integration
+      - preprod
+      - production
+
   - name: pull-request
     jobs:
       - dataworks-aws-ingest-consumers-pr
+
+  - name: mirror-artefact
+    jobs:
+      - mirror-k2hb
