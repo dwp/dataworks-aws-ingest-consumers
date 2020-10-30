@@ -55,7 +55,7 @@ resource "aws_route53_resolver_rule_association" "ucfs_resolver_rule_association
 }
 
 resource "aws_route53_resolver_rule" "ucfs_london_resolver_rule" {
-  count                = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs[local.environment] ? 1 : 0
+  count                = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs_london[local.environment] ? 1 : 0
   domain_name          = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_domains[local.environment]
   name                 = "ucfs_london_resolver_rule"
   rule_type            = "FORWARD"
