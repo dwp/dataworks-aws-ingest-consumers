@@ -2,20 +2,57 @@ jobs:
   - name: development
     max_in_flight: 1
     plan:
-      - get: dw-al2-hardened-ami
-        trigger: true
-
-      - get: dataworks-aws-ingest-consumers
-        trigger: true
-
-      - get: k2hb-release
-        version:
-          tag: ((k2hb_version))
-        trigger: true
-        passed:
-          - mirror-k2hb
+      - in_parallel:
+        - put: meta
+          resource: meta-development
+        - get: aws-internal-compute
+          trigger: false
+        - get: aws-ingestion
+          trigger: true
+        - get: aws-dataworks-e2e-framework
+          trigger: false
+        - get: aws-snapshot-sender
+          trigger: false
+        - get: dw-al2-hardened-ami
+          trigger: true
+        - get: dataworks-aws-ingest-consumers
+          trigger: true
+        - get: k2hb-release
+          version:
+            tag: ((k2hb_version))
+          trigger: true
+          passed:
+            - mirror-k2hb
 
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta.plan.terraform-apply ))
       - .: (( inject meta.plan.terraform-plan ))
 
+      - in_parallel:
+        - .: (( inject meta.plan.terraform-output-ingest ))
+        - .: (( inject meta.plan.terraform-output-internal-compute ))
+        - .: (( inject meta.plan.terraform-output-snapshot-sender ))
+
+      - .: (( inject meta.plan.run-behave-job ))
+        task: data-streaming-tests
+        config:
+          params:
+            AWS_ACC: ((aws_account.development))
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
+            E2E_FEATURE_TAG_FILTER: "data-streaming"
+
+      - .: (( inject meta.plan.run-behave-job))
+        task: end-to-end-tests
+        config:
+          params:
+            AWS_ACC: ((aws_account.development))
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
+            E2E_FEATURE_TAG_FILTER: "end-to-end"
+
+    ensure:
+      do:
+        - .: (( inject meta.plan.tear-down ))
+          config:
+            params:
+              AWS_ACC: ((aws_account.development))
+              AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
