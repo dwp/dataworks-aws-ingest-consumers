@@ -1,11 +1,12 @@
 # dataworks-aws-ingest-consumers
 
 This repository contains the Terraform required to stand up the DataWorks Kafka Consumers from the upstream UC brokers.
+Currently they run in managed AWS ASGs.
 
-The code for the applications is found in
+The code for the applications can be found in
 * [Kafka-to-HBase consumer code](https://github.com/dwp/kafka-to-hbase)
 
-The core AWS Ingest infrastructure tha this sits in is held within DWP private github..
+The core AWS Ingest infrastructure that these consumers run in is held within DWP private github.
 
 ## Repository setup.
 
@@ -15,7 +16,7 @@ After cloning this repo, please generate `terraform.tf` and `terraform.tfvars` f
 make bootstrap
 ```
 
-You must also do this after every change top the terraform variables and inputs required by this repo.
+You must also do this after every change to the terraform variables and inputs required by this repo.
 
 ## Updating Concourse Pipelines
 
@@ -26,7 +27,7 @@ make concourse-login
 make update-pipeline
 ```
 
-The main pipeline will also self-update every time we merge to master, to ensure it's up to date.
+The main pipeline will also self-update every time there is a merge to master, to ensure it's up to date.
 
 ### K2HB insight stats
 
@@ -36,7 +37,7 @@ See also
 
 #### Number of containers seen in time period
 
-For a stable system, should always be the ESC main clusters desired_tasks, to match the partitions in the broker.
+For a stable system, should always be a whole fraction of the partitions in the upstream broker, as configured in the locals.tf.
 
    ```
   # k2hb number of containers seen in time period
@@ -160,8 +161,9 @@ Note the "x 10" is based on there being 10 containers per env (see `locals.tf`).
 Note for some queries we use the hostname as a proxy as each consumer gets assigned different partition(s).
 The `partitions` field is actually a list - but if our number of containers matches the number of partitions, they should get one each.
 With one container we would see "0, 1, 2, 3, 4, 5". With three, "0, 1" and "2, 3" and "4, 5", and so on.
-Seeing more than 6 in an hour implies a consumer group re-balance occurred, as `count_distinct(partitions)` will see all the combinations that exist.
-Seeing less (i.e. 1) means there is a problem as it the UC broker does not have the 6 expected any more.
+Seeing more than the Max ASG Size in any time period, i.e. an hour, implies a consumer group re-balance occurred, as 
+`count_distinct(partitions)` will see all the combinations that exist.
+Seeing less (i.e. 1) means there is a problem as it the UC broker does not have the 10 expected any more.
 
    ```
    # k2hb number of partitions seen in time period
