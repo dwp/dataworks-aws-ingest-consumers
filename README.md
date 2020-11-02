@@ -160,9 +160,12 @@ Note the "x 10" is based on there being 10 containers per env (see `locals.tf`).
 
 Note for some queries we use the hostname as a proxy as each consumer gets assigned different partition(s).
 The `partitions` field is actually a list - but if our number of containers matches the number of partitions, they should get one each.
+
 With one container we would see "0, 1, 2, 3, 4, 5". With three, "0, 1" and "2, 3" and "4, 5", and so on.
+
 Seeing more than the Max ASG Size in any time period, i.e. an hour, implies a consumer group re-balance occurred, as 
 `count_distinct(partitions)` will see all the combinations that exist.
+
 Seeing less (i.e. 1) means there is a problem as it the UC broker does not have the 10 expected any more.
 
    ```
