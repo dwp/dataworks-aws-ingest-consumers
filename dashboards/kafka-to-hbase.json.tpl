@@ -1,4 +1,6 @@
 {
+  "start": "-PT3H",
+  "periodOverride": "auto",
   "widgets": [
     {
       "type": "metric",
