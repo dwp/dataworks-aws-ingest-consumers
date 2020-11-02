@@ -163,14 +163,13 @@ The `partitions` field is actually a list - but if our number of containers matc
 
 With one container we would see "0, 1, 2, 3, 4, 5". With three, "0, 1" and "2, 3" and "4, 5", and so on.
 
-Seeing more than the Max ASG Size in any time period, i.e. an hour, implies a consumer group re-balance occurred, as 
+Seeing more than the desired Max Size in any time period, i.e. an hour, implies a consumer group re-balance occurred, as 
 `count_distinct(partitions)` will see all the combinations that exist.
 
 Seeing less (i.e. 1) means there is a problem as it the UC broker does not have the 10 expected any more.
 
    ```
    # k2hb number of partitions seen in time period
-   # ...for a stable system, sould always be the ESC main cluser's desired_tasks
    fields @timestamp, message, partitions
    | filter message = "Partitions read from for topic"
    | stats count_distinct(partitions) as number_partitions by bin (1h) as time_slice
