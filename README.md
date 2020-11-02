@@ -15,7 +15,7 @@ After cloning this repo, please generate `terraform.tf` and `terraform.tfvars` f
 make bootstrap
 ```
 
-You must also do this after every change top the terraform variables and inputs required by this repo.
+You must also do this after every change to the terraform variables and inputs required by this repo.
 
 ## Updating Concourse Pipelines
 
