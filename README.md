@@ -5,7 +5,7 @@ This repository contains the Terraform required to stand up the DataWorks Kafka 
 The code for the applications is found in
 * [Kafka-to-HBase consumer code](https://github.com/dwp/kafka-to-hbase)
 
-The core AWS Ingest infrastructure tha this sits in is held within DWP private github..
+The core AWS Ingest infrastructure that this sits in is held within DWP private github.
 
 ## Repository setup.
 
