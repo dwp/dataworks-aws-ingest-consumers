@@ -71,7 +71,7 @@ variable "k2hb_main_ha_cluster_asg_desired" {
     qa          = 2 //stubbed env
     integration = 2 //stubbed env
     preprod     = 2
-    production  = 0
+    production  = 10
   }
 }
 
@@ -82,7 +82,7 @@ variable "k2hb_main_ha_cluster_asg_max" {
     qa          = 2 //stubbed env
     integration = 2 //stubbed env
     preprod     = 2
-    production  = 0
+    production  = 10
   }
 }
 
@@ -93,7 +93,7 @@ variable "k2hb_equality_asg_desired" {
     qa          = 1
     integration = 1
     preprod     = 1
-    production  = 0
+    production  = 1
   }
 }
 
@@ -104,6 +104,6 @@ variable "k2hb_equality_asg_max" {
     qa          = 1
     integration = 1
     preprod     = 1
-    production  = 0
+    production  = 1
   }
 }
