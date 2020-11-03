@@ -45,6 +45,10 @@ jobs:
             config:
               params:
                 TF_WORKSPACE: qa
+          - .: (( inject meta.plan.terraform-output-ingest-consumers ))
+            config:
+              params:
+                TF_WORKSPACE: qa
 
       - .: (( inject meta.plan.run-behave-job ))
         task: data-streaming-tests
