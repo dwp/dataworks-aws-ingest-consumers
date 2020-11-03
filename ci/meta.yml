@@ -308,7 +308,7 @@ meta:
           args:
             - -exc
             - |
-              cp ../terraform-bootstrap-ingest-consumers/terraform.tf .
+              cp ../terraform-bootstrap/terraform.tf .
               ls -la terraform.tf
               terraform workspace show
               terraform init
@@ -316,6 +316,6 @@ meta:
           dir: dataworks-aws-ingest-consumers
         inputs:
           - name: dataworks-aws-ingest-consumers
-          - name: terraform-bootstrap-ingest-consumers
+          - name: terraform-bootstrap
         outputs:
           - name: terraform-output-ingest-consumers
