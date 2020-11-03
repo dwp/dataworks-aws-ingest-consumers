@@ -5,7 +5,7 @@ resources:
       repository: dwp/dataworks-aws-ingest-consumers
       access_token: ((dataworks-secrets.concourse_github_pat))
     webhook_token: ((dataworks.concourse_github_webhook_token))
-    check_every: 720h
+    check_every: 5m
 
   - name: dataworks-aws-ingest-consumers
     type: git
@@ -14,7 +14,7 @@ resources:
       uri: https://github.com/dwp/dataworks-aws-ingest-consumers.git
       access_token: ((dataworks-secrets.concourse_github_pat))
     webhook_token: ((dataworks.concourse_github_webhook_token))
-    check_every: 720h
+    check_every: 5m
 
   - name: dataworks-aws-ingest-consumers-update-pipeline
     type: git
@@ -26,7 +26,7 @@ resources:
         - ci/*
         - aviator.yml
     webhook_token: ((dataworks.concourse_github_webhook_token))
-    check_every: 720h
+    check_every: 5m
 
   - name: aws-management-infrastructure
     type: git
