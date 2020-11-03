@@ -442,8 +442,10 @@ locals {
   ingest_manifest_write_locations           = data.terraform_remote_state.ingest.outputs.k2hb_manifest_write_locations
   ingest_subnets                            = data.terraform_remote_state.ingest.outputs.ingestion_subnets
   ingest_hbase_fqdn                         = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.fqdn
+  ingest_hbase_emr_common_sg_id             = data.terraform_remote_state.ingest.outputs.emr_common_sg.id
   ingest_log_groups                         = data.terraform_remote_state.ingest.outputs.log_groups
   ingest_vpc_interface_vpce_sg_id           = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
+  ingest_vpc_prefix_list_ids_s3             = data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3
   ingest_input_bucket_cmk_arn               = data.terraform_remote_state.ingest.outputs.input_bucket_cmk.arn
 
   internal_compute_manifest_bucket      = data.terraform_remote_state.internal_compute.outputs.manifest_bucket

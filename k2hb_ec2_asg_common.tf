@@ -327,7 +327,7 @@ resource "aws_security_group" "k2hb_common" {
 resource "aws_security_group_rule" "k2hb_common_to_s3" {
   description       = "Allow kafka-to-hbase to reach S3 (for the jar)"
   type              = "egress"
-  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [local.ingest_vpc_prefix_list_ids_s3]
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
@@ -337,7 +337,7 @@ resource "aws_security_group_rule" "k2hb_common_to_s3" {
 resource "aws_security_group_rule" "k2hb_common_to_s3_http" {
   description       = "Allow kafka-to-hbase to reach S3 (for Yum) http"
   type              = "egress"
-  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [local.ingest_vpc_prefix_list_ids_s3]
   protocol          = "tcp"
   from_port         = 80
   to_port           = 80
@@ -448,7 +448,7 @@ resource "aws_security_group_rule" "k2hb_common_egress_hbase" {
   from_port                = each.value.port
   to_port                  = each.value.port
   protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.emr_common_sg.id
+  source_security_group_id = local.ingest_hbase_emr_common_sg_id
   security_group_id        = aws_security_group.k2hb_common.id
 }
 
@@ -459,7 +459,7 @@ resource "aws_security_group_rule" "k2hb_common_ingress_hbase" {
   from_port                = each.value.port
   to_port                  = each.value.port
   protocol                 = "tcp"
-  security_group_id        = data.terraform_remote_state.ingest.outputs.emr_common_sg.id
+  security_group_id        = local.ingest_hbase_emr_common_sg_id
   source_security_group_id = aws_security_group.k2hb_common.id
 }
 
