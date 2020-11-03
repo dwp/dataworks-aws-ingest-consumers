@@ -28,7 +28,7 @@ resource "aws_launch_template" "k2hb_equality" {
     truststore_certs      = local.kafka_consumer_truststore_certs[local.environment]
     internet_proxy        = local.internet_proxy_host
     non_proxied_endpoints = join(",", local.ingest_no_proxy_list)
-    s3_artefact_bucket_id = local.managemant_artefact_bucket_id
+    s3_artefact_bucket_id = local.managemant_artefact_bucket.id
 
     hbase_master_url                                 = local.ingest_hbase_fqdn
     k2hb_max_memory_allocation                       = var.k2hb_main_max_memory_allocation_equality[local.environment]
@@ -92,7 +92,7 @@ resource "aws_launch_template" "k2hb_equality" {
     k2hb_aws_s3_batch_puts                           = "true"
     k2hb_validator_schema                            = local.k2hb_validator_schema.equality
     k2hb_write_to_metadata_store                     = local.k2hb_equality_write_to_metadata_store[local.environment]
-    k2hb_manifest_bucket                             = local.internal_compute_manifest_bucket_id
+    k2hb_manifest_bucket                             = local.internal_compute_manifest_bucket.id
     k2hb_manifest_prefix                             = local.ingest_manifest_write_locations.equality_prefix
     k2hb_write_manifests                             = local.k2hb_equality_write_manifests[local.environment]
     k2hb_auto_commit_metadata_store_inserts          = local.k2hb_equality_auto_commit_metadata_store_inserts[local.environment]

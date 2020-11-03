@@ -2,7 +2,7 @@
 # Currently deployed by aws-ingest but must be moved here using Terraform import
 #
 #resource "aws_acm_certificate" "kafka_to_hbase" {
-#  certificate_authority_arn = data.terraform_remote_state.certificate_authority.outputs.root_ca.arn
+#  certificate_authority_arn = local.certificate_auth_root_ca_arn
 #  domain_name               = "consumer.ucfs.${local.env_prefix[local.environment]}dataworks.dwp.gov.uk"
 #
 #  options {
@@ -71,7 +71,7 @@ data "aws_iam_policy_document" "k2hb_common" {
       "s3:GetObject",
     ]
 
-    resources = [data.terraform_remote_state.certificate_authority.outputs.public_cert_bucket.arn]
+    resources = [local.certificate_auth_public_cert_bucket.arn]
   }
 
   statement {
@@ -87,7 +87,7 @@ data "aws_iam_policy_document" "k2hb_common" {
     ]
 
 
-    resources = [data.terraform_remote_state.security-tools.outputs.ebs_cmk.arn]
+    resources = [local.security_tools_ebs_cmk_arn]
   }
 
   statement {
@@ -150,9 +150,7 @@ data "aws_iam_policy_document" "k2hb_common" {
       "kms:DescribeKey",
     ]
 
-    resources = [
-      data.terraform_remote_state.ingest.outputs.input_bucket_cmk.arn,
-    ]
+    resources = [local.ingest_input_bucket_cmk_arn]
   }
 
   statement {
@@ -160,14 +158,14 @@ data "aws_iam_policy_document" "k2hb_common" {
     effect  = "Allow"
     actions = ["s3:GetBucketLocation"]
 
-    resources = [data.terraform_remote_state.management_artefact.outputs.artefact_bucket.arn]
+    resources = [local.managemant_artefact_bucket.arn]
   }
 
   statement {
     sid       = "AllowPullFromArtefactBucket"
     effect    = "Allow"
     actions   = ["s3:GetObject"]
-    resources = ["${data.terraform_remote_state.management_artefact.outputs.artefact_bucket.arn}/*"]
+    resources = ["${local.managemant_artefact_bucket.arn}/*"]
   }
 
   statement {
@@ -179,7 +177,7 @@ data "aws_iam_policy_document" "k2hb_common" {
       "kms:DescribeKey",
     ]
 
-    resources = [data.terraform_remote_state.management_artefact.outputs.artefact_bucket.cmk_arn]
+    resources = [local.managemant_artefact_bucket.cmk_arn]
   }
 
   statement {
@@ -219,7 +217,7 @@ data "aws_iam_policy_document" "k2hb_common" {
     ]
 
     resources = [
-      "${data.terraform_remote_state.internal_compute.outputs.manifest_bucket.arn}/${data.terraform_remote_state.internal_compute.outputs.manifest_s3_prefixes.base}/*",
+      "${local.internal_compute_manifest_bucket.arn}/${local.internal_compute_manifest_s3_prefixes.base}/*",
     ]
   }
 
@@ -232,7 +230,7 @@ data "aws_iam_policy_document" "k2hb_common" {
     ]
 
     resources = [
-      data.terraform_remote_state.internal_compute.outputs.manifest_bucket.arn,
+      local.internal_compute_manifest_bucket.arn,
     ]
   }
 
@@ -250,7 +248,7 @@ data "aws_iam_policy_document" "k2hb_common" {
 
 
     resources = [
-      data.terraform_remote_state.internal_compute.outputs.manifest_bucket_cmk.arn,
+      local.internal_compute_manifest_bucket_cmk.arn,
     ]
   }
 }
@@ -302,14 +300,14 @@ resource "aws_iam_role_policy_attachment" "k2hb_common_ssm" {
 
 # This updates the broker security group to let us in
 resource "aws_security_group_rule" "k2hb_common_ec2_to_stub_ucfs_kafka" {
-  count                    = data.terraform_remote_state.ingest.outputs.stub_ucfs.deploy_stub_broker[local.environment] ? length(data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports) : 0
+  count                    = local.stub_ucfs_deploy_broker[local.environment] ? length(local.stub_ucfs_kafka_ports) : 0
   description              = "K2HB Common ec2 to stub broker"
   type                     = "ingress"
   source_security_group_id = aws_security_group.k2hb_common.id
   protocol                 = "tcp"
-  from_port                = data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports[count.index]
-  to_port                  = data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports[count.index]
-  security_group_id        = data.terraform_remote_state.ingest.outputs.stub_ucfs.sg_id
+  from_port                = local.stub_ucfs_kafka_ports[count.index]
+  to_port                  = local.stub_ucfs_kafka_ports[count.index]
+  security_group_id        = local.stub_ucfs_sg_id
 }
 
 resource "aws_security_group" "k2hb_common" {
@@ -373,7 +371,7 @@ resource "aws_security_group_rule" "k2hb_common_to_stub_broker" {
   from_port         = local.kafka_broker_port[local.environment]
   to_port           = local.kafka_broker_port[local.environment]
   protocol          = "tcp"
-  cidr_blocks       = local.stub_ucfs_subnets_cidr_block
+  cidr_blocks       = local.stub_ucfs_subnets.cidr_block
   security_group_id = aws_security_group.k2hb_common.id
 }
 
@@ -490,7 +488,7 @@ resource "aws_security_group_rule" "k2hb_common_to_vpc_endpoints" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
+  source_security_group_id = local.ingest_vpc_interface_vpce_sg_id
   security_group_id        = aws_security_group.k2hb_common.id
   description              = "K2HB ec2 to VPC endpoints"
 }
@@ -501,6 +499,6 @@ resource "aws_security_group_rule" "vpc_endpoints_from_k2hb_common" {
   to_port                  = 443
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
+  security_group_id        = local.ingest_vpc_interface_vpce_sg_id
   description              = "VPC endpoints from K2HB ec2"
 }

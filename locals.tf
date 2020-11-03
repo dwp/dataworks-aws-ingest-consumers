@@ -171,11 +171,11 @@ locals {
   }
 
   kafka_consumer_truststore_certs = {
-    development = "s3://${data.terraform_remote_state.certificate_authority.outputs.public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem"
-    qa          = "s3://${data.terraform_remote_state.certificate_authority.outputs.public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem"
-    integration = "s3://${data.terraform_remote_state.certificate_authority.outputs.public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem"
-    preprod     = "s3://${data.terraform_remote_state.certificate_authority.outputs.public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem"
-    production  = "s3://${data.terraform_remote_state.certificate_authority.outputs.public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem,s3://${data.terraform_remote_state.certificate_authority.outputs.public_cert_bucket.id}/ca_certificates/ucfs/root_ca_old.pem"
+    development = "s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem"
+    qa          = "s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem"
+    integration = "s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem"
+    preprod     = "s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem"
+    production  = "s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem,s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca_old.pem"
   }
 
   cw_k2hb_agent_namespace                               = "/app/kafka-to-hbase"
@@ -430,8 +430,9 @@ locals {
   k2hb_aws_s3_main_archive_directory     = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_main}"
   k2hb_aws_s3_equality_archive_directory = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_equality}"
 
-  managemant_artefact_bucket_id = data.terraform_remote_state.management_artefact.outputs.artefact_bucket.id
+  managemant_artefact_bucket = data.terraform_remote_state.management_artefact.outputs.artefact_bucket
 
+  internet_proxy_host                       = data.terraform_remote_state.ingest.outputs.internet_proxy.host
   ingest_metadata_store                     = data.terraform_remote_state.ingest.outputs.metadata_store
   ingest_metadata_store_table_names         = data.terraform_remote_state.ingest.outputs.metadata_store_table_names
   ingest_corporate_storage_directory_prefix = data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix
@@ -442,22 +443,48 @@ locals {
   ingest_subnets                            = data.terraform_remote_state.ingest.outputs.ingestion_subnets
   ingest_hbase_fqdn                         = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.fqdn
   ingest_log_groups                         = data.terraform_remote_state.ingest.outputs.log_groups
+  ingest_vpc_interface_vpce_sg_id           = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
+  ingest_input_bucket_cmk_arn               = data.terraform_remote_state.ingest.outputs.input_bucket_cmk.arn
 
-  internal_compute_manifest_bucket_id = data.terraform_remote_state.internal_compute.outputs.manifest_bucket.id
+  internal_compute_manifest_bucket      = data.terraform_remote_state.internal_compute.outputs.manifest_bucket
+  internal_compute_manifest_bucket_cmk  = data.terraform_remote_state.internal_compute.outputs.manifest_bucket_cmk
+  internal_compute_manifest_s3_prefixes = data.terraform_remote_state.internal_compute.outputs.manifest_s3_prefixes
 
   common_config_bucket         = data.terraform_remote_state.common.outputs.config_bucket
   common_config_bucket_cmk_arn = data.terraform_remote_state.common.outputs.config_bucket_cmk.arn
   common_logging_file          = data.terraform_remote_state.common.outputs.application_logging_common_file
 
-  internet_proxy_host = data.terraform_remote_state.ingest.outputs.internet_proxy.host
+  certificate_auth_public_cert_bucket = data.terraform_remote_state.certificate_authority.outputs.public_cert_bucket
+  certificate_auth_root_ca_arn        = data.terraform_remote_state.certificate_authority.outputs.root_ca.arn
+
+  security_tools_ebs_cmk_arn = data.terraform_remote_state.security-tools.outputs.ebs_cmk.arn
 
   monitoring_topic_arn = data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn
 
   stub_kafka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.stub_kafka_broker_port_https
   stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.kafka_bootstrap_servers
   stub_ucfs_subnets            = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets
-  stub_ucfs_subnets_cidr_block = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets.cidr_block
+  stub_ucfs_deploy_broker      = data.terraform_remote_state.ingest.outputs.stub_ucfs.deploy_stub_broker
+  stub_ucfs_kafka_ports        = data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports
+  stub_ucfs_sg_id              = data.terraform_remote_state.ingest.outputs.stub_ucfs.sg_id
 
+
+  //  output "stub_ucfs_subnets" {
+  //    value = {
+  //      id         = aws_subnet.stub_ucfs.*.id
+  //      cidr_block = aws_subnet.stub_ucfs.*.cidr_block
+  //    }
+  //  }
+  //
+  //  output "stub_ucfs_interface_vpce_sg" {
+  //    value = {
+  //      id = module.stub_ucfs_vpc.interface_vpce_sg_id
+  //    }
+  //  }
+  //
+  //  output "stub_ucfs" {
+  //
+  //  }
   uc_kafaka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.uc_kafaka_broker_port_https
   dlq_kafka_consumer_topic    = data.terraform_remote_state.ingest.outputs.locals.dlq_kafka_consumer_topic // must match what k2s3 uses
 
