@@ -12,6 +12,7 @@ locals {
 
   k2hb_main_consumer_name     = "k2hb-main-ha-cluster"
   k2hb_equality_consumer_name = "k2hb-equality"
+  k2hb_audit_consumer_name    = "k2hb-audit"
 
   k2hb_main_asg_autoshutdown = {
     development = "False"
@@ -178,8 +179,9 @@ locals {
     production  = "s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem,s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca_old.pem"
   }
 
-  cw_k2hb_agent_namespace                               = "/app/kafka-to-hbase"
+  cw_k2hb_main_agent_namespace                          = "/app/kafka-to-hbase"
   cw_k2hb_equality_agent_namespace                      = "/app/kafka-to-hbase-equality"
+  cw_k2hb_audit_agent_namespace                         = "/app/kafka-to-hbase-audit"
   cw_agent_metrics_collection_interval                  = 60
   cw_agent_cpu_metrics_collection_interval              = 60
   cw_agent_disk_measurement_metrics_collection_interval = 60
@@ -225,7 +227,7 @@ locals {
   }
 
   # This should be the number of records we can easily process within the client timeout (kafka_k2hb_poll_timeout) above
-  k2hb_max_poll_records_count_main = {
+  k2hb_main_max_poll_records_count = {
     development = 25
     qa          = 50
     integration = 50
@@ -234,7 +236,7 @@ locals {
   }
 
   # This should be the number of records we can easily process within the client timeout (kafka_k2hb_poll_timeout) above
-  k2hb_max_poll_records_count_equality = {
+  k2hb_equality_max_poll_records_count = {
     development = 25
     qa          = 50
     integration = 50
@@ -243,7 +245,7 @@ locals {
   }
 
   # This should be the number of records we can easily process within the client timeout (kafka_k2hb_poll_timeout) above
-  k2hb_max_poll_records_count_audit = {
+  k2hb_audit_max_poll_records_count = {
     development = 25
     qa          = 50
     integration = 50
@@ -356,7 +358,7 @@ locals {
     audit    = "audit_message.schema.json"
   }
 
-  k2hb_main_ha_write_to_metadata_store = {
+  k2hb_main_write_to_metadata_store = {
     development = true
     qa          = true
     integration = true
@@ -429,6 +431,7 @@ locals {
   k2hb_aws_s3_archive_bucket_id          = data.terraform_remote_state.ingest.outputs.corporate_storage_bucket.id
   k2hb_aws_s3_main_archive_directory     = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_main}"
   k2hb_aws_s3_equality_archive_directory = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_equality}"
+  k2hb_aws_s3_audit_archive_directory    = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_audit}"
 
   managemant_artefact_bucket = data.terraform_remote_state.management_artefact.outputs.artefact_bucket
 
@@ -470,23 +473,6 @@ locals {
   stub_ucfs_kafka_ports        = data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports
   stub_ucfs_sg_id              = data.terraform_remote_state.ingest.outputs.stub_ucfs.sg_id
 
-
-  //  output "stub_ucfs_subnets" {
-  //    value = {
-  //      id         = aws_subnet.stub_ucfs.*.id
-  //      cidr_block = aws_subnet.stub_ucfs.*.cidr_block
-  //    }
-  //  }
-  //
-  //  output "stub_ucfs_interface_vpce_sg" {
-  //    value = {
-  //      id = module.stub_ucfs_vpc.interface_vpce_sg_id
-  //    }
-  //  }
-  //
-  //  output "stub_ucfs" {
-  //
-  //  }
   uc_kafaka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.uc_kafaka_broker_port_https
   dlq_kafka_consumer_topic    = data.terraform_remote_state.ingest.outputs.locals.dlq_kafka_consumer_topic // must match what k2s3 uses
 

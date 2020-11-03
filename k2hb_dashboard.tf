@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_dashboard" "k2hb" {
   dashboard_name = "kafka-to-hbase"
   dashboard_body = templatefile("${path.module}/dashboards/kafka-to-hbase.json.tpl", {
-    namespace                                                      = local.cw_k2hb_agent_namespace
+    namespace                                                      = local.cw_k2hb_main_agent_namespace
     reconciled_lambda_namespace                                    = data.terraform_remote_state.ingest.outputs.locals.cw_lambda_metadata_reconciled_namespace
     unreconciled_lambda_namespace                                  = data.terraform_remote_state.ingest.outputs.locals.cw_lambda_metadata_unreconciled_namespace
     reconciliation_namespace                                       = data.terraform_remote_state.ingest.outputs.locals.cw_k2hb_reconciliation_ucfs_namespace

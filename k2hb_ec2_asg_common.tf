@@ -42,6 +42,18 @@ locals {
       Persistence  = "Ignore",
     }
   )
+
+  k2hb_audit_tags_asg = merge(
+    local.common_tags,
+    {
+      Name         = "${local.k2hb_equality_consumer_name}-${local.environment}",
+      k2hb-version = var.k2hb_version,
+      AutoShutdown = local.k2hb_equality_asg_autoshutdown[local.environment],
+      SSMEnabled   = local.k2hb_equality_asg_ssmenabled[local.environment],
+      Inspector    = local.k2hb_equality_asg_inspector[local.environment],
+      Persistence  = "Ignore",
+    }
+  )
 }
 
 

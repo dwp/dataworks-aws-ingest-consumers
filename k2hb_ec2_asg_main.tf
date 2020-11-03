@@ -33,7 +33,7 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     hbase_master_url                                 = local.ingest_hbase_fqdn
     k2hb_max_memory_allocation                       = var.k2hb_main_max_memory_allocation[local.environment]
     cwa_metrics_collection_interval                  = local.cw_agent_metrics_collection_interval
-    cwa_namespace                                    = local.cw_k2hb_agent_namespace
+    cwa_namespace                                    = local.cw_k2hb_main_agent_namespace
     cwa_cpu_metrics_collection_interval              = local.cw_agent_cpu_metrics_collection_interval
     cwa_disk_measurement_metrics_collection_interval = local.cw_agent_disk_measurement_metrics_collection_interval
     cwa_disk_io_metrics_collection_interval          = local.cw_agent_disk_io_metrics_collection_interval
@@ -83,7 +83,7 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     k2hb_kafka_insecure                              = "false"
     k2hb_kafka_cert_mode                             = "RETRIEVE"
     k2hb_kafka_dlq_topic                             = local.dlq_kafka_consumer_topic
-    k2hb_kafka_poll_max_records                      = local.k2hb_max_poll_records_count_main[local.environment]
+    k2hb_kafka_poll_max_records                      = local.k2hb_main_max_poll_records_count[local.environment]
     k2hb_kafka_report_frequency                      = local.k2hb_report_frequency[local.environment]
     k2hb_qualified_table_pattern                     = local.k2hb_main_data_qualified_table_pattern
     k2hb_check_existence                             = local.k2hb_check_existence[local.environment]
@@ -91,7 +91,7 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     k2hb_aws_s3_archive_directory                    = local.k2hb_aws_s3_main_archive_directory
     k2hb_aws_s3_batch_puts                           = "true"
     k2hb_validator_schema                            = local.k2hb_validator_schema.ucfs
-    k2hb_write_to_metadata_store                     = local.k2hb_main_ha_write_to_metadata_store[local.environment]
+    k2hb_write_to_metadata_store                     = local.k2hb_main_write_to_metadata_store[local.environment]
     k2hb_manifest_bucket                             = local.internal_compute_manifest_bucket.id
     k2hb_manifest_prefix                             = local.ingest_manifest_write_locations.main_prefix
     k2hb_write_manifests                             = local.k2hb_main_write_manifests[local.environment]

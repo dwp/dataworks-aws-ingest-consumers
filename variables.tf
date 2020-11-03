@@ -64,7 +64,7 @@ variable "k2hb_main_max_memory_allocation" {
   }
 }
 
-variable "k2hb_main_max_memory_allocation_equality" {
+variable "k2hb_equality_max_memory_allocation" {
   default = {
     development = "-Xmx1g"
     qa          = "-Xmx1g"
