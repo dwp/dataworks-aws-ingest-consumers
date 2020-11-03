@@ -31,6 +31,7 @@ locals {
     }
 
   )
+
   k2hb_equality_tags_asg = merge(
     local.common_tags,
     {

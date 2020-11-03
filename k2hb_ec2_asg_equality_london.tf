@@ -1,13 +1,22 @@
-# Ireland
+# London
 
-resource "aws_launch_template" "k2hb_equality" {
-  name                   = "k2hb_equality"
+locals {
+  k2hb_equality_london_tags_asg = merge(
+    local.common_tags,
+    {
+      Location = "London",
+    }
+  )
+}
+
+resource "aws_launch_template" "k2hb_equality_london" {
+  name                   = "k2hb_london_equality"
   image_id               = var.al2_hardened_ami_id
   instance_type          = var.k2hb_equality_ec2_size[local.environment]
   vpc_security_group_ids = [aws_security_group.k2hb_common.id]
 
   user_data = base64encode(templatefile("k2hb_userdata.tpl", {
-    environment_name          = local.environment
+    environment_name          = "${local.environment}-london"
     k2hb_version              = var.k2hb_version
     k2hb_application_name     = local.k2hb_equality_consumer_name
     k2hb_kafka_consumer_group = local.k2hb_kafka_equality_consumer_group
@@ -17,7 +26,7 @@ resource "aws_launch_template" "k2hb_equality" {
       ",",
       formatlist(
         "%s:%s",
-        local.kafka_bootstrap_servers[local.environment],
+        local.kafka_london_bootstrap_servers[local.environment],
         local.kafka_broker_port[local.environment],
       ),
     )
@@ -120,20 +129,20 @@ resource "aws_launch_template" "k2hb_equality" {
     create_before_destroy = true
   }
 
-  tags = local.k2hb_equality_tags_asg
+  tags = local.k2hb_equality_london_tags_asg
 
   tag_specifications {
     resource_type = "instance"
 
-    tags = local.k2hb_equality_tags_asg
+    tags = local.k2hb_equality_london_tags_asg
   }
 }
 
 resource "aws_autoscaling_group" "k2hb_equality" {
   name_prefix               = "${aws_launch_template.k2hb_equality.name}-lt_ver${aws_launch_template.k2hb_equality.latest_version}_"
   min_size                  = local.k2hb_asg_min[local.environment]
-  desired_capacity          = var.k2hb_equality_asg_desired[local.environment]
-  max_size                  = var.k2hb_equality_asg_max[local.environment]
+  desired_capacity          = var.k2hb_equality_london_asg_desired[local.environment]
+  max_size                  = var.k2hb_equality_london_asg_max[local.environment]
   health_check_grace_period = 600
   health_check_type         = "EC2"
   force_delete              = true
@@ -145,7 +154,7 @@ resource "aws_autoscaling_group" "k2hb_equality" {
   }
 
   tags = [
-    for key, value in local.k2hb_equality_tags_asg :
+    for key, value in local.k2hb_equality_london_tags_asg :
     {
       key                 = key
       value               = value
