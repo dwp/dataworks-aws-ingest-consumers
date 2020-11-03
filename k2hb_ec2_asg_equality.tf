@@ -43,7 +43,7 @@ resource "aws_launch_template" "k2hb_equality" {
     s3_artefact_bucket_id = data.terraform_remote_state.management_artefact.outputs.artefact_bucket.id
 
     hbase_master_url                                 = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.fqdn
-    k2hb_max_memory_allocation                       = var.k2hb_max_memory_allocation_equality[local.environment]
+    k2hb_max_memory_allocation                       = var.k2hb_main_max_memory_allocation_equality[local.environment]
     cwa_metrics_collection_interval                  = local.cw_agent_metrics_collection_interval
     cwa_namespace                                    = local.cw_k2hb_equality_agent_namespace
     cwa_cpu_metrics_collection_interval              = local.cw_agent_cpu_metrics_collection_interval
@@ -94,20 +94,20 @@ resource "aws_launch_template" "k2hb_equality" {
     k2hb_kafka_poll_timeout                          = local.kafka_k2hb_poll_timeout[local.environment]
     k2hb_kafka_insecure                              = "false"
     k2hb_kafka_cert_mode                             = "RETRIEVE"
-    k2hb_kafka_dlq_topic                             = local.dlq_kafka_consumer_topics[local.environment]
+    k2hb_kafka_dlq_topic                             = local.dlq_kafka_consumer_topic
     k2hb_kafka_poll_max_records                      = local.k2hb_max_poll_records_count_equality[local.environment]
     k2hb_kafka_report_frequency                      = local.k2hb_report_frequency[local.environment]
     k2hb_qualified_table_pattern                     = local.k2hb_data_equality_qualified_table_pattern
     k2hb_check_existence                             = local.k2hb_check_existence[local.environment]
-    k2hb_aws_s3_archive_bucket                       = data.terraform_remote_state.ingest.outputs.corporate_storage_bucket.id
-    k2hb_aws_s3_archive_directory                    = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_equality}"
+    k2hb_aws_s3_archive_bucket                       = local.k2hb_aws_s3_archive_bucket_id
+    k2hb_aws_s3_archive_directory                    = local.k2hb_aws_s3_equality_archive_directory
     k2hb_aws_s3_batch_puts                           = "true"
     k2hb_validator_schema                            = local.k2hb_validator_schema.equality
     k2hb_write_to_metadata_store                     = local.k2hb_equality_write_to_metadata_store[local.environment]
     k2hb_manifest_bucket                             = data.terraform_remote_state.internal_compute.outputs.manifest_bucket.id
     k2hb_manifest_prefix                             = data.terraform_remote_state.ingest.outputs.k2hb_manifest_write_locations.equality_prefix
-    k2hb_write_manifests                             = local.k2hb_write_manifests_equality[local.environment]
-    k2hb_auto_commit_metadata_store_inserts          = local.k2hb_auto_commit_metadata_store_inserts_equality[local.environment]
+    k2hb_write_manifests                             = local.k2hb_equality_write_manifests[local.environment]
+    k2hb_auto_commit_metadata_store_inserts          = local.k2hb_equality_auto_commit_metadata_store_inserts[local.environment]
   }))
 
   instance_initiated_shutdown_behavior = "terminate"

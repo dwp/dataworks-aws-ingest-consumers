@@ -10,8 +10,8 @@ locals {
 
   iam_role_max_session_timeout_seconds = 43200
 
-  k2hb_main_ha_cluster_consumer_name = "k2hb-main-ha-cluster"
-  k2hb_equality_consumer_name        = "k2hb-equality"
+  k2hb_main_consumer_name     = "k2hb-main-ha-cluster"
+  k2hb_equality_consumer_name = "k2hb-equality"
 
   k2hb_main_asg_autoshutdown = {
     development = "False"
@@ -61,6 +61,30 @@ locals {
     production  = "disabled"
   }
 
+  k2hb_audit_asg_autoshutdown = {
+    development = "False"
+    qa          = "False"
+    integration = "False"
+    preprod     = "False"
+    production  = "False"
+  }
+
+  k2hb_audit_asg_ssmenabled = {
+    development = "True"
+    qa          = "True"
+    integration = "True"
+    preprod     = "False"
+    production  = "False"
+  }
+
+  k2hb_audit_asg_inspector = {
+    development = "disabled"
+    qa          = "disabled"
+    integration = "disabled"
+    preprod     = "disabled"
+    production  = "disabled"
+  }
+
   // Common across all k2hb ASGs. Minimum k2hb asg size. Should always be zero to allow us to scale at will for releases and tests.
   k2hb_asg_min = {
     development = 0
@@ -102,7 +126,7 @@ locals {
     production  = "true"
   }
 
-  k2hb_write_manifests_main = {
+  k2hb_main_write_manifests = {
     development = "true"
     qa          = "true"
     integration = "true"
@@ -110,7 +134,7 @@ locals {
     production  = "true"
   }
 
-  k2hb_write_manifests_equality = {
+  k2hb_equality_write_manifests = {
     development = "true"
     qa          = "true"
     integration = "true"
@@ -118,7 +142,7 @@ locals {
     production  = "true"
   }
 
-  k2hb_auto_commit_metadata_store_inserts_main = {
+  k2hb_main_auto_commit_metadata_store_inserts = {
     development = "false"
     qa          = "false"
     integration = "false"
@@ -126,20 +150,12 @@ locals {
     production  = "false"
   }
 
-  k2hb_auto_commit_metadata_store_inserts_equality = {
+  k2hb_equality_auto_commit_metadata_store_inserts = {
     development = "false"
     qa          = "false"
     integration = "false"
     preprod     = "false"
     production  = "false"
-  }
-
-  k2s3_log_level = {
-    development = "DEBUG"
-    qa          = "INFO"
-    integration = "INFO"
-    preprod     = "INFO"
-    production  = "INFO"
   }
 
   k2hb_kafka_main_consumer_group     = "dataworks-ucfs-kafka-to-hbase-ingest-${local.environment}"
@@ -219,6 +235,15 @@ locals {
 
   # This should be the number of records we can easily process within the client timeout (kafka_k2hb_poll_timeout) above
   k2hb_max_poll_records_count_equality = {
+    development = 25
+    qa          = 50
+    integration = 50
+    preprod     = 25
+    production  = 1000
+  }
+
+  # This should be the number of records we can easily process within the client timeout (kafka_k2hb_poll_timeout) above
+  k2hb_max_poll_records_count_audit = {
     development = 25
     qa          = 50
     integration = 50
@@ -325,18 +350,28 @@ locals {
   // Only needs to work for exactly "data.businessAudit"
   k2hb_data_audit_qualified_table_pattern = "^([-\\w]+)\\.([-\\w]+)$"
 
-  dlq_kafka_consumer_topics = {
-    development = "dataworks.ucfs-business-data-event-dlq"
-    qa          = "dataworks.ucfs-business-data-event-dlq"
-    integration = "dataworks.ucfs-business-data-event-dlq"
-    preprod     = "dataworks.ucfs-business-data-event-dlq"
-    production  = "dataworks.ucfs-business-data-event-dlq"
-  }
+  dlq_kafka_consumer_topic = "dataworks.ucfs-business-data-event-dlq"
 
   k2hb_validator_schema = {
     ucfs     = "business_message.schema.json" //this is the default if not specified, version 0.0.153++
     equality = "equality_message.schema.json"
-    audit    = "audit_message.schema.json" // for future use
+    audit    = "audit_message.schema.json"
+  }
+
+  k2hb_main_ha_write_to_metadata_store = {
+    development = true
+    qa          = true
+    integration = true
+    preprod     = true
+    production  = true
+  }
+
+  k2hb_main_london_write_to_metadata_store = {
+    development = true
+    qa          = true
+    integration = true
+    preprod     = true
+    production  = true
   }
 
   k2hb_equality_write_to_metadata_store = {
@@ -347,12 +382,20 @@ locals {
     production  = true
   }
 
-  k2hb_main_ha_cluster_write_to_metadata_store = {
+  k2hb_equality_london_write_to_metadata_store = {
     development = true
     qa          = true
     integration = true
     preprod     = true
     production  = true
+  }
+
+  k2hb_audit_london_write_to_metadata_store = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = false
   }
 
   k2hb_metric_name_number_of_successfully_processed_batches = "The number of batches successfully processed"
@@ -385,8 +428,12 @@ locals {
   ]
 
   #### Import lots of the things we need from dip/aws-ingest in one place to make our tf cleaner in this repo ####
+  k2hb_aws_s3_archive_bucket_id          = data.terraform_remote_state.ingest.outputs.corporate_storage_bucket.id
+  k2hb_aws_s3_main_archive_directory     = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_main}"
+  k2hb_aws_s3_equality_archive_directory = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_equality}"
 
-  ingest_corporate_storage = data.terraform_remote_state.ingest.outputs.corporate_storage
+  ingest_corporate_storage_directory_prefix = data.terraform_remote_state.ingest.outputs.corporate_storage.local.corporate_storage_directory_prefix
+  ingest_corporate_storage_bucket           = data.terraform_remote_state.ingest.outputs.corporate_storage_bucket
 
   stub_kafka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.stub_kafka_broker_port_https
   stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.kafka_bootstrap_servers
@@ -394,7 +441,7 @@ locals {
   stub_ucfs_subnets_cidr_block = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets.cidr_block
 
   uc_kafaka_broker_port_https         = data.terraform_remote_state.ingest.outputs.locals.uc_kafaka_broker_port_https
-  ucfs_ha_cluster_bootstrap_servers   = data.terraform_remote_state.ingest.outputs.locals.ucfs_ha_cluster_bootstrap_servers
+  ucfs_bootstrap_servers              = data.terraform_remote_state.ingest.outputs.locals.ucfs_ha_cluster_bootstrap_servers
   ucfs_broker_cidr_blocks             = data.terraform_remote_state.ingest.outputs.locals.ucfs_broker_cidr_blocks
   ucfs_london_broker_cidr_blocks      = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_broker_cidr_blocks
   ucfs_nameservers_cidr_blocks        = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers_cidr_blocks
@@ -431,9 +478,9 @@ locals {
   kafka_bootstrap_servers = {
     development = local.stub_bootstrap_servers[local.environment] // stubbed, so no HA
     qa          = local.stub_bootstrap_servers[local.environment] // stubbed, so no HA
-    integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.ucfs_ha_cluster_bootstrap_servers[local.environment] : local.stub_bootstrap_servers[local.environment]
-    preprod     = local.ucfs_ha_cluster_bootstrap_servers[local.environment] // now on UCFS Staging HA
-    production  = local.ucfs_ha_cluster_bootstrap_servers[local.environment] // now on UCFS Production HA
+    integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.ucfs_bootstrap_servers[local.environment] : local.stub_bootstrap_servers[local.environment]
+    preprod     = local.ucfs_bootstrap_servers[local.environment] // now on UCFS Staging HA
+    production  = local.ucfs_bootstrap_servers[local.environment] // now on UCFS Production HA
   }
 
 }

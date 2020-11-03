@@ -2,7 +2,7 @@ locals {
   k2hb_main_tags_asg = merge(
     local.common_tags,
     {
-      Name         = "${local.k2hb_main_ha_cluster_consumer_name}-${local.environment}",
+      Name         = "${local.k2hb_main_consumer_name}-${local.environment}",
       k2hb-version = var.k2hb_version,
       AutoShutdown = local.k2hb_main_asg_autoshutdown[local.environment],
       SSMEnabled   = local.k2hb_main_asg_ssmenabled[local.environment],
@@ -21,7 +21,7 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
   user_data = base64encode(templatefile("k2hb_userdata.tpl", {
     environment_name          = local.environment
     k2hb_version              = var.k2hb_version
-    k2hb_application_name     = local.k2hb_main_ha_cluster_consumer_name
+    k2hb_application_name     = local.k2hb_main_consumer_name
     k2hb_kafka_consumer_group = local.k2hb_kafka_main_consumer_group //different server to old single node broker, so keep the same name
     k2hb_log_level            = local.k2hb_log_level[local.environment]
 
@@ -43,7 +43,7 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     s3_artefact_bucket_id = data.terraform_remote_state.management_artefact.outputs.artefact_bucket.id
 
     hbase_master_url                                 = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.fqdn
-    k2hb_max_memory_allocation                       = var.k2hb_max_memory_allocation_main[local.environment]
+    k2hb_max_memory_allocation                       = var.k2hb_main_max_memory_allocation[local.environment]
     cwa_metrics_collection_interval                  = local.cw_agent_metrics_collection_interval
     cwa_namespace                                    = local.cw_k2hb_agent_namespace
     cwa_cpu_metrics_collection_interval              = local.cw_agent_cpu_metrics_collection_interval
@@ -94,20 +94,20 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     k2hb_kafka_poll_timeout                          = local.kafka_k2hb_poll_timeout[local.environment]
     k2hb_kafka_insecure                              = "false"
     k2hb_kafka_cert_mode                             = "RETRIEVE"
-    k2hb_kafka_dlq_topic                             = local.dlq_kafka_consumer_topics[local.environment]
+    k2hb_kafka_dlq_topic                             = local.dlq_kafka_consumer_topic
     k2hb_kafka_poll_max_records                      = local.k2hb_max_poll_records_count_main[local.environment]
     k2hb_kafka_report_frequency                      = local.k2hb_report_frequency[local.environment]
     k2hb_qualified_table_pattern                     = local.k2hb_main_data_qualified_table_pattern
     k2hb_check_existence                             = local.k2hb_check_existence[local.environment]
-    k2hb_aws_s3_archive_bucket                       = data.terraform_remote_state.ingest.outputs.corporate_storage_bucket.id
-    k2hb_aws_s3_archive_directory                    = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_main}"
+    k2hb_aws_s3_archive_bucket                       = local.k2hb_aws_s3_archive_bucket_id
+    k2hb_aws_s3_archive_directory                    = local.k2hb_aws_s3_main_archive_directory
     k2hb_aws_s3_batch_puts                           = "true"
     k2hb_validator_schema                            = local.k2hb_validator_schema.ucfs
-    k2hb_write_to_metadata_store                     = local.k2hb_main_ha_cluster_write_to_metadata_store[local.environment]
+    k2hb_write_to_metadata_store                     = local.k2hb_main_ha_write_to_metadata_store[local.environment]
     k2hb_manifest_bucket                             = data.terraform_remote_state.internal_compute.outputs.manifest_bucket.id
     k2hb_manifest_prefix                             = data.terraform_remote_state.ingest.outputs.k2hb_manifest_write_locations.main_prefix
-    k2hb_write_manifests                             = local.k2hb_write_manifests_main[local.environment]
-    k2hb_auto_commit_metadata_store_inserts          = local.k2hb_auto_commit_metadata_store_inserts_main[local.environment]
+    k2hb_write_manifests                             = local.k2hb_main_write_manifests[local.environment]
+    k2hb_auto_commit_metadata_store_inserts          = local.k2hb_main_auto_commit_metadata_store_inserts[local.environment]
   }))
 
   instance_initiated_shutdown_behavior = "terminate"
@@ -135,7 +135,7 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
   tags = merge(
     local.common_tags,
     {
-      Name        = local.k2hb_main_ha_cluster_consumer_name,
+      Name        = local.k2hb_main_consumer_name,
       Persistence = "Ignore"
     },
   )
@@ -146,8 +146,8 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     tags = merge(
       local.common_tags,
       {
-        Name        = local.k2hb_main_ha_cluster_consumer_name,
-        Application = local.k2hb_main_ha_cluster_consumer_name,
+        Name        = local.k2hb_main_consumer_name,
+        Application = local.k2hb_main_consumer_name,
         Persistence = "Ignore"
       },
     )
@@ -157,8 +157,8 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
 resource "aws_autoscaling_group" "k2hb_main_ha_cluster" {
   name_prefix               = "${aws_launch_template.k2hb_main_ha_cluster.name}-lt_ver${aws_launch_template.k2hb_main_ha_cluster.latest_version}_"
   min_size                  = local.k2hb_asg_min[local.environment]
-  desired_capacity          = var.k2hb_main_ha_cluster_asg_desired[local.environment]
-  max_size                  = var.k2hb_main_ha_cluster_asg_max[local.environment]
+  desired_capacity          = var.k2hb_main_asg_desired[local.environment]
+  max_size                  = var.k2hb_main_asg_max[local.environment]
   health_check_grace_period = 600
   health_check_type         = "EC2"
   force_delete              = true
