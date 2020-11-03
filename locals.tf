@@ -470,23 +470,6 @@ locals {
   stub_ucfs_kafka_ports        = data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports
   stub_ucfs_sg_id              = data.terraform_remote_state.ingest.outputs.stub_ucfs.sg_id
 
-
-  //  output "stub_ucfs_subnets" {
-  //    value = {
-  //      id         = aws_subnet.stub_ucfs.*.id
-  //      cidr_block = aws_subnet.stub_ucfs.*.cidr_block
-  //    }
-  //  }
-  //
-  //  output "stub_ucfs_interface_vpce_sg" {
-  //    value = {
-  //      id = module.stub_ucfs_vpc.interface_vpce_sg_id
-  //    }
-  //  }
-  //
-  //  output "stub_ucfs" {
-  //
-  //  }
   uc_kafaka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.uc_kafaka_broker_port_https
   dlq_kafka_consumer_topic    = data.terraform_remote_state.ingest.outputs.locals.dlq_kafka_consumer_topic // must match what k2s3 uses
 
