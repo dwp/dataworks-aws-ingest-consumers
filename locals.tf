@@ -350,8 +350,6 @@ locals {
   // Only needs to work for exactly "data.businessAudit"
   k2hb_data_audit_qualified_table_pattern = "^([-\\w]+)\\.([-\\w]+)$"
 
-  dlq_kafka_consumer_topic = "dataworks.ucfs-business-data-event-dlq"
-
   k2hb_validator_schema = {
     ucfs     = "business_message.schema.json" //this is the default if not specified, version 0.0.153++
     equality = "equality_message.schema.json"
@@ -440,16 +438,21 @@ locals {
   stub_ucfs_subnets            = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets
   stub_ucfs_subnets_cidr_block = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets.cidr_block
 
-  uc_kafaka_broker_port_https         = data.terraform_remote_state.ingest.outputs.locals.uc_kafaka_broker_port_https
-  ucfs_bootstrap_servers              = data.terraform_remote_state.ingest.outputs.locals.ucfs_ha_cluster_bootstrap_servers
+  uc_kafaka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.uc_kafaka_broker_port_https
+  dlq_kafka_consumer_topic    = data.terraform_remote_state.ingest.outputs.locals.dlq_kafka_consumer_topic // must match what k2s3 uses
+
+  // All of the following block is TOP SECRET, and must come from DIP or AWS Secrets via Bootstrap
   ucfs_broker_cidr_blocks             = data.terraform_remote_state.ingest.outputs.locals.ucfs_broker_cidr_blocks
   ucfs_london_broker_cidr_blocks      = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_broker_cidr_blocks
   ucfs_nameservers_cidr_blocks        = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers_cidr_blocks
   ucfs_london_nameservers_cidr_blocks = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers_cidr_blocks
-  ucfs_domains                        = data.terraform_remote_state.ingest.outputs.locals.ucfs_domains
-  ucfs_london_domains                 = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_domains
-  ucfs_nameservers                    = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers
-  ucfs_london_nameservers             = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers
+
+  // All of the following block is SENSITIVE, and must come from DIP or AWS Secrets via Bootstrap
+  ucfs_ha_broker_prefix   = data.terraform_remote_state.ingest.outputs.locals.ucfs_ha_broker_prefix
+  ucfs_domains            = data.terraform_remote_state.ingest.outputs.locals.ucfs_domains
+  ucfs_london_domains     = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_domains
+  ucfs_nameservers        = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers
+  ucfs_london_nameservers = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers
 
   ingest_vpc_id = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
 
@@ -459,11 +462,11 @@ locals {
 
   k2hb_ec2_business_logs_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_logs.name
   k2hb_ec2_equality_logs_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
-  k2hb_ec2_audit_logs_name    = "/aws/ec2/k2hb_equality"
+  k2hb_ec2_audit_logs_name    = "/aws/ec2/main/k2hb_audit"
 
   ingestion_subnets = data.terraform_remote_state.ingest.outputs.ingestion_subnets
 
-  ## Calculate al the things based on the imports from aws-ingest ##
+  ## Calculate all the things based on the imports from aws-ingest ##
 
   kafka_broker_port = {
     development = local.stub_kafka_broker_port_https
@@ -473,14 +476,54 @@ locals {
     production  = local.uc_kafaka_broker_port_https
   }
 
+  ucfs_current_domain = local.ucfs_domains[local.environment]
+  ucfs_ha_broker_list = [
+    "${local.ucfs_ha_broker_prefix}00.${local.ucfs_current_domain}",
+    "${local.ucfs_ha_broker_prefix}01.${local.ucfs_current_domain}",
+    "${local.ucfs_ha_broker_prefix}02.${local.ucfs_current_domain}"
+  ]
+
+  ucfs_bootstrap_servers = {
+    development = ["n/a"]                   // stubbed only
+    qa          = ["n/a"]                   // stubbed only
+    integration = local.ucfs_ha_broker_list //this exists on UC's end, but we do not use it as the env is stubbed as at Oct 2020
+    preprod     = local.ucfs_ha_broker_list
+    production  = local.ucfs_ha_broker_list
+  }
+
+  ucfs_london_current_domain = local.ucfs_london_domains[local.environment]
+  ucfs_london_ha_broker_list = [
+    "${local.ucfs_ha_broker_prefix}00.${local.ucfs_london_current_domain}",
+    "${local.ucfs_ha_broker_prefix}01.${local.ucfs_london_current_domain}",
+    "${local.ucfs_ha_broker_prefix}02.${local.ucfs_london_current_domain}"
+  ]
+
+  ucfs_london_bootstrap_servers = {
+    development = ["n/a"]                          // stubbed only
+    qa          = ["n/a"]                          // stubbed only
+    integration = local.ucfs_london_ha_broker_list //this exists on UC's end, but we do not use it as the env is stubbed as at Oct 2020
+    preprod     = local.ucfs_london_ha_broker_list
+    production  = local.ucfs_london_ha_broker_list
+  }
+
   // This should be a list of server names. For a HA cluster, it will have multiple entries.
   // Intermediate map to allow us to cherry pick Subbed or HA per env
   kafka_bootstrap_servers = {
-    development = local.stub_bootstrap_servers[local.environment] // stubbed, so no HA
-    qa          = local.stub_bootstrap_servers[local.environment] // stubbed, so no HA
+    development = local.stub_bootstrap_servers[local.environment] // stubbed
+    qa          = local.stub_bootstrap_servers[local.environment] // stubbed
     integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.ucfs_bootstrap_servers[local.environment] : local.stub_bootstrap_servers[local.environment]
     preprod     = local.ucfs_bootstrap_servers[local.environment] // now on UCFS Staging HA
     production  = local.ucfs_bootstrap_servers[local.environment] // now on UCFS Production HA
+  }
+
+  // This should be a list of server names. For a HA cluster, it will have multiple entries.
+  // Intermediate map to allow us to cherry pick Subbed or HA per env
+  kafka_london_bootstrap_servers = {
+    development = local.stub_bootstrap_servers[local.environment] // stubbed
+    qa          = local.stub_bootstrap_servers[local.environment] // stubbed
+    integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.ucfs_london_bootstrap_servers[local.environment] : local.stub_bootstrap_servers[local.environment]
+    preprod     = local.ucfs_london_bootstrap_servers[local.environment] // now on UCFS Staging HA
+    production  = local.ucfs_london_bootstrap_servers[local.environment] // now on UCFS Production HA
   }
 
 }
