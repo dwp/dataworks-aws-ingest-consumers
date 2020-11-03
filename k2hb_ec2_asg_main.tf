@@ -120,25 +120,12 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     create_before_destroy = true
   }
 
-  tags = merge(
-    local.common_tags,
-    {
-      Name        = local.k2hb_main_consumer_name,
-      Persistence = "Ignore"
-    },
-  )
+  tags = local.k2hb_main_tags_asg
 
   tag_specifications {
     resource_type = "instance"
 
-    tags = merge(
-      local.common_tags,
-      {
-        Name        = local.k2hb_main_consumer_name,
-        Application = local.k2hb_main_consumer_name,
-        Persistence = "Ignore"
-      },
-    )
+    tags = local.k2hb_main_tags_asg
   }
 }
 
