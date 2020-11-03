@@ -6,15 +6,15 @@ resource "aws_route53_resolver_endpoint" "ucfs_resolver" {
   security_group_ids = [aws_security_group.k2hb_common.id]
 
   ip_address {
-    subnet_id = local.ingestion_subnets.id[0]
+    subnet_id = local.ingest_subnets.id[0]
   }
 
   ip_address {
-    subnet_id = local.ingestion_subnets.id[1]
+    subnet_id = local.ingest_subnets.id[1]
   }
 
   ip_address {
-    subnet_id = local.ingestion_subnets.id[2]
+    subnet_id = local.ingest_subnets.id[2]
   }
 
   tags = merge(

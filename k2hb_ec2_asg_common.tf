@@ -191,8 +191,8 @@ data "aws_iam_policy_document" "k2hb_common" {
       "logs:DescribeLogStreams"
     ]
     resources = [
-      data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_logs.arn,
-      data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.arn
+      local.ingest_log_groups.k2hb_ec2_logs.arn,
+      local.ingest_log_groups.k2hb_ec2_equality_logs.arn
     ]
   }
 
@@ -205,7 +205,7 @@ data "aws_iam_policy_document" "k2hb_common" {
     ]
 
     resources = [
-      data.terraform_remote_state.ingest.outputs.metadata_store.credentials.metadata_store_k2hbwriter.arn,
+      local.ingest_metadata_store.credentials.metadata_store_k2hbwriter.arn,
     ]
   }
 
@@ -471,7 +471,7 @@ resource "aws_security_group_rule" "k2hb_common_egress_metadata_store" {
   from_port                = 3306
   to_port                  = 3306
   protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.rds.sg_id
+  source_security_group_id = local.ingest_metadata_store.rds.sg_id
   security_group_id        = aws_security_group.k2hb_common.id
 }
 
@@ -481,7 +481,7 @@ resource "aws_security_group_rule" "metadata_store_from_k2hb_common" {
   to_port                  = 3306
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k2hb_common.id
-  security_group_id        = data.terraform_remote_state.ingest.outputs.metadata_store.rds.sg_id
+  security_group_id        = local.ingest_metadata_store.rds.sg_id
   description              = "Metadata store from K2HB ec2"
 }
 

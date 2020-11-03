@@ -432,10 +432,23 @@ locals {
 
   managemant_artefact_bucket_id = data.terraform_remote_state.management_artefact.outputs.artefact_bucket.id
 
+  ingest_metadata_store                     = data.terraform_remote_state.ingest.outputs.metadata_store
+  ingest_metadata_store_table_names         = data.terraform_remote_state.ingest.outputs.metadata_store_table_names
   ingest_corporate_storage_directory_prefix = data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix
   ingest_corporate_storage_bucket           = data.terraform_remote_state.ingest.outputs.corporate_storage_bucket
   ingest_k2hb_cert_arn                      = data.terraform_remote_state.ingest.outputs.k2hb_cert.arn
   ingest_no_proxy_list                      = data.terraform_remote_state.ingest.outputs.vpc.vpc.no_proxy_list
+  ingest_manifest_write_locations           = data.terraform_remote_state.ingest.outputs.k2hb_manifest_write_locations
+  inges_subnets                             = data.terraform_remote_state.ingest.outputs.ingestion_subnets
+  ingest_hbase_fqdn                         = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.fqdn
+  ingest_log_groups                         = data.terraform_remote_state.ingest.outputs.log_groups
+
+  internal_compute_manifest_bucket_id = data.terraform_remote_state.internal_compute.outputs.manifest_bucket.id
+
+  common_config_bucket_id = data.terraform_remote_state.common.outputs.config_bucket.id
+  common_logging_file     = data.terraform_remote_state.common.outputs.application_logging_common_file
+
+  internet_proxy_host = data.terraform_remote_state.ingest.outputs.internet_proxy.host
 
   stub_kafka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.stub_kafka_broker_port_https
   stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.kafka_bootstrap_servers
@@ -464,11 +477,10 @@ locals {
   peer_with_ucfs           = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs
   peer_with_ucfs_london    = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs_london
 
-  k2hb_ec2_business_logs_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_logs.name
-  k2hb_ec2_equality_logs_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  k2hb_ec2_business_logs_name = local.ingest_log_groups.k2hb_ec2_logs.name
+  k2hb_ec2_equality_logs_name = local.ingest_log_groups.k2hb_ec2_equality_logs.name
   k2hb_ec2_audit_logs_name    = "/aws/ec2/main/k2hb_audit"
 
-  ingestion_subnets = data.terraform_remote_state.ingest.outputs.ingestion_subnets
 
   ## Calculate all the things based on the imports from aws-ingest ##
 
