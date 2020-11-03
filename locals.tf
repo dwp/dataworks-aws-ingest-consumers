@@ -135,7 +135,31 @@ locals {
     production  = "true"
   }
 
+  k2hb_main_london_write_manifests = {
+    development = "true"
+    qa          = "true"
+    integration = "true"
+    preprod     = "true"
+    production  = "true"
+  }
+
   k2hb_equality_write_manifests = {
+    development = "true"
+    qa          = "true"
+    integration = "true"
+    preprod     = "true"
+    production  = "true"
+  }
+
+  k2hb_equality_london_write_manifests = {
+    development = "true"
+    qa          = "true"
+    integration = "true"
+    preprod     = "true"
+    production  = "true"
+  }
+
+  k2hb_audit_london_write_manifests = {
     development = "true"
     qa          = "true"
     integration = "true"
@@ -151,7 +175,31 @@ locals {
     production  = "false"
   }
 
+  k2hb_main_london_auto_commit_metadata_store_inserts = {
+    development = "false"
+    qa          = "false"
+    integration = "false"
+    preprod     = "false"
+    production  = "false"
+  }
+
   k2hb_equality_auto_commit_metadata_store_inserts = {
+    development = "false"
+    qa          = "false"
+    integration = "false"
+    preprod     = "false"
+    production  = "false"
+  }
+
+  k2hb_equality_london_auto_commit_metadata_store_inserts = {
+    development = "false"
+    qa          = "false"
+    integration = "false"
+    preprod     = "false"
+    production  = "false"
+  }
+
+  k2hb_audit_london_auto_commit_metadata_store_inserts = {
     development = "false"
     qa          = "false"
     integration = "false"
