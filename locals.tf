@@ -392,7 +392,7 @@ locals {
   stub_ucfs_subnets_cidr_block = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets.cidr_block
 
   uc_kafaka_broker_port_https         = data.terraform_remote_state.ingest.outputs.locals.uc_kafaka_broker_port_https
-  ucfs_ha_cluster_bootstrap_servers   = data.terraform_remote_state.ingest.outputs.locals.ucfs_ha_cluster_bootstrap_serversucfs_ha_cluster_bootstrap_servers
+  ucfs_ha_cluster_bootstrap_servers   = data.terraform_remote_state.ingest.outputs.locals.ucfs_ha_cluster_bootstrap_servers
   ucfs_broker_cidr_blocks             = data.terraform_remote_state.ingest.outputs.locals.ucfs_broker_cidr_blocks
   ucfs_london_broker_cidr_blocks      = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_broker_cidr_blocks
   ucfs_nameservers_cidr_blocks        = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers_cidr_blocks
