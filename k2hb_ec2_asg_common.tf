@@ -347,7 +347,7 @@ resource "aws_security_group_rule" "k2hb_common_to_s3_http" {
 resource "aws_security_group_rule" "egress_k2hb_common_to_internet" {
   description              = "Allow k2hb access to Internet Proxy (for ACM-PCA)"
   type                     = "egress"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.internet_proxy.sg
+  source_security_group_id = local.ingest_internet_proxy.sg
   protocol                 = "tcp"
   from_port                = 3128
   to_port                  = 3128
@@ -361,7 +361,7 @@ resource "aws_security_group_rule" "ingress_k2hb_common_to_internet" {
   protocol                 = "tcp"
   from_port                = 3128
   to_port                  = 3128
-  security_group_id        = data.terraform_remote_state.ingest.outputs.internet_proxy.sg
+  security_group_id        = local.ingest_internet_proxy.sg
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_stub_broker" {

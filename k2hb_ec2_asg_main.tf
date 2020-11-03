@@ -26,7 +26,7 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     private_key_alias     = "k2hb"
     truststore_aliases    = local.kafka_consumer_truststore_aliases[local.environment]
     truststore_certs      = local.kafka_consumer_truststore_certs[local.environment]
-    internet_proxy        = local.internet_proxy_host
+    internet_proxy        = local.ingest_internet_proxy.host
     non_proxied_endpoints = join(",", local.ingest_no_proxy_list)
     s3_artefact_bucket_id = local.managemant_artefact_bucket.id
 

@@ -432,7 +432,7 @@ locals {
 
   managemant_artefact_bucket = data.terraform_remote_state.management_artefact.outputs.artefact_bucket
 
-  internet_proxy_host                       = data.terraform_remote_state.ingest.outputs.internet_proxy.host
+  ingest_internet_proxy                     = data.terraform_remote_state.ingest.outputs.internet_proxy
   ingest_metadata_store                     = data.terraform_remote_state.ingest.outputs.metadata_store
   ingest_metadata_store_table_names         = data.terraform_remote_state.ingest.outputs.metadata_store_table_names
   ingest_corporate_storage_directory_prefix = data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix
