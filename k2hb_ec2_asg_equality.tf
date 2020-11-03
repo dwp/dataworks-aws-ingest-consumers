@@ -120,12 +120,25 @@ resource "aws_launch_template" "k2hb_equality" {
     create_before_destroy = true
   }
 
-  tags = local.k2hb_equality_tags_asg
+  tags = merge(
+    local.common_tags,
+    {
+      Name        = local.k2hb_equality_consumer_name,
+      Persistence = "Ignore"
+    },
+  )
 
   tag_specifications {
     resource_type = "instance"
 
-    tags = local.k2hb_equality_tags_asg
+    tags = merge(
+      local.common_tags,
+      {
+        Name        = local.k2hb_equality_consumer_name,
+        Application = local.k2hb_equality_consumer_name,
+        Persistence = "Ignore"
+      },
+    )
   }
 }
 
