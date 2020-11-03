@@ -138,8 +138,8 @@ resource "aws_launch_template" "k2hb_equality_london" {
   }
 }
 
-resource "aws_autoscaling_group" "k2hb_equality" {
-  name_prefix               = "${aws_launch_template.k2hb_equality.name}-lt_ver${aws_launch_template.k2hb_equality.latest_version}_"
+resource "aws_autoscaling_group" "k2hb_equality_london" {
+  name_prefix               = "${aws_launch_template.k2hb_equality_london.name}-lt_ver${aws_launch_template.k2hb_equality.latest_version}_"
   min_size                  = local.k2hb_asg_min[local.environment]
   desired_capacity          = var.k2hb_equality_london_asg_desired[local.environment]
   max_size                  = var.k2hb_equality_london_asg_max[local.environment]
