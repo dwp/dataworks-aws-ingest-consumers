@@ -10,8 +10,8 @@ locals {
 
   iam_role_max_session_timeout_seconds = 43200
 
-  k2hb_main_ha_cluster_consumer_name = "k2hb-main-ha-cluster"
-  k2hb_equality_consumer_name        = "k2hb-equality"
+  k2hb_main_consumer_name     = "k2hb-main-ha-cluster"
+  k2hb_equality_consumer_name = "k2hb-equality"
 
   k2hb_main_asg_autoshutdown = {
     development = "False"
@@ -61,6 +61,30 @@ locals {
     production  = "disabled"
   }
 
+  k2hb_audit_asg_autoshutdown = {
+    development = "False"
+    qa          = "False"
+    integration = "False"
+    preprod     = "False"
+    production  = "False"
+  }
+
+  k2hb_audit_asg_ssmenabled = {
+    development = "True"
+    qa          = "True"
+    integration = "True"
+    preprod     = "False"
+    production  = "False"
+  }
+
+  k2hb_audit_asg_inspector = {
+    development = "disabled"
+    qa          = "disabled"
+    integration = "disabled"
+    preprod     = "disabled"
+    production  = "disabled"
+  }
+
   // Common across all k2hb ASGs. Minimum k2hb asg size. Should always be zero to allow us to scale at will for releases and tests.
   k2hb_asg_min = {
     development = 0
@@ -102,7 +126,7 @@ locals {
     production  = "true"
   }
 
-  k2hb_write_manifests_main = {
+  k2hb_main_write_manifests = {
     development = "true"
     qa          = "true"
     integration = "true"
@@ -110,7 +134,7 @@ locals {
     production  = "true"
   }
 
-  k2hb_write_manifests_equality = {
+  k2hb_equality_write_manifests = {
     development = "true"
     qa          = "true"
     integration = "true"
@@ -118,7 +142,7 @@ locals {
     production  = "true"
   }
 
-  k2hb_auto_commit_metadata_store_inserts_main = {
+  k2hb_main_auto_commit_metadata_store_inserts = {
     development = "false"
     qa          = "false"
     integration = "false"
@@ -126,25 +150,17 @@ locals {
     production  = "false"
   }
 
-  k2hb_auto_commit_metadata_store_inserts_equality = {
+  k2hb_equality_auto_commit_metadata_store_inserts = {
     development = "false"
     qa          = "false"
     integration = "false"
     preprod     = "false"
     production  = "false"
   }
-
-  k2s3_log_level = {
-    development = "DEBUG"
-    qa          = "INFO"
-    integration = "INFO"
-    preprod     = "INFO"
-    production  = "INFO"
-  }
-
 
   k2hb_kafka_main_consumer_group     = "dataworks-ucfs-kafka-to-hbase-ingest-${local.environment}"
   k2hb_kafka_equality_consumer_group = "dataworks-ucfs-kafka-equality-to-hbase-ingest-${local.environment}"
+  k2hb_kafka_audit_consumer_group    = "dataworks-ucfs-kafka-audit-to-hbase-ingest-${local.environment}"
 
   kafka_consumer_truststore_aliases = {
     development = "ucfs_ca"
@@ -219,6 +235,15 @@ locals {
 
   # This should be the number of records we can easily process within the client timeout (kafka_k2hb_poll_timeout) above
   k2hb_max_poll_records_count_equality = {
+    development = 25
+    qa          = 50
+    integration = 50
+    preprod     = 25
+    production  = 1000
+  }
+
+  # This should be the number of records we can easily process within the client timeout (kafka_k2hb_poll_timeout) above
+  k2hb_max_poll_records_count_audit = {
     development = 25
     qa          = 50
     integration = 50
@@ -320,24 +345,31 @@ locals {
 
   // DW-4748 & DW-4827 - Allow extra dot in last matcher group for db.crypto.encryptedData.unencrypted
   k2hb_main_data_qualified_table_pattern = "^\\w+\\.([-\\w]+)\\.([-.\\w]+)$"
-
   // Only needs to work for exactly "data.equality"
   k2hb_data_equality_qualified_table_pattern = "^([-\\w]+)\\.([-\\w]+)$"
-  // This will be used when we consume audit data
+  // Only needs to work for exactly "data.businessAudit"
   k2hb_data_audit_qualified_table_pattern = "^([-\\w]+)\\.([-\\w]+)$"
-
-  dlq_kafka_consumer_topics = {
-    development = "dataworks.ucfs-business-data-event-dlq"
-    qa          = "dataworks.ucfs-business-data-event-dlq"
-    integration = "dataworks.ucfs-business-data-event-dlq"
-    preprod     = "dataworks.ucfs-business-data-event-dlq"
-    production  = "dataworks.ucfs-business-data-event-dlq"
-  }
 
   k2hb_validator_schema = {
     ucfs     = "business_message.schema.json" //this is the default if not specified, version 0.0.153++
     equality = "equality_message.schema.json"
-    audit    = "audit_message.schema.json" // for future use
+    audit    = "audit_message.schema.json"
+  }
+
+  k2hb_main_ha_write_to_metadata_store = {
+    development = true
+    qa          = true
+    integration = true
+    preprod     = true
+    production  = true
+  }
+
+  k2hb_main_london_write_to_metadata_store = {
+    development = true
+    qa          = true
+    integration = true
+    preprod     = true
+    production  = true
   }
 
   k2hb_equality_write_to_metadata_store = {
@@ -348,12 +380,20 @@ locals {
     production  = true
   }
 
-  k2hb_main_ha_cluster_write_to_metadata_store = {
+  k2hb_equality_london_write_to_metadata_store = {
     development = true
     qa          = true
     integration = true
     preprod     = true
     production  = true
+  }
+
+  k2hb_audit_london_write_to_metadata_store = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = false
   }
 
   k2hb_metric_name_number_of_successfully_processed_batches = "The number of batches successfully processed"
@@ -384,4 +424,106 @@ locals {
       port : 16030
     },
   ]
+
+  #### Import lots of the things we need from dip/aws-ingest in one place to make our tf cleaner in this repo ####
+  k2hb_aws_s3_archive_bucket_id          = data.terraform_remote_state.ingest.outputs.corporate_storage_bucket.id
+  k2hb_aws_s3_main_archive_directory     = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_main}"
+  k2hb_aws_s3_equality_archive_directory = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_equality}"
+
+  ingest_corporate_storage_directory_prefix = data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix
+  ingest_corporate_storage_bucket           = data.terraform_remote_state.ingest.outputs.corporate_storage_bucket
+
+  stub_kafka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.stub_kafka_broker_port_https
+  stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.kafka_bootstrap_servers
+  stub_ucfs_subnets            = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets
+  stub_ucfs_subnets_cidr_block = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets.cidr_block
+
+  uc_kafaka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.uc_kafaka_broker_port_https
+  dlq_kafka_consumer_topic    = data.terraform_remote_state.ingest.outputs.locals.dlq_kafka_consumer_topic // must match what k2s3 uses
+
+  // All of the following block is TOP SECRET, and must come from DIP or AWS Secrets via Bootstrap
+  ucfs_broker_cidr_blocks             = data.terraform_remote_state.ingest.outputs.locals.ucfs_broker_cidr_blocks
+  ucfs_london_broker_cidr_blocks      = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_broker_cidr_blocks
+  ucfs_nameservers_cidr_blocks        = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers_cidr_blocks
+  ucfs_london_nameservers_cidr_blocks = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers_cidr_blocks
+
+  // All of the following block is SENSITIVE, and must come from DIP or AWS Secrets via Bootstrap
+  ucfs_ha_broker_prefix   = data.terraform_remote_state.ingest.outputs.locals.ucfs_ha_broker_prefix
+  ucfs_domains            = data.terraform_remote_state.ingest.outputs.locals.ucfs_domains
+  ucfs_london_domains     = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_domains
+  ucfs_nameservers        = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers
+  ucfs_london_nameservers = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers
+
+  ingest_vpc_id = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
+
+  k2hb_data_source_is_ucfs = data.terraform_remote_state.ingest.outputs.locals.k2hb_data_source_is_ucfs
+  peer_with_ucfs           = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs
+  peer_with_ucfs_london    = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs_london
+
+  k2hb_ec2_business_logs_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_logs.name
+  k2hb_ec2_equality_logs_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  k2hb_ec2_audit_logs_name    = "/aws/ec2/main/k2hb_audit"
+
+  ingestion_subnets = data.terraform_remote_state.ingest.outputs.ingestion_subnets
+
+  ## Calculate all the things based on the imports from aws-ingest ##
+
+  kafka_broker_port = {
+    development = local.stub_kafka_broker_port_https
+    qa          = local.stub_kafka_broker_port_https
+    integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.uc_kafaka_broker_port_https : local.stub_kafka_broker_port_https
+    preprod     = local.uc_kafaka_broker_port_https
+    production  = local.uc_kafaka_broker_port_https
+  }
+
+  ucfs_current_domain = local.ucfs_domains[local.environment]
+  ucfs_ha_broker_list = [
+    "${local.ucfs_ha_broker_prefix}00.${local.ucfs_current_domain}",
+    "${local.ucfs_ha_broker_prefix}01.${local.ucfs_current_domain}",
+    "${local.ucfs_ha_broker_prefix}02.${local.ucfs_current_domain}"
+  ]
+
+  ucfs_bootstrap_servers = {
+    development = ["n/a"]                   // stubbed only
+    qa          = ["n/a"]                   // stubbed only
+    integration = local.ucfs_ha_broker_list //this exists on UC's end, but we do not use it as the env is stubbed as at Oct 2020
+    preprod     = local.ucfs_ha_broker_list
+    production  = local.ucfs_ha_broker_list
+  }
+
+  ucfs_london_current_domain = local.ucfs_london_domains[local.environment]
+  ucfs_london_ha_broker_list = [
+    "${local.ucfs_ha_broker_prefix}00.${local.ucfs_london_current_domain}",
+    "${local.ucfs_ha_broker_prefix}01.${local.ucfs_london_current_domain}",
+    "${local.ucfs_ha_broker_prefix}02.${local.ucfs_london_current_domain}"
+  ]
+
+  ucfs_london_bootstrap_servers = {
+    development = ["n/a"]                          // stubbed only
+    qa          = ["n/a"]                          // stubbed only
+    integration = local.ucfs_london_ha_broker_list //this exists on UC's end, but we do not use it as the env is stubbed as at Oct 2020
+    preprod     = local.ucfs_london_ha_broker_list
+    production  = local.ucfs_london_ha_broker_list
+  }
+
+  // This should be a list of server names. For a HA cluster, it will have multiple entries.
+  // Intermediate map to allow us to cherry pick Subbed or HA per env
+  kafka_bootstrap_servers = {
+    development = local.stub_bootstrap_servers[local.environment] // stubbed
+    qa          = local.stub_bootstrap_servers[local.environment] // stubbed
+    integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.ucfs_bootstrap_servers[local.environment] : local.stub_bootstrap_servers[local.environment]
+    preprod     = local.ucfs_bootstrap_servers[local.environment] // now on UCFS Staging HA
+    production  = local.ucfs_bootstrap_servers[local.environment] // now on UCFS Production HA
+  }
+
+  // This should be a list of server names. For a HA cluster, it will have multiple entries.
+  // Intermediate map to allow us to cherry pick Subbed or HA per env
+  kafka_london_bootstrap_servers = {
+    development = local.stub_bootstrap_servers[local.environment] // stubbed
+    qa          = local.stub_bootstrap_servers[local.environment] // stubbed
+    integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.ucfs_london_bootstrap_servers[local.environment] : local.stub_bootstrap_servers[local.environment]
+    preprod     = local.ucfs_london_bootstrap_servers[local.environment] // now on UCFS Staging HA
+    production  = local.ucfs_london_bootstrap_servers[local.environment] // now on UCFS Production HA
+  }
+
 }

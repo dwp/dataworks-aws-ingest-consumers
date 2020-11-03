@@ -339,79 +339,79 @@ resource "aws_security_group_rule" "ingress_k2hb_common_to_internet" {
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_stub_broker" {
-  count             = data.terraform_remote_state.ingest.outputs.locals.k2hb_data_source_is_ucfs[local.environment] ? 0 : 1
+  count             = local.k2hb_data_source_is_ucfs[local.environment] ? 0 : 1
   description       = "Allow k2hb to reach stub Kafka brokers"
   type              = "egress"
-  from_port         = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
-  to_port           = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
+  from_port         = local.kafka_broker_port[local.environment]
+  to_port           = local.kafka_broker_port[local.environment]
   protocol          = "tcp"
-  cidr_blocks       = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets.cidr_block
+  cidr_blocks       = local.stub_ucfs_subnets_cidr_block
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_broker" {
-  count             = data.terraform_remote_state.ingest.outputs.locals.k2hb_data_source_is_ucfs[local.environment] ? 1 : 0
+  count             = local.k2hb_data_source_is_ucfs[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach UCFS Kafka brokers (Ireland)"
   type              = "egress"
-  from_port         = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
-  to_port           = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
+  from_port         = local.kafka_broker_port[local.environment]
+  to_port           = local.kafka_broker_port[local.environment]
   protocol          = "tcp"
-  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_broker_cidr_blocks[local.environment]
+  cidr_blocks       = local.ucfs_broker_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_london_broker" {
-  count             = data.terraform_remote_state.ingest.outputs.locals.k2hb_data_source_is_ucfs[local.environment] ? 1 : 0
+  count             = local.k2hb_data_source_is_ucfs[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach UCFS Kafka brokers (London)"
   type              = "egress"
-  from_port         = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
-  to_port           = data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment]
+  from_port         = local.kafka_broker_port[local.environment]
+  to_port           = local.kafka_broker_port[local.environment]
   protocol          = "tcp"
-  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_broker_cidr_blocks[local.environment]
+  cidr_blocks       = local.ucfs_london_broker_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_ireland_dns_tcp" {
-  count             = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs[local.environment] ? 1 : 0
+  count             = local.peer_with_ucfs[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach ucfs DNS name servers"
   type              = "egress"
   from_port         = 53
   to_port           = 53
   protocol          = "tcp"
-  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers_cidr_blocks[local.environment]
+  cidr_blocks       = local.ucfs_nameservers_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_ireland_dns_udp" {
-  count             = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs[local.environment] ? 1 : 0
+  count             = local.peer_with_ucfs[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach ucfs DNS name servers"
   type              = "egress"
   from_port         = 53
   to_port           = 53
   protocol          = "udp"
-  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers_cidr_blocks[local.environment]
+  cidr_blocks       = local.ucfs_nameservers_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_london_dns_tcp" {
-  count             = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs_london[local.environment] ? 1 : 0
+  count             = local.peer_with_ucfs_london[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach UCFS DNS (London)"
   type              = "egress"
   from_port         = 53
   to_port           = 53
   protocol          = "tcp"
-  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers_cidr_blocks[local.environment]
+  cidr_blocks       = local.ucfs_london_nameservers_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_london_dns_udp" {
-  count             = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs_london[local.environment] ? 1 : 0
+  count             = local.peer_with_ucfs_london[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach UCFS DNS (London)"
   type              = "egress"
   from_port         = 53
   to_port           = 53
   protocol          = "udp"
-  cidr_blocks       = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers_cidr_blocks[local.environment]
+  cidr_blocks       = local.ucfs_london_nameservers_cidr_blocks[local.environment]
   security_group_id = aws_security_group.k2hb_common.id
 }
 

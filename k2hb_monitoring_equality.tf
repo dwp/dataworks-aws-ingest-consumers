@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_metric_filter" "number_of_batches_written_filter_k2hb_equalities" {
-  log_group_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  log_group_name = local.k2hb_ec2_equality_logs_name
   name           = local.k2hb_metric_name_number_of_successfully_processed_batches
   pattern        = "{ $.message = \"Processed batch\" }"
 
@@ -11,7 +11,7 @@ resource "aws_cloudwatch_log_metric_filter" "number_of_batches_written_filter_k2
 }
 
 resource "aws_cloudwatch_log_metric_filter" "rate_of_records_written_filter_k2hb_equalities" {
-  log_group_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  log_group_name = local.k2hb_ec2_equality_logs_name
   name           = local.k2hb_metric_name_number_of_successfully_processed_records
   pattern        = "{ $.message = \"Processed batch\" }"
 
@@ -23,7 +23,7 @@ resource "aws_cloudwatch_log_metric_filter" "rate_of_records_written_filter_k2hb
 }
 
 resource "aws_cloudwatch_log_metric_filter" "time_to_process_batch_filter_k2hb_equalities" {
-  log_group_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  log_group_name = local.k2hb_ec2_equality_logs_name
   name           = local.k2hb_metric_name_speed_of_successfully_processed_batches
   pattern        = "{ $.message = \"Processed batch\" }"
 
@@ -38,7 +38,7 @@ module "rate_of_dlq_messages_written_filter_k2hb_alarm_equalities" {
   source  = "dwp/metric-filter-alarm/aws"
   version = "1.1.6"
 
-  log_group_name      = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  log_group_name      = local.k2hb_ec2_equality_logs_name
   metric_namespace    = local.cw_k2hb_equality_agent_namespace
   pattern             = "{ $.message = \"Error processing record, sending to dlq\" }"
   alarm_name          = "K2HB equalities - Messages written to DLQ in last half an hour"
@@ -56,7 +56,7 @@ module "kafka_read_timeout_occurrences_greater_than_threshold_filter_k2hb_alarm_
   source  = "dwp/metric-filter-alarm/aws"
   version = "1.1.6"
 
-  log_group_name      = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  log_group_name      = local.k2hb_ec2_equality_logs_name
   metric_namespace    = local.cw_k2hb_equality_agent_namespace
   pattern             = "{ $.message = \"Error reading from Kafka\" }"
   alarm_name          = "K2HB equalities - Kafka read timeout occurrences exceeds 5 in last hour"
@@ -74,7 +74,7 @@ module "hbase_batch_failures_greater_than_threshold_filter_k2hb_alarm_equalities
   source  = "dwp/metric-filter-alarm/aws"
   version = "1.1.6"
 
-  log_group_name      = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  log_group_name      = local.k2hb_ec2_equality_logs_name
   metric_namespace    = local.cw_k2hb_equality_agent_namespace
   pattern             = "{ $.message = \"Failed to put batch into hbase\"}"
   alarm_name          = "K2HB equalities - Hbase write failures exceeds 5 in last hour"
@@ -92,7 +92,7 @@ module "hbase_connection_timeout_occurrences_greater_than_threshold_filter_k2hb_
   source  = "dwp/metric-filter-alarm/aws"
   version = "1.1.6"
 
-  log_group_name      = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  log_group_name      = local.k2hb_ec2_equality_logs_name
   metric_namespace    = local.cw_k2hb_equality_agent_namespace
   pattern             = "{ $.message = \"Error connecting to Hbase\" }"
   alarm_name          = "K2HB equalities - Hbase connection timeout occurrences exceeds 5 in last hour"
@@ -107,7 +107,7 @@ module "hbase_connection_timeout_occurrences_greater_than_threshold_filter_k2hb_
 }
 
 resource "aws_cloudwatch_log_metric_filter" "consumer_lag_k2hb_equalities" {
-  log_group_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  log_group_name = local.k2hb_ec2_equality_logs_name
   name           = local.k2hb_metric_name_lag_per_partition
   pattern        = "{ $.message = \"Max record lag\" && $.base_lag != \"NaN\"  }"
 
@@ -141,7 +141,7 @@ resource "aws_cloudwatch_metric_alarm" "consumer_lag_k2hb_alarm_equalities" {
 }
 
 resource "aws_cloudwatch_log_metric_filter" "failed_k2hb_batches_equalities" {
-  log_group_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  log_group_name = local.k2hb_ec2_equality_logs_name
   name           = local.k2hb_metric_name_failed_batches
   pattern        = "{ $.message = \"Batch failed, not committing offset, resetting position to last commit\" }"
 
