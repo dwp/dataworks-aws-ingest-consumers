@@ -142,7 +142,6 @@ locals {
     production  = "INFO"
   }
 
-
   k2hb_kafka_main_consumer_group     = "dataworks-ucfs-kafka-to-hbase-ingest-${local.environment}"
   k2hb_kafka_equality_consumer_group = "dataworks-ucfs-kafka-equality-to-hbase-ingest-${local.environment}"
 
@@ -384,4 +383,55 @@ locals {
       port : 16030
     },
   ]
+
+  #### Import lots the things we need from dip/aws-ingest in one place to make our tf cleaner in this repo ####
+
+  stub_kafka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.stub_kafka_broker_port_https
+  stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.kafka_bootstrap_servers
+  stub_ucfs_subnets            = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets
+  stub_ucfs_subnets_cidr_block = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets.cidr_block
+
+  uc_kafaka_broker_port_https         = data.terraform_remote_state.ingest.outputs.locals.uc_kafaka_broker_port_https
+  ucfs_ha_cluster_bootstrap_servers   = data.terraform_remote_state.ingest.outputs.locals.ucfs_ha_cluster_bootstrap_serversucfs_ha_cluster_bootstrap_servers
+  ucfs_broker_cidr_blocks             = data.terraform_remote_state.ingest.outputs.locals.ucfs_broker_cidr_blocks
+  ucfs_london_broker_cidr_blocks      = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_broker_cidr_blocks
+  ucfs_nameservers_cidr_blocks        = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers_cidr_blocks
+  ucfs_london_nameservers_cidr_blocks = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers_cidr_blocks
+  ucfs_domains                        = data.terraform_remote_state.ingest.outputs.locals.ucfs_domains
+  ucfs_london_domains                 = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_domains
+  ucfs_nameservers                    = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers
+  ucfs_london_nameservers             = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers
+
+  ingest_vpc_id = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
+
+  k2hb_data_source_is_ucfs = data.terraform_remote_state.ingest.outputs.locals.k2hb_data_source_is_ucfs
+  peer_with_ucfs           = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs
+  peer_with_ucfs_london    = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs_london
+
+  k2hb_ec2_business_logs_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_logs.name
+  k2hb_ec2_equality_logs_name = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+  k2hb_ec2_audit_logs_name    = "/aws/ec2/k2hb_equality"
+
+  ingestion_subnets = data.terraform_remote_state.ingest.outputs.ingestion_subnets
+
+  ## Calculate al the things based on the imports from aws-ingest ##
+
+  kafka_broker_port = {
+    development = local.stub_kafka_broker_port_https
+    qa          = local.stub_kafka_broker_port_https
+    integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.uc_kafaka_broker_port_https : local.stub_kafka_broker_port_https
+    preprod     = local.uc_kafaka_broker_port_https
+    production  = local.uc_kafaka_broker_port_https
+  }
+
+  // This should be a list of server names. For a HA cluster, it will have multiple entries.
+  // Intermediate map to allow us to cherry pick Subbed or HA per env
+  kafka_bootstrap_servers = {
+    development = local.stub_bootstrap_servers[local.environment] // stubbed, so no HA
+    qa          = local.stub_bootstrap_servers[local.environment] // stubbed, so no HA
+    integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.ucfs_ha_cluster_bootstrap_servers[local.environment] : local.stub_bootstrap_servers[local.environment]
+    preprod     = local.ucfs_ha_cluster_bootstrap_servers[local.environment] // now on UCFS Staging HA
+    production  = local.ucfs_ha_cluster_bootstrap_servers[local.environment] // now on UCFS Production HA
+  }
+
 }
