@@ -171,7 +171,10 @@ meta:
               "../../../meta" \
               "../../../terraform-output-ingest/outputs.json" \
               "../../../terraform-output-internal-compute/outputs.json" \
-              "../../../terraform-output-snapshot-sender/outputs.json"
+              "../../../terraform-output-snapshot-sender/outputs.json" \
+              "NOT_SET" \
+              "NOT_SET" \
+              "../../../terraform-output-ingest-consumers/outputs.json"
         inputs:
           - name: aws-dataworks-e2e-framework
           - name: meta
@@ -288,3 +291,31 @@ meta:
         inputs:
           - name: aws-ingestion
           - name: meta
+
+    terraform-output-ingest-consumers:
+      task: terraform-output-ingest-consumers
+      .: (( inject meta.plan.terraform-common-config ))
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.terraform_repository))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              cp ../terraform-bootstrap-ingest-consumers/terraform.tf .
+              ls -la terraform.tf
+              terraform workspace show
+              terraform init
+              terraform output --json > ../terraform-output-ingest-consumers/outputs.json
+          dir: dataworks-aws-ingest-consumers
+        inputs:
+          - name: dataworks-aws-ingest-consumers
+          - name: terraform-bootstrap-ingest-consumers
+        outputs:
+          - name: terraform-output-ingest-consumers
