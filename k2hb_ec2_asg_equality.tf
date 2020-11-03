@@ -40,7 +40,7 @@ resource "aws_launch_template" "k2hb_equality" {
     cwa_mem_metrics_collection_interval              = local.cw_agent_mem_metrics_collection_interval
     cwa_netstat_metrics_collection_interval          = local.cw_agent_netstat_metrics_collection_interval
     cwa_log_group_name                               = local.ingest_log_groups.k2hb_ec2_equality_logs.name
-    s3_scripts_bucket                                = local.common_config_bucket_id
+    s3_scripts_bucket                                = local.common_config_bucket.id
     s3_script_key_k2hb_sh                            = aws_s3_bucket_object.k2hb_shell_script.id
     s3_script_key_k2hb_init                          = aws_s3_bucket_object.k2hb_init_script.id
     s3_script_key_k2hb_logrotate                     = aws_s3_bucket_object.k2hb_logrotate_script.id

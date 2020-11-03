@@ -100,7 +100,7 @@ data "aws_iam_policy_document" "k2hb_common" {
     ]
 
 
-    resources = [data.terraform_remote_state.common.outputs.config_bucket.arn]
+    resources = [local.common_config_bucket.arn]
   }
 
   statement {
@@ -109,7 +109,7 @@ data "aws_iam_policy_document" "k2hb_common" {
 
     actions = ["s3:GetObject"]
 
-    resources = ["${data.terraform_remote_state.common.outputs.config_bucket.arn}/*"]
+    resources = ["${local.common_config_bucket.arn}/*"]
   }
 
   statement {
@@ -121,7 +121,7 @@ data "aws_iam_policy_document" "k2hb_common" {
       "kms:GenerateDataKey",
     ]
 
-    resources = [data.terraform_remote_state.common.outputs.config_bucket_cmk.arn]
+    resources = [local.common_config_bucket_cmk_arn]
   }
 
   statement {
@@ -316,7 +316,7 @@ resource "aws_security_group" "k2hb_common" {
   name                   = "k2hb_common"
   description            = "Contains rules for k2hb consumers"
   revoke_rules_on_delete = true
-  vpc_id                 = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
+  vpc_id                 = local.ingest_vpc_id
 
   tags = merge(
     local.common_tags,

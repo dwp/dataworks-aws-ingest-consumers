@@ -439,16 +439,19 @@ locals {
   ingest_k2hb_cert_arn                      = data.terraform_remote_state.ingest.outputs.k2hb_cert.arn
   ingest_no_proxy_list                      = data.terraform_remote_state.ingest.outputs.vpc.vpc.no_proxy_list
   ingest_manifest_write_locations           = data.terraform_remote_state.ingest.outputs.k2hb_manifest_write_locations
-  inges_subnets                             = data.terraform_remote_state.ingest.outputs.ingestion_subnets
+  ingest_subnets                            = data.terraform_remote_state.ingest.outputs.ingestion_subnets
   ingest_hbase_fqdn                         = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.fqdn
   ingest_log_groups                         = data.terraform_remote_state.ingest.outputs.log_groups
 
   internal_compute_manifest_bucket_id = data.terraform_remote_state.internal_compute.outputs.manifest_bucket.id
 
-  common_config_bucket_id = data.terraform_remote_state.common.outputs.config_bucket.id
-  common_logging_file     = data.terraform_remote_state.common.outputs.application_logging_common_file
+  common_config_bucket         = data.terraform_remote_state.common.outputs.config_bucket
+  common_config_bucket_cmk_arn = data.terraform_remote_state.common.outputs.config_bucket_cmk.arn
+  common_logging_file          = data.terraform_remote_state.common.outputs.application_logging_common_file
 
   internet_proxy_host = data.terraform_remote_state.ingest.outputs.internet_proxy.host
+
+  monitoring_topic_arn = data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn
 
   stub_kafka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.stub_kafka_broker_port_https
   stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.kafka_bootstrap_servers
