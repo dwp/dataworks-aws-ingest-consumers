@@ -430,8 +430,12 @@ locals {
   k2hb_aws_s3_main_archive_directory     = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_main}"
   k2hb_aws_s3_equality_archive_directory = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_equality}"
 
+  managemant_artefact_bucket_id = data.terraform_remote_state.management_artefact.outputs.artefact_bucket.id
+
   ingest_corporate_storage_directory_prefix = data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix
   ingest_corporate_storage_bucket           = data.terraform_remote_state.ingest.outputs.corporate_storage_bucket
+  ingest_k2hb_cert_arn                      = data.terraform_remote_state.ingest.outputs.k2hb_cert.arn
+  ingest_no_proxy_list                      = data.terraform_remote_state.ingest.outputs.vpc.vpc.no_proxy_list
 
   stub_kafka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.stub_kafka_broker_port_https
   stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.kafka_bootstrap_servers

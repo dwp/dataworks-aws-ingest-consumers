@@ -1,9 +1,18 @@
-# Ireland
+# London
 
-resource "aws_launch_template" "k2hb_equality" {
+locals {
+  k2hb_equality_london_tags_asg = merge(
+    local.k2hb_equality_tags_asg,
+    {
+      Region = "London",
+    }
+  )
+}
+
+resource "aws_launch_template" "k2hb_equality_london" {
   name                   = "k2hb_equality"
   image_id               = var.al2_hardened_ami_id
-  instance_type          = var.k2hb_equality_ec2_size[local.environment]
+  instance_type          = var.k2hb_equality_london_ec2_size[local.environment]
   vpc_security_group_ids = [aws_security_group.k2hb_common.id]
 
   user_data = base64encode(templatefile("k2hb_userdata.tpl", {
@@ -17,7 +26,7 @@ resource "aws_launch_template" "k2hb_equality" {
       ",",
       formatlist(
         "%s:%s",
-        local.kafka_bootstrap_servers[local.environment],
+        local.kafka_london_bootstrap_servers[local.environment],
         local.kafka_broker_port[local.environment],
       ),
     )
@@ -142,11 +151,11 @@ resource "aws_launch_template" "k2hb_equality" {
   }
 }
 
-resource "aws_autoscaling_group" "k2hb_equality" {
-  name_prefix               = "${aws_launch_template.k2hb_equality.name}-lt_ver${aws_launch_template.k2hb_equality.latest_version}_"
+resource "aws_autoscaling_group" "k2hb_equality_london" {
+  name_prefix               = "${aws_launch_template.k2hb_equality_london.name}-lt_ver${aws_launch_template.k2hb_equality_london.latest_version}_"
   min_size                  = local.k2hb_asg_min[local.environment]
-  desired_capacity          = var.k2hb_equality_asg_desired[local.environment]
-  max_size                  = var.k2hb_equality_asg_max[local.environment]
+  desired_capacity          = var.k2hb_equality_london_asg_desired[local.environment]
+  max_size                  = var.k2hb_equality_london_asg_max[local.environment]
   health_check_grace_period = 600
   health_check_type         = "EC2"
   force_delete              = true
@@ -158,7 +167,7 @@ resource "aws_autoscaling_group" "k2hb_equality" {
   }
 
   tags = [
-    for key, value in local.k2hb_equality_tags_asg :
+    for key, value in local.k2hb_equality_london_tags_asg :
     {
       key                 = key
       value               = value

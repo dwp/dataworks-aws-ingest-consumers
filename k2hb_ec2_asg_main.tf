@@ -1,16 +1,4 @@
-locals {
-  k2hb_main_tags_asg = merge(
-    local.common_tags,
-    {
-      Name         = "${local.k2hb_main_consumer_name}-${local.environment}",
-      k2hb-version = var.k2hb_version,
-      AutoShutdown = local.k2hb_main_asg_autoshutdown[local.environment],
-      SSMEnabled   = local.k2hb_main_asg_ssmenabled[local.environment],
-      Inspector    = local.k2hb_main_asg_inspector[local.environment],
-      Persistence  = "Ignore",
-    }
-  )
-}
+# Ireland
 
 resource "aws_launch_template" "k2hb_main_ha_cluster" {
   name                   = "k2hb_main_ha_cluster"
@@ -29,18 +17,18 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
       ",",
       formatlist(
         "%s:%s",
-        data.terraform_remote_state.ingest.outputs.locals.kafka_bootstrap_servers[local.environment],
-        data.terraform_remote_state.ingest.outputs.locals.kafka_broker_port[local.environment],
+        local.kafka_bootstrap_servers[local.environment],
+        local.kafka_broker_port[local.environment],
       ),
     )
 
-    acm_cert_arn          = data.terraform_remote_state.ingest.outputs.k2hb_cert.arn
+    acm_cert_arn          = local.ingest_k2hb_cert_arn
     private_key_alias     = "k2hb"
     truststore_aliases    = local.kafka_consumer_truststore_aliases[local.environment]
     truststore_certs      = local.kafka_consumer_truststore_certs[local.environment]
     internet_proxy        = data.terraform_remote_state.ingest.outputs.internet_proxy.host
-    non_proxied_endpoints = join(",", data.terraform_remote_state.ingest.outputs.vpc.vpc.no_proxy_list)
-    s3_artefact_bucket_id = data.terraform_remote_state.management_artefact.outputs.artefact_bucket.id
+    non_proxied_endpoints = join(",", local.ingest_no_proxy_list)
+    s3_artefact_bucket_id = locals.managemant_artefact_bucket_id
 
     hbase_master_url                                 = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.fqdn
     k2hb_max_memory_allocation                       = var.k2hb_main_max_memory_allocation[local.environment]

@@ -17,6 +17,34 @@
 #  )
 #}
 
+locals {
+
+  k2hb_main_tags_asg = merge(
+    local.common_tags,
+    {
+      Name         = "${local.k2hb_main_consumer_name}-${local.environment}",
+      k2hb-version = var.k2hb_version,
+      AutoShutdown = local.k2hb_main_asg_autoshutdown[local.environment],
+      SSMEnabled   = local.k2hb_main_asg_ssmenabled[local.environment],
+      Inspector    = local.k2hb_main_asg_inspector[local.environment],
+      Persistence  = "Ignore",
+    }
+
+  )
+  k2hb_equality_tags_asg = merge(
+    local.common_tags,
+    {
+      Name         = "${local.k2hb_equality_consumer_name}-${local.environment}",
+      k2hb-version = var.k2hb_version,
+      AutoShutdown = local.k2hb_equality_asg_autoshutdown[local.environment],
+      SSMEnabled   = local.k2hb_equality_asg_ssmenabled[local.environment],
+      Inspector    = local.k2hb_equality_asg_inspector[local.environment],
+      Persistence  = "Ignore",
+    }
+  )
+}
+
+
 resource "aws_iam_instance_profile" "k2hb_common" {
   name = "k2hb_common"
   role = aws_iam_role.k2hb_common.name
@@ -31,7 +59,7 @@ data "aws_iam_policy_document" "k2hb_common" {
       "acm:*Certificate",
     ]
 
-    resources = [data.terraform_remote_state.ingest.outputs.k2hb_cert.arn]
+    resources = [local.ingest_k2hb_cert_arn]
 
   }
 
