@@ -29,7 +29,6 @@ locals {
       Inspector    = local.k2hb_main_asg_inspector[local.environment],
       Persistence  = "Ignore",
     }
-
   )
 
   k2hb_equality_tags_asg = merge(
