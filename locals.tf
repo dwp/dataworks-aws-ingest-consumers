@@ -144,6 +144,7 @@ locals {
 
   k2hb_kafka_main_consumer_group     = "dataworks-ucfs-kafka-to-hbase-ingest-${local.environment}"
   k2hb_kafka_equality_consumer_group = "dataworks-ucfs-kafka-equality-to-hbase-ingest-${local.environment}"
+  k2hb_kafka_audit_consumer_group    = "dataworks-ucfs-kafka-audit-to-hbase-ingest-${local.environment}"
 
   kafka_consumer_truststore_aliases = {
     development = "ucfs_ca"
@@ -319,10 +320,9 @@ locals {
 
   // DW-4748 & DW-4827 - Allow extra dot in last matcher group for db.crypto.encryptedData.unencrypted
   k2hb_main_data_qualified_table_pattern = "^\\w+\\.([-\\w]+)\\.([-.\\w]+)$"
-
   // Only needs to work for exactly "data.equality"
   k2hb_data_equality_qualified_table_pattern = "^([-\\w]+)\\.([-\\w]+)$"
-  // This will be used when we consume audit data
+  // Only needs to work for exactly "data.businessAudit"
   k2hb_data_audit_qualified_table_pattern = "^([-\\w]+)\\.([-\\w]+)$"
 
   dlq_kafka_consumer_topics = {
@@ -384,7 +384,9 @@ locals {
     },
   ]
 
-  #### Import lots the things we need from dip/aws-ingest in one place to make our tf cleaner in this repo ####
+  #### Import lots of the things we need from dip/aws-ingest in one place to make our tf cleaner in this repo ####
+
+  ingest_corporate_storage = data.terraform_remote_state.ingest.outputs.corporate_storage
 
   stub_kafka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.stub_kafka_broker_port_https
   stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.kafka_bootstrap_servers
