@@ -181,6 +181,7 @@ meta:
           - name: terraform-output-ingest
           - name: terraform-output-internal-compute
           - name: terraform-output-snapshot-sender
+          - name: terraform-output-ingest-consumers
 
     terraform-output-ingest:
       task: terraform-output-ingest
