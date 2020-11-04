@@ -4,6 +4,7 @@ locals {
   k2hb_equality_london_tags_asg = merge(
     local.k2hb_equality_tags_asg,
     {
+      Name     = "k2hb-equality-london"
       Location = "London",
     }
   )

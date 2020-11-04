@@ -1,5 +1,15 @@
 # Ireland
 
+locals {
+  k2hb_equality_ireland_tags_asg = merge(
+  local.k2hb_equality_tags_asg,
+  {
+    Name     = "k2hb-equality-ireland"
+    Location = "Ireland",
+  }
+  )
+}
+
 resource "aws_launch_template" "k2hb_equality" {
   name                   = "k2hb_equality"
   image_id               = var.al2_hardened_ami_id
@@ -7,7 +17,7 @@ resource "aws_launch_template" "k2hb_equality" {
   vpc_security_group_ids = [aws_security_group.k2hb_common.id]
 
   user_data = base64encode(templatefile("k2hb_userdata.tpl", {
-    environment_name          = local.environment
+    environment_name          = "${local.environment}-ireland"
     k2hb_version              = var.k2hb_version
     k2hb_application_name     = local.k2hb_equality_consumer_name
     k2hb_kafka_consumer_group = local.k2hb_kafka_equality_consumer_group
@@ -120,25 +130,12 @@ resource "aws_launch_template" "k2hb_equality" {
     create_before_destroy = true
   }
 
-  tags = merge(
-    local.common_tags,
-    {
-      Name        = local.k2hb_equality_consumer_name,
-      Persistence = "Ignore"
-    },
-  )
+  tags = local.k2hb_equality_ireland_tags_asg
 
   tag_specifications {
     resource_type = "instance"
 
-    tags = merge(
-      local.common_tags,
-      {
-        Name        = local.k2hb_equality_consumer_name,
-        Application = local.k2hb_equality_consumer_name,
-        Persistence = "Ignore"
-      },
-    )
+    tags = local.k2hb_equality_ireland_tags_asg
   }
 }
 
@@ -158,7 +155,7 @@ resource "aws_autoscaling_group" "k2hb_equality" {
   }
 
   tags = [
-    for key, value in local.k2hb_equality_tags_asg :
+    for key, value in local.k2hb_equality_ireland_tags_asg :
     {
       key                 = key
       value               = value
