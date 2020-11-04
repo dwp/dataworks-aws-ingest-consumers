@@ -419,7 +419,7 @@ locals {
     qa          = true
     integration = true
     preprod     = true
-    production  = true
+    production  = false
   }
 
   k2hb_equality_write_to_metadata_store = {
@@ -435,14 +435,14 @@ locals {
     qa          = true
     integration = true
     preprod     = true
-    production  = true
+    production  = false
   }
 
   k2hb_audit_london_write_to_metadata_store = {
-    development = false
-    qa          = false
-    integration = false
-    preprod     = false
+    development = true
+    qa          = true
+    integration = true
+    preprod     = true
     production  = false
   }
 
