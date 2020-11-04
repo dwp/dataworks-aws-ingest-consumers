@@ -1,23 +1,32 @@
-# Ireland
+# London
 
-resource "aws_launch_template" "k2hb_main_ha_cluster" {
-  name                   = "k2hb_main_ha_cluster"
+locals {
+  k2hb_main_london_tags_asg = merge(
+    local.k2hb_main_tags_asg,
+    {
+      Location = "London",
+    }
+  )
+}
+
+resource "aws_launch_template" "k2hb_main_london" {
+  name                   = "k2hb_london_main"
   image_id               = var.al2_hardened_ami_id
   instance_type          = var.k2hb_main_ec2_size[local.environment]
   vpc_security_group_ids = [aws_security_group.k2hb_common.id]
 
   user_data = base64encode(templatefile("k2hb_userdata.tpl", {
-    environment_name          = local.environment
+    environment_name          = "${local.environment}-london"
     k2hb_version              = var.k2hb_version
     k2hb_application_name     = local.k2hb_main_consumer_name
-    k2hb_kafka_consumer_group = local.k2hb_kafka_main_consumer_group //different server to old single node broker, so keep the same name
+    k2hb_kafka_consumer_group = local.k2hb_kafka_main_consumer_group
     k2hb_log_level            = local.k2hb_log_level[local.environment]
 
     k2hb_kafka_bootstrap_servers = join(
       ",",
       formatlist(
         "%s:%s",
-        local.kafka_bootstrap_servers[local.environment],
+        local.kafka_london_bootstrap_servers[local.environment],
         local.kafka_broker_port[local.environment],
       ),
     )
@@ -91,11 +100,11 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     k2hb_aws_s3_archive_directory                    = local.k2hb_aws_s3_main_archive_directory
     k2hb_aws_s3_batch_puts                           = "true"
     k2hb_validator_schema                            = local.k2hb_validator_schema.ucfs
-    k2hb_write_to_metadata_store                     = local.k2hb_main_write_to_metadata_store[local.environment]
+    k2hb_write_to_metadata_store                     = local.k2hb_main_london_write_to_metadata_store[local.environment]
     k2hb_manifest_bucket                             = local.internal_compute_manifest_bucket.id
     k2hb_manifest_prefix                             = local.ingest_manifest_write_locations.main_prefix
-    k2hb_write_manifests                             = local.k2hb_main_write_manifests[local.environment]
-    k2hb_auto_commit_metadata_store_inserts          = local.k2hb_main_auto_commit_metadata_store_inserts[local.environment]
+    k2hb_write_manifests                             = local.k2hb_main_london_write_manifests[local.environment]
+    k2hb_auto_commit_metadata_store_inserts          = local.k2hb_main_london_auto_commit_metadata_store_inserts[local.environment]
   }))
 
   instance_initiated_shutdown_behavior = "terminate"
@@ -120,45 +129,32 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     create_before_destroy = true
   }
 
-  tags = merge(
-    local.common_tags,
-    {
-      Name        = local.k2hb_main_consumer_name,
-      Persistence = "Ignore"
-    },
-  )
+  tags = local.k2hb_main_london_tags_asg
 
   tag_specifications {
     resource_type = "instance"
 
-    tags = merge(
-      local.common_tags,
-      {
-        Name        = local.k2hb_main_consumer_name,
-        Application = local.k2hb_main_consumer_name,
-        Persistence = "Ignore"
-      },
-    )
+    tags = local.k2hb_main_london_tags_asg
   }
 }
 
-resource "aws_autoscaling_group" "k2hb_main_ha_cluster" {
-  name_prefix               = "${aws_launch_template.k2hb_main_ha_cluster.name}-lt_ver${aws_launch_template.k2hb_main_ha_cluster.latest_version}_"
+resource "aws_autoscaling_group" "k2hb_main_london" {
+  name_prefix               = "${aws_launch_template.k2hb_main_london.name}-lt_ver${aws_launch_template.k2hb_main_london.latest_version}_"
   min_size                  = local.k2hb_asg_min[local.environment]
-  desired_capacity          = var.k2hb_main_asg_desired[local.environment]
-  max_size                  = var.k2hb_main_asg_max[local.environment]
+  desired_capacity          = var.k2hb_main_london_asg_desired[local.environment]
+  max_size                  = var.k2hb_main_london_asg_max[local.environment]
   health_check_grace_period = 600
   health_check_type         = "EC2"
   force_delete              = true
   vpc_zone_identifier       = local.ingest_subnets.id
 
   launch_template {
-    id      = aws_launch_template.k2hb_main_ha_cluster.id
+    id      = aws_launch_template.k2hb_main_london.id
     version = "$Latest"
   }
 
   tags = [
-    for key, value in local.k2hb_main_tags_asg :
+    for key, value in local.k2hb_main_london_tags_asg :
     {
       key                 = key
       value               = value

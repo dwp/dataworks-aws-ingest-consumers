@@ -42,6 +42,18 @@ locals {
       Persistence  = "Ignore",
     }
   )
+
+  k2hb_audit_tags_asg = merge(
+    local.common_tags,
+    {
+      Name         = "${local.k2hb_audit_consumer_name}-${local.environment}",
+      k2hb-version = var.k2hb_version,
+      AutoShutdown = local.k2hb_audit_asg_autoshutdown[local.environment],
+      SSMEnabled   = local.k2hb_audit_asg_ssmenabled[local.environment],
+      Inspector    = local.k2hb_audit_asg_inspector[local.environment],
+      Persistence  = "Ignore",
+    }
+  )
 }
 
 
@@ -86,7 +98,6 @@ data "aws_iam_policy_document" "k2hb_common" {
       "kms:DescribeKey",
     ]
 
-
     resources = [local.security_tools_ebs_cmk_arn]
   }
 
@@ -98,7 +109,6 @@ data "aws_iam_policy_document" "k2hb_common" {
       "s3:ListBucket",
       "s3:GetBucketLocation",
     ]
-
 
     resources = [local.common_config_bucket.arn]
   }
@@ -245,7 +255,6 @@ data "aws_iam_policy_document" "k2hb_common" {
       "kms:GenerateDataKey*",
       "kms:ReEncrypt*",
     ]
-
 
     resources = [
       local.internal_compute_manifest_bucket_cmk.arn,

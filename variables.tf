@@ -64,7 +64,7 @@ variable "k2hb_main_max_memory_allocation" {
   }
 }
 
-variable "k2hb_main_max_memory_allocation_equality" {
+variable "k2hb_equality_max_memory_allocation" {
   default = {
     development = "-Xmx1g"
     qa          = "-Xmx1g"
@@ -111,8 +111,8 @@ variable "k2hb_main_london_asg_desired" {
   default = {
     development = 0 //stubbed env
     qa          = 0 //stubbed env
-    integration = 0 //stubbed env
-    preprod     = 0
+    integration = 1 //stubbed env
+    preprod     = 1
     production  = 0
   }
 }
@@ -120,11 +120,11 @@ variable "k2hb_main_london_asg_desired" {
 variable "k2hb_main_london_asg_max" {
   description = "Max k2hb ha consumer asg size. UC Prod HA Cluster has 20 partitions, and we need spares. We can have at most 30 to fit in the subnets, as changes with create-before-destroy mean we need double headroom"
   default = {
-    development = 1 //stubbed env
-    qa          = 1 //stubbed env
+    development = 0 //stubbed env
+    qa          = 0 //stubbed env
     integration = 1 //stubbed env
     preprod     = 1
-    production  = 1
+    production  = 0
   }
 }
 
@@ -155,8 +155,8 @@ variable "k2hb_equality_london_asg_desired" {
   default = {
     development = 0 //stubbed env
     qa          = 0 //stubbed env
-    integration = 0 //stubbed env
-    preprod     = 0
+    integration = 1 //stubbed env
+    preprod     = 1
     production  = 0
   }
 }
@@ -164,11 +164,11 @@ variable "k2hb_equality_london_asg_desired" {
 variable "k2hb_equality_london_asg_max" {
   description = "Max k2hb equality asg size. Connects to ha cluster."
   default = {
-    development = 1 //stubbed env
-    qa          = 1 //stubbed env
+    development = 0 //stubbed env
+    qa          = 0 //stubbed env
     integration = 1 //stubbed env
     preprod     = 1
-    production  = 1
+    production  = 0
   }
 }
 
@@ -177,17 +177,17 @@ variable "k2hb_audit_london_asg_desired" {
   default = {
     development = 0 //stubbed env
     qa          = 0 //stubbed env
-    integration = 0 //stubbed env
-    preprod     = 0
-    production  = 0
+    integration = 1 //stubbed env
+    preprod     = 1
+    production  = 1
   }
 }
 
 variable "k2hb_audit_london_asg_max" {
   description = "Max k2hb equality asg size. Connects to ha cluster."
   default = {
-    development = 1 //stubbed env
-    qa          = 1 //stubbed env
+    development = 0 //stubbed env
+    qa          = 0 //stubbed env
     integration = 1 //stubbed env
     preprod     = 1
     production  = 1

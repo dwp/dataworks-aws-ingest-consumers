@@ -12,6 +12,7 @@ locals {
 
   k2hb_main_consumer_name     = "k2hb-main-ha-cluster"
   k2hb_equality_consumer_name = "k2hb-equality"
+  k2hb_audit_consumer_name    = "k2hb-audit"
 
   k2hb_main_asg_autoshutdown = {
     development = "False"
@@ -134,7 +135,31 @@ locals {
     production  = "true"
   }
 
+  k2hb_main_london_write_manifests = {
+    development = "true"
+    qa          = "true"
+    integration = "true"
+    preprod     = "true"
+    production  = "true"
+  }
+
   k2hb_equality_write_manifests = {
+    development = "true"
+    qa          = "true"
+    integration = "true"
+    preprod     = "true"
+    production  = "true"
+  }
+
+  k2hb_equality_london_write_manifests = {
+    development = "true"
+    qa          = "true"
+    integration = "true"
+    preprod     = "true"
+    production  = "true"
+  }
+
+  k2hb_audit_london_write_manifests = {
     development = "true"
     qa          = "true"
     integration = "true"
@@ -150,7 +175,31 @@ locals {
     production  = "false"
   }
 
+  k2hb_main_london_auto_commit_metadata_store_inserts = {
+    development = "false"
+    qa          = "false"
+    integration = "false"
+    preprod     = "false"
+    production  = "false"
+  }
+
   k2hb_equality_auto_commit_metadata_store_inserts = {
+    development = "false"
+    qa          = "false"
+    integration = "false"
+    preprod     = "false"
+    production  = "false"
+  }
+
+  k2hb_equality_london_auto_commit_metadata_store_inserts = {
+    development = "false"
+    qa          = "false"
+    integration = "false"
+    preprod     = "false"
+    production  = "false"
+  }
+
+  k2hb_audit_london_auto_commit_metadata_store_inserts = {
     development = "false"
     qa          = "false"
     integration = "false"
@@ -178,8 +227,9 @@ locals {
     production  = "s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem,s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca_old.pem"
   }
 
-  cw_k2hb_agent_namespace                               = "/app/kafka-to-hbase"
+  cw_k2hb_main_agent_namespace                          = "/app/kafka-to-hbase"
   cw_k2hb_equality_agent_namespace                      = "/app/kafka-to-hbase-equality"
+  cw_k2hb_audit_agent_namespace                         = "/app/kafka-to-hbase-audit"
   cw_agent_metrics_collection_interval                  = 60
   cw_agent_cpu_metrics_collection_interval              = 60
   cw_agent_disk_measurement_metrics_collection_interval = 60
@@ -225,7 +275,7 @@ locals {
   }
 
   # This should be the number of records we can easily process within the client timeout (kafka_k2hb_poll_timeout) above
-  k2hb_max_poll_records_count_main = {
+  k2hb_main_max_poll_records_count = {
     development = 25
     qa          = 50
     integration = 50
@@ -234,7 +284,7 @@ locals {
   }
 
   # This should be the number of records we can easily process within the client timeout (kafka_k2hb_poll_timeout) above
-  k2hb_max_poll_records_count_equality = {
+  k2hb_equality_max_poll_records_count = {
     development = 25
     qa          = 50
     integration = 50
@@ -243,7 +293,7 @@ locals {
   }
 
   # This should be the number of records we can easily process within the client timeout (kafka_k2hb_poll_timeout) above
-  k2hb_max_poll_records_count_audit = {
+  k2hb_audit_max_poll_records_count = {
     development = 25
     qa          = 50
     integration = 50
@@ -356,7 +406,7 @@ locals {
     audit    = "audit_message.schema.json"
   }
 
-  k2hb_main_ha_write_to_metadata_store = {
+  k2hb_main_write_to_metadata_store = {
     development = true
     qa          = true
     integration = true
@@ -369,7 +419,7 @@ locals {
     qa          = true
     integration = true
     preprod     = true
-    production  = true
+    production  = false
   }
 
   k2hb_equality_write_to_metadata_store = {
@@ -385,14 +435,14 @@ locals {
     qa          = true
     integration = true
     preprod     = true
-    production  = true
+    production  = false
   }
 
   k2hb_audit_london_write_to_metadata_store = {
-    development = false
-    qa          = false
-    integration = false
-    preprod     = false
+    development = true
+    qa          = true
+    integration = true
+    preprod     = true
     production  = false
   }
 
@@ -429,6 +479,7 @@ locals {
   k2hb_aws_s3_archive_bucket_id          = data.terraform_remote_state.ingest.outputs.corporate_storage_bucket.id
   k2hb_aws_s3_main_archive_directory     = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_main}"
   k2hb_aws_s3_equality_archive_directory = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_equality}"
+  k2hb_aws_s3_audit_archive_directory    = "${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_directory_prefix}/${data.terraform_remote_state.ingest.outputs.corporate_storage.corporate_storage_bucket_directory.ucfs_audit}"
 
   managemant_artefact_bucket = data.terraform_remote_state.management_artefact.outputs.artefact_bucket
 
@@ -464,7 +515,7 @@ locals {
   monitoring_topic_arn = data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn
 
   stub_kafka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.stub_kafka_broker_port_https
-  stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.kafka_bootstrap_servers
+  stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.stub_bootstrap_servers
   stub_ucfs_subnets            = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets
   stub_ucfs_deploy_broker      = data.terraform_remote_state.ingest.outputs.stub_ucfs.deploy_stub_broker
   stub_ucfs_kafka_ports        = data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports

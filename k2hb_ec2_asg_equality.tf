@@ -31,7 +31,7 @@ resource "aws_launch_template" "k2hb_equality" {
     s3_artefact_bucket_id = local.managemant_artefact_bucket.id
 
     hbase_master_url                                 = local.ingest_hbase_fqdn
-    k2hb_max_memory_allocation                       = var.k2hb_main_max_memory_allocation_equality[local.environment]
+    k2hb_max_memory_allocation                       = var.k2hb_equality_max_memory_allocation[local.environment]
     cwa_metrics_collection_interval                  = local.cw_agent_metrics_collection_interval
     cwa_namespace                                    = local.cw_k2hb_equality_agent_namespace
     cwa_cpu_metrics_collection_interval              = local.cw_agent_cpu_metrics_collection_interval
@@ -83,7 +83,7 @@ resource "aws_launch_template" "k2hb_equality" {
     k2hb_kafka_insecure                              = "false"
     k2hb_kafka_cert_mode                             = "RETRIEVE"
     k2hb_kafka_dlq_topic                             = local.dlq_kafka_consumer_topic
-    k2hb_kafka_poll_max_records                      = local.k2hb_max_poll_records_count_equality[local.environment]
+    k2hb_kafka_poll_max_records                      = local.k2hb_equality_max_poll_records_count[local.environment]
     k2hb_kafka_report_frequency                      = local.k2hb_report_frequency[local.environment]
     k2hb_qualified_table_pattern                     = local.k2hb_data_equality_qualified_table_pattern
     k2hb_check_existence                             = local.k2hb_check_existence[local.environment]
