@@ -4,6 +4,7 @@ locals {
   k2hb_main_london_tags_asg = merge(
     local.k2hb_main_tags_asg,
     {
+      Name     = "k2hb-main-london",
       Location = "London",
     }
   )

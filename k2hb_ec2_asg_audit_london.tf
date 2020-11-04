@@ -4,6 +4,7 @@ locals {
   k2hb_audit_london_tags_asg = merge(
     local.k2hb_audit_tags_asg,
     {
+      Name     = "k2hb-audit-london"
       Location = "London",
     }
   )
