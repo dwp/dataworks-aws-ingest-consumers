@@ -44,7 +44,7 @@ module "rate_of_dlq_messages_written_filter_k2hb_alarm_ucfs" {
   alarm_name          = "K2HB UCFS - Messages written to DLQ in last half an hour"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   metric_filter_name  = local.k2hb_metric_name_messages_written_to_dlq
-  alarm_action_arns   = [data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn]
+  alarm_action_arns   = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 1800
   threshold           = 0
@@ -62,7 +62,7 @@ module "kafka_read_timeout_occurrences_greater_than_threshold_filter_k2hb_alarm_
   alarm_name          = "K2HB UCFS - Kafka read timeout occurrences exceeds 5 in last hour"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   metric_filter_name  = local.k2hb_metric_name_timeouts_reading_kafka
-  alarm_action_arns   = [data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn]
+  alarm_action_arns   = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 3600
   threshold           = 5
@@ -80,7 +80,7 @@ module "hbase_batch_failures_greater_than_threshold_filter_k2hb_alarm_ucfs" {
   alarm_name          = "K2HB UCFS - Hbase write failures exceeds 5 in last hour"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   metric_filter_name  = local.k2hb_metric_name_failures_writing_hbase
-  alarm_action_arns   = [data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn]
+  alarm_action_arns   = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 3600
   threshold           = 5
@@ -98,7 +98,7 @@ module "hbase_connection_timeout_occurrences_greater_than_threshold_filter_k2hb_
   alarm_name          = "K2HB UCFS - Hbase connection timeout occurrences exceeds 5 in last hour"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   metric_filter_name  = local.k2hb_metric_name_timeouts_connecting_hbase
-  alarm_action_arns   = [data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn]
+  alarm_action_arns   = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 3600
   threshold           = 5
@@ -124,7 +124,7 @@ resource "aws_cloudwatch_metric_alarm" "consumer_lag_k2hb_alarm_ucfs" {
   namespace           = local.cw_k2hb_agent_namespace
   alarm_name          = "K2HB UCFS - Average consumer lag (per partition) over 100 thousand for 3 of the last 4 hours"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
-  alarm_actions       = [data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn]
+  alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 120
   period              = 120
   datapoints_to_alarm = 90
@@ -158,7 +158,7 @@ resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_uc
   namespace           = local.cw_k2hb_agent_namespace
   alarm_name          = "K2HB UCFS - Failed batches exceeds 5 in last 30 minutes"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
-  alarm_actions       = [data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn]
+  alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 1800
   datapoints_to_alarm = 1

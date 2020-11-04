@@ -5,7 +5,7 @@ resource "aws_cloudwatch_dashboard" "k2hb" {
     reconciled_lambda_namespace                                    = data.terraform_remote_state.ingest.outputs.locals.cw_lambda_metadata_reconciled_namespace
     unreconciled_lambda_namespace                                  = data.terraform_remote_state.ingest.outputs.locals.cw_lambda_metadata_unreconciled_namespace
     reconciliation_namespace                                       = data.terraform_remote_state.ingest.outputs.locals.cw_k2hb_reconciliation_ucfs_namespace
-    log_group                                                      = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_logs.name
+    log_group                                                      = local.ingest_log_groups.k2hb_ec2_logs.name
     k2hb_metric_name_number_of_successfully_processed_records      = local.k2hb_metric_name_number_of_successfully_processed_records
     k2hb_metric_name_speed_of_successfully_processed_batches       = local.k2hb_metric_name_speed_of_successfully_processed_batches
     k2hb_metric_name_number_of_successfully_processed_batches      = local.k2hb_metric_name_number_of_successfully_processed_batches
@@ -32,7 +32,7 @@ resource "aws_cloudwatch_dashboard" "k2hb_equality" {
     reconciled_lambda_namespace                                    = data.terraform_remote_state.ingest.outputs.locals.cw_lambda_metadata_reconciled_namespace
     unreconciled_lambda_namespace                                  = data.terraform_remote_state.ingest.outputs.locals.cw_lambda_metadata_unreconciled_namespace
     reconciliation_namespace                                       = data.terraform_remote_state.ingest.outputs.locals.cw_k2hb_reconciliation_equality_namespace
-    log_group                                                      = data.terraform_remote_state.ingest.outputs.log_groups.k2hb_ec2_equality_logs.name
+    log_group                                                      = local.ingest_log_groups.k2hb_ec2_equality_logs.name
     k2hb_metric_name_number_of_successfully_processed_records      = local.k2hb_metric_name_number_of_successfully_processed_records
     k2hb_metric_name_speed_of_successfully_processed_batches       = local.k2hb_metric_name_speed_of_successfully_processed_batches
     k2hb_metric_name_number_of_successfully_processed_batches      = local.k2hb_metric_name_number_of_successfully_processed_batches
