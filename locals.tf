@@ -515,7 +515,7 @@ locals {
   monitoring_topic_arn = data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn
 
   stub_kafka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.stub_kafka_broker_port_https
-  stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.kafka_bootstrap_servers
+  stub_bootstrap_servers       = data.terraform_remote_state.ingest.outputs.locals.stub_bootstrap_servers
   stub_ucfs_subnets            = data.terraform_remote_state.ingest.outputs.stub_ucfs_subnets
   stub_ucfs_deploy_broker      = data.terraform_remote_state.ingest.outputs.stub_ucfs.deploy_stub_broker
   stub_ucfs_kafka_ports        = data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports
