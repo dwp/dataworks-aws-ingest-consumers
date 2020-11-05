@@ -27,7 +27,7 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
       ",",
       formatlist(
         "%s:%s",
-        local.kafka_bootstrap_servers[local.environment],
+        local.kafka_ireland_bootstrap_servers[local.environment],
         local.kafka_broker_port[local.environment],
       ),
     )
