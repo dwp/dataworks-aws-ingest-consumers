@@ -2,11 +2,11 @@
 
 locals {
   k2hb_main_ireland_tags_asg = merge(
-  local.k2hb_main_tags_asg,
-  {
-    Name     = "k2hb-main-ireland",
-    Location = "Ireland",
-  }
+    local.k2hb_main_tags_asg,
+    {
+      Name     = "k2hb-main-ireland",
+      Location = "Ireland",
+    }
   )
 }
 
