@@ -518,8 +518,8 @@ locals {
   ]
 
   ucfs_ireland_bootstrap_servers = {
-    development = ["n/a"]                   // stubbed only
-    qa          = ["n/a"]                   // stubbed only
+    development = ["n/a"]                        // stubbed only
+    qa          = ["n/a"]                        // stubbed only
     integration = local.ucfs_ireland_broker_list //this exists on UC's end, but we do not use it as the env is stubbed as at Oct 2020
     preprod     = local.ucfs_ireland_broker_list
     production  = local.ucfs_ireland_broker_list

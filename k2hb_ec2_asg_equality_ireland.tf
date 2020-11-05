@@ -2,11 +2,11 @@
 
 locals {
   k2hb_equality_ireland_tags_asg = merge(
-  local.k2hb_equality_tags_asg,
-  {
-    Name     = "k2hb-equality-ireland"
-    Location = "Ireland",
-  }
+    local.k2hb_equality_tags_asg,
+    {
+      Name     = "k2hb-equality-ireland"
+      Location = "Ireland",
+    }
   )
 }
 
