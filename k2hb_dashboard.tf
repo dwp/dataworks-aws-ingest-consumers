@@ -43,7 +43,7 @@ resource "aws_cloudwatch_dashboard" "k2hb_audit" {
   dashboard_body = templatefile("${path.module}/dashboards/kafka-to-hbase.json.tpl", {
     namespace                                                    = local.cw_k2hb_audit_agent_namespace
     reconciliation_namespace                                     = data.terraform_remote_state.ingest.outputs.locals.cw_k2hb_reconciliation_audit_namespace
-    log_group                                                    = local.ingest_log_groups.k2hb_ec2_audit_logs.name
+    log_group                                                    = local.k2hb_ec2_audit_logs_name
     k2hb_metric_name_number_of_successfully_processed_records    = local.k2hb_metric_name_number_of_successfully_processed_records
     k2hb_metric_name_speed_of_successfully_processed_batches     = local.k2hb_metric_name_speed_of_successfully_processed_batches
     k2hb_metric_name_number_of_successfully_processed_batches    = local.k2hb_metric_name_number_of_successfully_processed_batches
