@@ -87,10 +87,10 @@ variable "k2hb_audit_max_memory_allocation" {
 variable "k2hb_main_asg_desired" {
   description = "Desired k2hb ha consumer asg size. UC Prod HA Cluster has 20 partitions, and we need spares. We can have at most 30 to fit in the subnets, as changes with create-before-destroy mean we need double headroom"
   default = {
-    development = 0 //stubbed env
-    qa          = 0 //stubbed env
-    integration = 0 //stubbed env and UC now in London
-    preprod     = 0 // UC now in London
+    development = 0  //stubbed env
+    qa          = 0  //stubbed env
+    integration = 0  //stubbed env and UC now in London
+    preprod     = 0  // UC now in London
     production  = 21 // Switch to London on 21 Nov 2020
   }
 }
@@ -98,10 +98,10 @@ variable "k2hb_main_asg_desired" {
 variable "k2hb_main_asg_max" {
   description = "Max k2hb ha consumer asg size. UC Prod HA Cluster has 20 partitions, and we need spares. We can have at most 30 to fit in the subnets, as changes with create-before-destroy mean we need double headroom"
   default = {
-    development = 0 //stubbed env
-    qa          = 0 //stubbed env
-    integration = 0 //stubbed env and now in London
-    preprod     = 0 // UC now in London
+    development = 0  //stubbed env
+    qa          = 0  //stubbed env
+    integration = 0  //stubbed env and now in London
+    preprod     = 0  // UC now in London
     production  = 21 // Switch to London on 21 Nov 2020
   }
 }
@@ -169,6 +169,28 @@ variable "k2hb_equality_london_asg_max" {
     integration = 1 //stubbed env + UC now in London
     preprod     = 1 // UC now in London
     production  = 0 // Switch to London on 21 Nov 2020
+  }
+}
+
+variable "k2hb_audit_ireland_asg_desired" {
+  description = "Desired k2hb equality asg size. Connects to ha cluster."
+  default = {
+    development = 0 //stubbed env
+    qa          = 0 //stubbed env
+    integration = 0 //stubbed env + UC now in London
+    preprod     = 0 // UC now in London
+    production  = 1 // Switch to London on 21 Nov 2020
+  }
+}
+
+variable "k2hb_audit_ireland_asg_max" {
+  description = "Max k2hb equality asg size. Connects to ha cluster."
+  default = {
+    development = 0 //stubbed env
+    qa          = 0 //stubbed env
+    integration = 0 //stubbed env + UC now in London
+    preprod     = 0 // UC now in London
+    production  = 1 // Switch to London on 21 Nov 2020
   }
 }
 

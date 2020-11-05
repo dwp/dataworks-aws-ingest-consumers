@@ -101,11 +101,11 @@ resource "aws_launch_template" "k2hb_main_london" {
     k2hb_aws_s3_archive_directory                    = local.k2hb_aws_s3_main_archive_directory
     k2hb_aws_s3_batch_puts                           = "true"
     k2hb_validator_schema                            = local.k2hb_validator_schema.ucfs
-    k2hb_write_to_metadata_store                     = local.k2hb_main_london_write_to_metadata_store[local.environment]
+    k2hb_write_to_metadata_store                     = local.k2hb_main_write_to_metadata_store[local.environment]
     k2hb_manifest_bucket                             = local.internal_compute_manifest_bucket.id
     k2hb_manifest_prefix                             = local.ingest_manifest_write_locations.main_prefix
-    k2hb_write_manifests                             = local.k2hb_main_london_write_manifests[local.environment]
-    k2hb_auto_commit_metadata_store_inserts          = local.k2hb_main_london_auto_commit_metadata_store_inserts[local.environment]
+    k2hb_write_manifests                             = local.k2hb_main_write_manifests[local.environment]
+    k2hb_auto_commit_metadata_store_inserts          = local.k2hb_main_auto_commit_metadata_store_inserts[local.environment]
   }))
 
   instance_initiated_shutdown_behavior = "terminate"
