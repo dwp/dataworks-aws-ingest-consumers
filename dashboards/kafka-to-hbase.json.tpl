@@ -179,7 +179,7 @@
         "metrics": [
           [
             "${namespace}",
-            "${k2hb_metric_name_number_of_successfully_processed_batches}",
+            "${k2hb_metric_name_number_of_successfully_processed_records}",
             {
               "label": "Max batch size (5m)"
             }
