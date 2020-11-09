@@ -127,7 +127,7 @@ resource "aws_launch_template" "k2hb_audit_ireland" {
   }
 
   lifecycle {
-    create_before_destroy = true
+    ignore_changes = [desired_capacity]
   }
 
   tags = local.k2hb_audit_ireland_tags_asg
@@ -164,7 +164,6 @@ resource "aws_autoscaling_group" "k2hb_audit_ireland" {
   ]
 
   lifecycle {
-    create_before_destroy = true
-    ignore_changes        = [desired_capacity]
+    ignore_changes = [desired_capacity]
   }
 }

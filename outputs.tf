@@ -12,7 +12,7 @@ output "asg_properties" {
     prefixes = {
       k2hb_main_ha_cluster = aws_autoscaling_group.k2hb_main_ha_cluster.name
       k2hb_equality        = aws_autoscaling_group.k2hb_equality.name
-      k2hb_audit_ireland    = aws_autoscaling_group.k2hb_audit_ireland.name
+      k2hb_audit_ireland   = aws_autoscaling_group.k2hb_audit_ireland.name
       k2hb_main_london     = aws_autoscaling_group.k2hb_main_london.name
       k2hb_equality_london = aws_autoscaling_group.k2hb_equality_london.name
       k2hb_audit_london    = aws_autoscaling_group.k2hb_audit_london.name
