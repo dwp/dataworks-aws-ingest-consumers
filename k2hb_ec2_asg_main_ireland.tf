@@ -126,10 +126,6 @@ resource "aws_launch_template" "k2hb_main_ha_cluster" {
     }
   }
 
-  lifecycle {
-    create_before_destroy = true
-  }
-
   tags = local.k2hb_main_ireland_tags_asg
 
   tag_specifications {
@@ -164,7 +160,6 @@ resource "aws_autoscaling_group" "k2hb_main_ha_cluster" {
   ]
 
   lifecycle {
-    create_before_destroy = true
-    ignore_changes        = [desired_capacity]
+    ignore_changes = [desired_capacity]
   }
 }
