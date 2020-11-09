@@ -126,10 +126,6 @@ resource "aws_launch_template" "k2hb_audit_ireland" {
     }
   }
 
-  lifecycle {
-    ignore_changes = [desired_capacity]
-  }
-
   tags = local.k2hb_audit_ireland_tags_asg
 
   tag_specifications {

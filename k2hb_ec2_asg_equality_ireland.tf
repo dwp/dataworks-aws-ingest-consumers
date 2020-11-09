@@ -126,10 +126,6 @@ resource "aws_launch_template" "k2hb_equality" {
     }
   }
 
-  lifecycle {
-    ignore_changes = [desired_capacity]
-  }
-
   tags = local.k2hb_equality_ireland_tags_asg
 
   tag_specifications {

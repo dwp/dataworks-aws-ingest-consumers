@@ -126,10 +126,6 @@ resource "aws_launch_template" "k2hb_main_london" {
     }
   }
 
-  lifecycle {
-    ignore_changes = [desired_capacity]
-  }
-
   tags = local.k2hb_main_london_tags_asg
 
   tag_specifications {
