@@ -266,7 +266,7 @@ locals {
     qa          = 50
     integration = 50
     preprod     = 25
-    production  = 1000
+    production  = 2000
   }
 
   # Enable this to verify puts with exists checks
