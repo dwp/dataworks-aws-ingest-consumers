@@ -126,16 +126,16 @@
       "properties": {
         "metrics": [
           [
-            "${reconciliation_namespace}",
-            "${reconciliation_metric_name_failed_to_be_reconciled}",
+            "${trimmer_namespace}",
+            "${reconciliation_metric_name_trimmed_records}",
             {
-              "label": "Unreconciled messages (24h)"
+              "label": "Trimmed metadata store records (24h)"
             }
           ]
         ],
         "view": "singleValue",
         "region": "eu-west-2",
-        "title": "Unreconciled writes (24h)",
+        "title": "Trimmed records (24h)",
         "stat": "Sum",
         "period": 86400
       }
@@ -162,6 +162,12 @@
             "${reconciliation_metric_name_failed_to_be_reconciled}",
             {
               "label": "Unreconciled messages (5m)"
+            }
+          ],
+          [ "${trimmer_namespace}",
+            "${reconciliation_metric_name_trimmed_records}",
+            {
+              "label": "Trimmed records (5m)"
             }
           ]
         ],
