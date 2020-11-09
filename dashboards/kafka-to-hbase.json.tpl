@@ -126,7 +126,7 @@
       "properties": {
         "metrics": [
           [
-            "${reconciliation_namespace}",
+            "${trimmer_namespace}",
             "${reconciliation_metric_name_trimmed_records}",
             {
               "label": "Trimmed metadata store records (24h)"
@@ -162,6 +162,12 @@
             "${reconciliation_metric_name_failed_to_be_reconciled}",
             {
               "label": "Unreconciled messages (5m)"
+            }
+          ],
+          [ "${trimmer_namespace}",
+            "${reconciliation_metric_name_trimmed_records}",
+            {
+              "label": "Trimmed records (5m)"
             }
           ]
         ],

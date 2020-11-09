@@ -3,6 +3,7 @@ resource "aws_cloudwatch_dashboard" "k2hb" {
   dashboard_body = templatefile("${path.module}/dashboards/kafka-to-hbase.json.tpl", {
     namespace                                                    = local.cw_k2hb_main_agent_namespace
     reconciliation_namespace                                     = data.terraform_remote_state.ingest.outputs.locals.cw_k2hb_reconciliation_ucfs_namespace
+    trimmer_namespace                                            = data.terraform_remote_state.ingest.outputs.locals.cw_k2hb_reconciliation_trimmer_namespace["ucfs_reconciliation"]
     log_group                                                    = local.ingest_log_groups.k2hb_ec2_logs.name
     k2hb_metric_name_number_of_successfully_processed_records    = local.k2hb_metric_name_number_of_successfully_processed_records
     k2hb_metric_name_speed_of_successfully_processed_batches     = local.k2hb_metric_name_speed_of_successfully_processed_batches
@@ -24,6 +25,7 @@ resource "aws_cloudwatch_dashboard" "k2hb_equality" {
   dashboard_body = templatefile("${path.module}/dashboards/kafka-to-hbase.json.tpl", {
     namespace                                                    = local.cw_k2hb_equality_agent_namespace
     reconciliation_namespace                                     = data.terraform_remote_state.ingest.outputs.locals.cw_k2hb_reconciliation_equality_namespace
+    trimmer_namespace                                            = data.terraform_remote_state.ingest.outputs.locals.cw_k2hb_reconciliation_trimmer_namespace["equality_reconciliation"]
     log_group                                                    = local.ingest_log_groups.k2hb_ec2_equality_logs.name
     k2hb_metric_name_number_of_successfully_processed_records    = local.k2hb_metric_name_number_of_successfully_processed_records
     k2hb_metric_name_speed_of_successfully_processed_batches     = local.k2hb_metric_name_speed_of_successfully_processed_batches
@@ -45,6 +47,7 @@ resource "aws_cloudwatch_dashboard" "k2hb_audit" {
   dashboard_body = templatefile("${path.module}/dashboards/kafka-to-hbase.json.tpl", {
     namespace                                                    = local.cw_k2hb_audit_agent_namespace
     reconciliation_namespace                                     = data.terraform_remote_state.ingest.outputs.locals.cw_k2hb_reconciliation_audit_namespace
+    trimmer_namespace                                            = data.terraform_remote_state.ingest.outputs.locals.cw_k2hb_reconciliation_trimmer_namespace["audit_reconciliation"]
     log_group                                                    = local.k2hb_ec2_audit_logs_name
     k2hb_metric_name_number_of_successfully_processed_records    = local.k2hb_metric_name_number_of_successfully_processed_records
     k2hb_metric_name_speed_of_successfully_processed_batches     = local.k2hb_metric_name_speed_of_successfully_processed_batches
