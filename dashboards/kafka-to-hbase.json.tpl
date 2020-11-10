@@ -424,6 +424,25 @@
         "view": "table",
         "title": "Time taken for inserts"
       }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 33,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "${namespace}", "${k2hb_metric_name_number_of_successfully_processed_records}" ],
+          [ "${reconciliation_namespace}", "${reconciliation_metric_name_successfully_reconciled}" ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "eu-west-2",
+        "stat": "Sum",
+        "period": 900,
+        "title": "Records Successfully processed vs Successfully reconciled"
+      }
     }
   ]
 }
