@@ -184,19 +184,34 @@
       "properties": {
         "metrics": [
           [
-            "${namespace}",
-            "${k2hb_metric_name_number_of_successfully_processed_records}",
+              "${namespace}", 
+              "${k2hb_metric_name_number_of_successfully_processed_records}", 
+              {"id": "record_count", "visible": false }
+          ],
+          [
             {
+              "expression": "MAX(METRICS(\"record_count\"))",
               "label": "Max batch size (5m)"
+            }
+          ],
+          [
+            {
+              "expression": "AVG(METRICS(\"record_count\"))",
+              "label": "Average batch size (5m)"
+            }
+          ],
+          [
+            {
+              "expression": "MIN(METRICS(\"record_count\"))",
+              "label": "Min batch size (5m)"
             }
           ]
         ],
         "view": "timeSeries",
         "stacked": true,
         "region": "eu-west-2",
-        "stat": "Maximum",
         "period": 300,
-        "title": "Max batch size over time",
+        "title": "Batch sizes over time",
         "liveData": true
       }
     },
@@ -238,19 +253,34 @@
       "properties": {
         "metrics": [
           [
-            "${namespace}",
-            "${k2hb_metric_name_number_of_successfully_processed_records}",
+              "${namespace}", 
+              "${k2hb_metric_name_lag_per_partition}", 
+              {"id": "lag_count", "visible": false }
+          ],
+          [
             {
-              "label": "Average batch size (5m)"
+              "expression": "MAX(METRICS(\"lag_count\"))",
+              "label": "Max consumer lag (5m)"
+            }
+          ],
+          [
+            {
+              "expression": "AVG(METRICS(\"lag_count\"))",
+              "label": "Average consumer lag (5m)"
+            }
+          ],
+          [
+            {
+              "expression": "MIN(METRICS(\"lag_count\"))",
+              "label": "Min consumer lag (5m)"
             }
           ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
-        "stat": "Average",
         "period": 300,
-        "title": "Average batch size over time",
+        "title": "Consumer lag over time",
         "yAxis": {
           "left": {
             "showUnits": false

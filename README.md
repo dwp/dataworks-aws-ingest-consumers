@@ -118,7 +118,7 @@ Note: Can give a lot of false positives, see query below
    ```
 
 #### Consumer lags
-Note the "x 10" is based on there being 10 containers per env (see `locals.tf`).
+Note the "x 20" is based on there being 20 containers per env (see `locals.tf`).
 
    ```
    # k2hb max consumer group lag (no NaN)
@@ -126,7 +126,7 @@ Note the "x 10" is based on there being 10 containers per env (see `locals.tf`).
    | filter message = "Max record lag" and base_lag != "NaN"
    | fields @timestamp, message, coalesce(base_lag, 0) as safe_lag
    | stats max(safe_lag) as lag_max_each, 
-       (max(safe_lag) * 10) as estimated_max_group_lag by bin(1h) as time_slice 
+       (max(safe_lag) * 20) as estimated_max_group_lag by bin(1h) as time_slice 
    | sort by time_slice asc 
    ```
 
@@ -166,7 +166,7 @@ With one container we would see "0, 1, 2, 3, 4, 5". With three, "0, 1" and "2, 3
 Seeing more than the desired Max Size in any time period, i.e. an hour, implies a consumer group re-balance occurred, as 
 `count_distinct(partitions)` will see all the combinations that exist.
 
-Seeing less (i.e. 1) means there is a problem as it the UC broker does not have the 10 expected any more.
+Seeing less (i.e. 1) means there is a problem as it the UC broker does not have the 20 expected any more.
 
    ```
    # k2hb number of partitions seen in time period
