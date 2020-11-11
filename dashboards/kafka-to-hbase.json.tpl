@@ -149,25 +149,25 @@
       "properties": {
         "view": "timeSeries",
         "stacked": true,
-        "period": 300,
+        "period": 900,
         "stat": "Sum",
         "metrics": [
           [ "${reconciliation_namespace}",
             "${reconciliation_metric_name_successfully_reconciled}",
             {
-              "label": "Reconciled messages (5m)"
+              "label": "Reconciled messages (15m)"
             }
           ],
           [ "${reconciliation_namespace}",
             "${reconciliation_metric_name_failed_to_be_reconciled}",
             {
-              "label": "Unreconciled messages (5m)"
+              "label": "Unreconciled messages (15m)"
             }
           ],
           [ "${trimmer_namespace}",
             "${reconciliation_metric_name_trimmed_records}",
             {
-              "label": "Trimmed records (5m)"
+              "label": "Trimmed records (15m)"
             }
           ]
         ],
@@ -187,17 +187,17 @@
             "${namespace}",
             "${k2hb_metric_name_number_of_successfully_processed_records}",
             {
-              "label": "Max batch size (5m)"
+              "label": "Max batch size (15m)"
             }
           ],
-          [ { "expression": "MAX(METRICS(\"record_count\"))", "label": "Max batch size (5m)" } ],
-          [ { "expression": "AVG(METRICS(\"record_count\"))", "label": "Average batch size (5m)" } ],
-          [ { "expression": "MIN(METRICS(\"record_count\"))", "label": "Min batch size (5m)" } ]
+          [ { "expression": "MAX(METRICS(\"record_count\"))", "label": "Max batch size (15m)" } ],
+          [ { "expression": "AVG(METRICS(\"record_count\"))", "label": "Average batch size (15m)" } ],
+          [ { "expression": "MIN(METRICS(\"record_count\"))", "label": "Min batch size (15m)" } ]
         ],
         "view": "timeSeries",
         "stacked": true,
         "region": "eu-west-2",
-        "period": 300,
+        "period": 900,
         "title": "Batch sizes over time",
         "liveData": true
       }
@@ -214,14 +214,14 @@
             "${namespace}",
             "${k2hb_metric_name_number_of_successfully_processed_records}",
             {
-              "label": "Records processed (5m)"
+              "label": "Records processed (15m)"
             }
           ],
           [
             "${reconciliation_namespace}",
             "${reconciliation_metric_name_successfully_reconciled}",
             {
-              "label": "Records reconciled (5m)"
+              "label": "Records reconciled (15m)"
             }
           ]
         ],
@@ -229,7 +229,7 @@
         "stacked": false,
         "region": "eu-west-2",
         "stat": "Sum",
-        "period": 300,
+        "period": 900,
         "title": "Records processed over time",
         "yAxis": {
           "left": {
@@ -250,17 +250,17 @@
             "${namespace}",
             "${k2hb_metric_name_number_of_successfully_processed_records}",
             {
-              "label": "Average batch size (5m)"
+              "label": "Average batch size (15m)"
             }
           ],
-          [ { "expression": "MAX(METRICS(\"lag_count\"))", "label": "Max consumer lag (5m)" } ],
-          [ { "expression": "AVG(METRICS(\"lag_count\"))", "label": "Average consumer lag (5m)" } ],
-          [ { "expression": "MIN(METRICS(\"lag_count\"))", "label": "Min consumer lag (5m)" } ]
+          [ { "expression": "MAX(METRICS(\"lag_count\"))", "label": "Max consumer lag (15m)" } ],
+          [ { "expression": "AVG(METRICS(\"lag_count\"))", "label": "Average consumer lag (15m)" } ],
+          [ { "expression": "MIN(METRICS(\"lag_count\"))", "label": "Min consumer lag (15m)" } ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
-        "period": 300,
+        "period": 900,
         "title": "Consumer lag over time",
         "yAxis": {
           "left": {
@@ -281,14 +281,14 @@
             "${namespace}",
             "${k2hb_metric_name_failures_writing_hbase}",
             {
-              "label": "HBase write failures (5m)"
+              "label": "HBase write failures (15m)"
             } ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
         "title": "HBase write failures over time",
-        "period": 300,
+        "period": 900,
         "stat": "Sum"
       }
     },
@@ -304,15 +304,15 @@
             "${namespace}",
             "${k2hb_metric_name_timeouts_reading_kafka}",
             {
-              "label": "HBase read failures (5m)"
+              "label": "HBase read failures (15m)"
             }
           ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
-        "title": "HBase read failures (5m)",
-        "period": 300,
+        "title": "HBase read failures (15m)",
+        "period": 900,
         "stat": "Sum"
       }
     },
@@ -335,7 +335,7 @@
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
-        "period": 300,
+        "period": 900,
         "title": "Average Speed of Batch Writes (Seconds)",
         "stat": "Average",
         "liveData": true,
