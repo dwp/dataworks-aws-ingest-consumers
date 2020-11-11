@@ -247,15 +247,28 @@
       "properties": {
         "metrics": [
           [
-            "${namespace}",
-            "${k2hb_metric_name_number_of_successfully_processed_records}",
+              "${namespace}", 
+              "${k2hb_metric_name_lag_per_partition}", 
+              {"id": "lag_count", "visible": false }
+          ],
+          [
             {
-              "label": "Average batch size (15m)"
+              "expression": "MAX(METRICS(\"lag_count\"))",
+              "label": "Max consumer lag (5m)"
             }
           ],
-          [ { "expression": "MAX(METRICS(\"lag_count\"))", "label": "Max consumer lag (15m)" } ],
-          [ { "expression": "AVG(METRICS(\"lag_count\"))", "label": "Average consumer lag (15m)" } ],
-          [ { "expression": "MIN(METRICS(\"lag_count\"))", "label": "Min consumer lag (15m)" } ]
+          [
+            {
+              "expression": "AVG(METRICS(\"lag_count\"))",
+              "label": "Average consumer lag (5m)"
+            }
+          ],
+          [
+            {
+              "expression": "MIN(METRICS(\"lag_count\"))",
+              "label": "Min consumer lag (5m)"
+            }
+          ]
         ],
         "view": "timeSeries",
         "stacked": false,
