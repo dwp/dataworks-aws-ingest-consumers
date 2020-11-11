@@ -142,9 +142,9 @@
     },
     {
       "type": "metric",
-      "x": 6,
-      "y": 3,
-      "width": 9,
+      "x": 0,
+      "y": 9,
+      "width": 24,
       "height": 6,
       "properties": {
         "view": "timeSeries",
@@ -177,9 +177,9 @@
     },
     {
       "type": "metric",
-      "x": 15,
+      "x": 6,
       "y": 3,
-      "width": 9,
+      "width": 18,
       "height": 6,
       "properties": {
         "metrics": [
@@ -189,23 +189,25 @@
             {
               "label": "Max batch size (5m)"
             }
-          ]
+          ],
+          [ { "expression": "MAX(METRICS(\"record_count\"))", "label": "Max batch size (5m)" } ],
+          [ { "expression": "AVG(METRICS(\"record_count\"))", "label": "Average batch size (5m)" } ],
+          [ { "expression": "MIN(METRICS(\"record_count\"))", "label": "Min batch size (5m)" } ]
         ],
         "view": "timeSeries",
         "stacked": true,
         "region": "eu-west-2",
-        "stat": "Maximum",
         "period": 300,
-        "title": "Max batch size over time",
+        "title": "Batch sizes over time",
         "liveData": true
       }
     },
     {
       "type": "metric",
       "x": 0,
-      "y": 9,
-      "width": 12,
-      "height": 3,
+      "y": 15,
+      "width": 24,
+      "height": 6,
       "properties": {
         "metrics": [
           [
@@ -213,6 +215,13 @@
             "${k2hb_metric_name_number_of_successfully_processed_records}",
             {
               "label": "Records processed (5m)"
+            }
+          ],
+          [
+            "${reconciliation_namespace}",
+            "${reconciliation_metric_name_successfully_reconciled}",
+            {
+              "label": "Records reconciled (5m)"
             }
           ]
         ],
@@ -231,10 +240,10 @@
     },
     {
       "type": "metric",
-      "x": 12,
-      "y": 9,
-      "width": 12,
-      "height": 3,
+      "x": 0,
+      "y": 21,
+      "width": 24,
+      "height": 6,
       "properties": {
         "metrics": [
           [
@@ -243,14 +252,16 @@
             {
               "label": "Average batch size (5m)"
             }
-          ]
+          ],
+          [ { "expression": "MAX(METRICS(\"lag_count\"))", "label": "Max consumer lag (5m)" } ],
+          [ { "expression": "AVG(METRICS(\"lag_count\"))", "label": "Average consumer lag (5m)" } ],
+          [ { "expression": "MIN(METRICS(\"lag_count\"))", "label": "Min consumer lag (5m)" } ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
-        "stat": "Average",
         "period": 300,
-        "title": "Average batch size over time",
+        "title": "Consumer lag over time",
         "yAxis": {
           "left": {
             "showUnits": false
@@ -261,7 +272,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 12,
+      "y": 27,
       "width": 12,
       "height": 3,
       "properties": {
@@ -284,7 +295,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 12,
+      "y": 27,
       "width": 12,
       "height": 3,
       "properties": {
@@ -308,7 +319,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 15,
+      "y": 30,
       "width": 12,
       "height": 6,
       "properties": {
@@ -338,7 +349,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 15,
+      "y": 30,
       "width": 12,
       "height": 6,
       "properties": {
@@ -356,7 +367,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 21,
+      "y": 36,
       "width": 12,
       "height": 6,
       "properties": {
@@ -383,7 +394,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 21,
+      "y": 36,
       "width": 12,
       "height": 6,
       "properties": {
@@ -414,7 +425,7 @@
     {
       "type": "log",
       "x": 0,
-      "y": 27,
+      "y": 42,
       "width": 24,
       "height": 6,
       "properties": {
@@ -423,25 +434,6 @@
         "stacked": false,
         "view": "table",
         "title": "Time taken for inserts"
-      }
-    },
-    {
-      "type": "metric",
-      "x": 0,
-      "y": 33,
-      "width": 24,
-      "height": 6,
-      "properties": {
-        "metrics": [
-          [ "${namespace}", "${k2hb_metric_name_number_of_successfully_processed_records}" ],
-          [ "${reconciliation_namespace}", "${reconciliation_metric_name_successfully_reconciled}" ]
-        ],
-        "view": "timeSeries",
-        "stacked": false,
-        "region": "eu-west-2",
-        "stat": "Sum",
-        "period": 900,
-        "title": "Records Successfully processed vs Successfully reconciled"
       }
     }
   ]
