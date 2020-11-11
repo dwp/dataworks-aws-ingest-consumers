@@ -184,15 +184,28 @@
       "properties": {
         "metrics": [
           [
-            "${namespace}",
-            "${k2hb_metric_name_number_of_successfully_processed_records}",
+              "${namespace}", 
+              "${k2hb_metric_name_number_of_successfully_processed_records}", 
+              {"id": "record_count", "visible": false }
+          ],
+          [
             {
-              "label": "Max batch size (15m)"
+              "expression": "MAX(METRICS(\"record_count\"))",
+              "label": "Max batch size (5m)"
             }
           ],
-          [ { "expression": "MAX(METRICS(\"record_count\"))", "label": "Max batch size (15m)" } ],
-          [ { "expression": "AVG(METRICS(\"record_count\"))", "label": "Average batch size (15m)" } ],
-          [ { "expression": "MIN(METRICS(\"record_count\"))", "label": "Min batch size (15m)" } ]
+          [
+            {
+              "expression": "AVG(METRICS(\"record_count\"))",
+              "label": "Average batch size (5m)"
+            }
+          ],
+          [
+            {
+              "expression": "MIN(METRICS(\"record_count\"))",
+              "label": "Min batch size (5m)"
+            }
+          ]
         ],
         "view": "timeSeries",
         "stacked": true,
