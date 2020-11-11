@@ -142,32 +142,32 @@
     },
     {
       "type": "metric",
-      "x": 6,
-      "y": 3,
-      "width": 9,
+      "x": 0,
+      "y": 9,
+      "width": 24,
       "height": 6,
       "properties": {
         "view": "timeSeries",
         "stacked": true,
-        "period": 300,
+        "period": 900,
         "stat": "Sum",
         "metrics": [
           [ "${reconciliation_namespace}",
             "${reconciliation_metric_name_successfully_reconciled}",
             {
-              "label": "Reconciled messages (5m)"
+              "label": "Reconciled messages (15m)"
             }
           ],
           [ "${reconciliation_namespace}",
             "${reconciliation_metric_name_failed_to_be_reconciled}",
             {
-              "label": "Unreconciled messages (5m)"
+              "label": "Unreconciled messages (15m)"
             }
           ],
           [ "${trimmer_namespace}",
             "${reconciliation_metric_name_trimmed_records}",
             {
-              "label": "Trimmed records (5m)"
+              "label": "Trimmed records (15m)"
             }
           ]
         ],
@@ -177,9 +177,9 @@
     },
     {
       "type": "metric",
-      "x": 15,
+      "x": 6,
       "y": 3,
-      "width": 9,
+      "width": 18,
       "height": 6,
       "properties": {
         "metrics": [
@@ -210,7 +210,7 @@
         "view": "timeSeries",
         "stacked": true,
         "region": "eu-west-2",
-        "period": 300,
+        "period": 900,
         "title": "Batch sizes over time",
         "liveData": true
       }
@@ -218,16 +218,23 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 9,
-      "width": 12,
-      "height": 3,
+      "y": 15,
+      "width": 24,
+      "height": 6,
       "properties": {
         "metrics": [
           [
             "${namespace}",
             "${k2hb_metric_name_number_of_successfully_processed_records}",
             {
-              "label": "Records processed (5m)"
+              "label": "Records processed (15m)"
+            }
+          ],
+          [
+            "${reconciliation_namespace}",
+            "${reconciliation_metric_name_successfully_reconciled}",
+            {
+              "label": "Records reconciled (15m)"
             }
           ]
         ],
@@ -235,7 +242,7 @@
         "stacked": false,
         "region": "eu-west-2",
         "stat": "Sum",
-        "period": 300,
+        "period": 900,
         "title": "Records processed over time",
         "yAxis": {
           "left": {
@@ -246,10 +253,10 @@
     },
     {
       "type": "metric",
-      "x": 12,
-      "y": 9,
-      "width": 12,
-      "height": 3,
+      "x": 0,
+      "y": 21,
+      "width": 24,
+      "height": 6,
       "properties": {
         "metrics": [
           [
@@ -279,7 +286,7 @@
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
-        "period": 300,
+        "period": 900,
         "title": "Consumer lag over time",
         "yAxis": {
           "left": {
@@ -291,7 +298,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 12,
+      "y": 27,
       "width": 12,
       "height": 3,
       "properties": {
@@ -300,21 +307,21 @@
             "${namespace}",
             "${k2hb_metric_name_failures_writing_hbase}",
             {
-              "label": "HBase write failures (5m)"
+              "label": "HBase write failures (15m)"
             } ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
         "title": "HBase write failures over time",
-        "period": 300,
+        "period": 900,
         "stat": "Sum"
       }
     },
     {
       "type": "metric",
       "x": 12,
-      "y": 12,
+      "y": 27,
       "width": 12,
       "height": 3,
       "properties": {
@@ -323,22 +330,22 @@
             "${namespace}",
             "${k2hb_metric_name_timeouts_reading_kafka}",
             {
-              "label": "HBase read failures (5m)"
+              "label": "HBase read failures (15m)"
             }
           ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
-        "title": "HBase read failures (5m)",
-        "period": 300,
+        "title": "HBase read failures (15m)",
+        "period": 900,
         "stat": "Sum"
       }
     },
     {
       "type": "metric",
       "x": 0,
-      "y": 15,
+      "y": 30,
       "width": 12,
       "height": 6,
       "properties": {
@@ -354,7 +361,7 @@
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
-        "period": 300,
+        "period": 900,
         "title": "Average Speed of Batch Writes (Seconds)",
         "stat": "Average",
         "liveData": true,
@@ -368,7 +375,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 15,
+      "y": 30,
       "width": 12,
       "height": 6,
       "properties": {
@@ -386,7 +393,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 21,
+      "y": 36,
       "width": 12,
       "height": 6,
       "properties": {
@@ -413,7 +420,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 21,
+      "y": 36,
       "width": 12,
       "height": 6,
       "properties": {
@@ -444,7 +451,7 @@
     {
       "type": "log",
       "x": 0,
-      "y": 27,
+      "y": 42,
       "width": 24,
       "height": 6,
       "properties": {
