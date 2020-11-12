@@ -229,3 +229,12 @@ Seeing less (i.e. 1) means there is a problem as it the UC broker does not have 
    | stats min(time_taken) as min_time, avg(time_taken) as average_time, max(time_taken) as max_time by message
    | sort average_time desc
    ```
+
+# Processing lag
+   
+   ```
+   # k2hb max processing lag by table for given time period
+   filter message = "Put record" and time_since_last_modified != "" and time_since_last_modified > 3600
+   | stats max(time_since_last_modified) as max_lag by table
+   | sort table
+   ```
