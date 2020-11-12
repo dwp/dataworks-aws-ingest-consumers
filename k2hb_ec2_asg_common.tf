@@ -396,7 +396,8 @@ resource "aws_security_group_rule" "k2hb_common_to_ucfs_broker" {
 }
 
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_london_broker" {
-  count             = local.k2hb_data_source_is_ucfs[local.environment] ? 1 : 0
+  # In INT we need this either way to prove  connectivity with UC
+  count             = (local.k2hb_data_source_is_ucfs[local.environment] || local.peer_with_ucfs_london[local.environment]) ? 1 : 0
   description       = "Allow k2hb to reach UCFS Kafka brokers (London)"
   type              = "egress"
   from_port         = local.kafka_broker_port[local.environment]
