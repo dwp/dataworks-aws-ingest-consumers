@@ -184,11 +184,11 @@ locals {
   }
 
   k2hb_equality_kafka_max_fetch_bytes = {
-    development = 100000000
-    qa          = 100000000
-    integration = 100000000
-    preprod     = 100000000
-    production  = 100000000
+    development = 10000000
+    qa          = 10000000
+    integration = 10000000
+    preprod     = 10000000
+    production  = 10000000
   }
 
   k2hb_audit_kafka_max_fetch_bytes = {
@@ -208,11 +208,11 @@ locals {
   }
 
   k2hb_equality_kafka_max_partition_fetch_bytes = {
-    development = 100000000
-    qa          = 100000000
-    integration = 100000000
-    preprod     = 100000000
-    production  = 100000000
+    development = 10000000
+    qa          = 10000000
+    integration = 10000000
+    preprod     = 10000000
+    production  = 10000000
   }
 
   k2hb_audit_kafka_max_partition_fetch_bytes = {
