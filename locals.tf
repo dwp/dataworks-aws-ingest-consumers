@@ -229,7 +229,7 @@ locals {
     qa          = "PT5M"
     integration = "PT5M"
     preprod     = "PT5M"
-    production  = "PT10M"
+    production  = "PT30M"
   }
 
   # This is how often we promise to talk to the kafka broker so we do not get kicked out of the consumer group
