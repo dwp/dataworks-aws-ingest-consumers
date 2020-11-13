@@ -106,6 +106,8 @@ resource "aws_launch_template" "k2hb_equality" {
     k2hb_manifest_prefix                             = local.ingest_manifest_write_locations.equality_prefix
     k2hb_write_manifests                             = local.k2hb_equality_write_manifests[local.environment]
     k2hb_auto_commit_metadata_store_inserts          = local.k2hb_equality_auto_commit_metadata_store_inserts[local.environment]
+    k2hb_kafka_max_fetch_bytes                       = local.k2hb_equality_kafka_max_fetch_bytes[local.environment]
+    k2hb_kafka_max_partition_fetch_bytes             = local.k2hb_equality_kafka_max_partition_fetch_bytes[local.environment]
   }))
 
   instance_initiated_shutdown_behavior = "terminate"
