@@ -176,51 +176,51 @@ locals {
   }
 
   k2hb_main_kafka_max_fetch_bytes = {
-    development = 500000000
-    qa          = 500000000
-    integration = 500000000
-    preprod     = 500000000
-    production  = 500000000
+    development = 20000000
+    qa          = 20000000
+    integration = 20000000
+    preprod     = 20000000
+    production  = 20000000
   }
 
   k2hb_equality_kafka_max_fetch_bytes = {
-    development = 100000000
-    qa          = 100000000
-    integration = 100000000
-    preprod     = 100000000
-    production  = 100000000
+    development = 20000000
+    qa          = 20000000
+    integration = 20000000
+    preprod     = 20000000
+    production  = 20000000
   }
 
   k2hb_audit_kafka_max_fetch_bytes = {
-    development = 500000000
-    qa          = 500000000
-    integration = 500000000
-    preprod     = 500000000
-    production  = 500000000
+    development = 20000000
+    qa          = 20000000
+    integration = 20000000
+    preprod     = 20000000
+    production  = 20000000
   }
 
   k2hb_main_kafka_max_partition_fetch_bytes = {
-    development = 500000000
-    qa          = 500000000
-    integration = 500000000
-    preprod     = 500000000
-    production  = 500000000
+    development = 20000000
+    qa          = 20000000
+    integration = 20000000
+    preprod     = 20000000
+    production  = 20000000
   }
 
   k2hb_equality_kafka_max_partition_fetch_bytes = {
-    development = 100000000
-    qa          = 100000000
-    integration = 100000000
-    preprod     = 100000000
-    production  = 100000000
+    development = 20000000
+    qa          = 20000000
+    integration = 20000000
+    preprod     = 20000000
+    production  = 20000000
   }
 
   k2hb_audit_kafka_max_partition_fetch_bytes = {
-    development = 500000000
-    qa          = 500000000
-    integration = 500000000
-    preprod     = 500000000
-    production  = 500000000
+    development = 20000000
+    qa          = 20000000
+    integration = 20000000
+    preprod     = 20000000
+    production  = 20000000
   }
 
   k2hb_kafka_main_consumer_group     = "dataworks-ucfs-kafka-to-hbase-ingest-${local.environment}"
