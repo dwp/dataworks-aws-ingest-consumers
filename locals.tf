@@ -175,6 +175,54 @@ locals {
     production  = "false"
   }
 
+  k2hb_main_kafka_max_fetch_bytes = {
+    development = 100000000
+    qa          = 100000000
+    integration = 100000000
+    preprod     = 100000000
+    production  = 100000000
+  }
+
+  k2hb_equality_kafka_max_fetch_bytes = {
+    development = 100000000
+    qa          = 100000000
+    integration = 100000000
+    preprod     = 100000000
+    production  = 100000000
+  }
+
+  k2hb_audit_kafka_max_fetch_bytes = {
+    development = 100000000
+    qa          = 100000000
+    integration = 100000000
+    preprod     = 100000000
+    production  = 100000000
+  }
+
+  k2hb_main_kafka_max_partition_fetch_bytes = {
+    development = 100000000
+    qa          = 100000000
+    integration = 100000000
+    preprod     = 100000000
+    production  = 100000000
+  }
+
+  k2hb_equality_kafka_max_partition_fetch_bytes = {
+    development = 100000000
+    qa          = 100000000
+    integration = 100000000
+    preprod     = 100000000
+    production  = 100000000
+  }
+
+  k2hb_audit_kafka_max_partition_fetch_bytes = {
+    development = 100000000
+    qa          = 100000000
+    integration = 100000000
+    preprod     = 100000000
+    production  = 100000000
+  }
+
   k2hb_kafka_main_consumer_group     = "dataworks-ucfs-kafka-to-hbase-ingest-${local.environment}"
   k2hb_kafka_equality_consumer_group = "dataworks-ucfs-kafka-equality-to-hbase-ingest-${local.environment}"
   k2hb_kafka_audit_consumer_group    = "dataworks-ucfs-kafka-audit-to-hbase-ingest-${local.environment}"
@@ -229,7 +277,7 @@ locals {
     qa          = "PT5M"
     integration = "PT5M"
     preprod     = "PT5M"
-    production  = "PT30M"
+    production  = "PT20M"
   }
 
   # This is how often we promise to talk to the kafka broker so we do not get kicked out of the consumer group
