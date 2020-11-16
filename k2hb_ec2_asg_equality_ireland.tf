@@ -87,6 +87,7 @@ resource "aws_launch_template" "k2hb_equality" {
     k2hb_rds_endpoint                                = local.ingest_metadata_store.rds.endpoint
     k2hb_rds_port                                    = local.ingest_metadata_store.rds.port
     k2hb_kafka_topic_regex                           = local.kafka_consumer_equality_topics_regex[local.environment]
+    k2hb_kafka_topic_exclusion_regex                 = "" // this stack has no exclusions
     k2hb_kafka_meta_refresh_ms                       = local.kafka_k2hb_meta_refresh_ms[local.environment]
     k2hb_kafka_max_poll_interval_ms                  = local.k2hb_max_poll_interval_ms[local.environment]
     k2hb_kafka_poll_timeout                          = local.kafka_k2hb_poll_timeout[local.environment]
@@ -140,8 +141,8 @@ resource "aws_launch_template" "k2hb_equality" {
 resource "aws_autoscaling_group" "k2hb_equality" {
   name_prefix               = "${aws_launch_template.k2hb_equality.name}-lt_ver${aws_launch_template.k2hb_equality.latest_version}_"
   min_size                  = local.k2hb_asg_min[local.environment]
-  desired_capacity          = var.k2hb_equality_asg_desired[local.environment]
-  max_size                  = var.k2hb_equality_asg_max[local.environment]
+  desired_capacity          = var.k2hb_equality_ireland_asg_desired[local.environment]
+  max_size                  = var.k2hb_equality_ireland_asg_max[local.environment]
   health_check_grace_period = 600
   health_check_type         = "EC2"
   force_delete              = true
