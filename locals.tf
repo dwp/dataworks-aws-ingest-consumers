@@ -383,11 +383,12 @@ locals {
 
   kafka_consumer_main_dedicated_topics_regex = {
     // Match only the "db.*" collections that have the busiest workload
-    development = "^(db.calculator.calculationParts|db.claimant-history.claimHistoryEntry|db.agent-core.systemWorkGroupAllocation)$"
-    qa          = "^(db.calculator.calculationParts|db.claimant-history.claimHistoryEntry|db.agent-core.systemWorkGroupAllocation)$"
-    integration = "^(db.calculator.calculationParts|db.claimant-history.claimHistoryEntry|db.agent-core.systemWorkGroupAllocation)$"
-    preprod     = "^(db.calculator.calculationParts|db.claimant-history.claimHistoryEntry|db.agent-core.systemWorkGroupAllocation)$"
-    production  = "^(db.calculator.calculationParts|db.claimant-history.claimHistoryEntry|db.agent-core.systemWorkGroupAllocation)$"
+    // Use a pipe separated list.
+    development = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation)$"
+    qa          = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation)$"
+    integration = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation)$"
+    preprod     = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation)$"
+    production  = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation)$"
   }
 
   // Use in DW-4508
