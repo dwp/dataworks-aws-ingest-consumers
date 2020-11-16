@@ -383,11 +383,11 @@ locals {
 
   kafka_consumer_main_dedicated_topics_regex = {
     // Match only the "db.*" collections that have the busiest workload
-    development = "^(db.core.a|db.core.b)$"
-    qa          = "^(db.core.a|db.core.b)$"
-    integration = "^(db.core.a|db.core.b)$"
-    preprod     = "^(db.core.a|db.core.b)$"
-    production  = "^(db.core.a|db.core.b)$"
+    development = "^(db.calculator.calculationParts|db.claimant_history.claimHistoryEntry|db.agent_core.systemWorkGroupAllocation)$"
+    qa          = "^(db.calculator.calculationParts|db.claimant_history.claimHistoryEntry|db.agent_core.systemWorkGroupAllocation)$"
+    integration = "^(db.calculator.calculationParts|db.claimant_history.claimHistoryEntry|db.agent_core.systemWorkGroupAllocation)$"
+    preprod     = "^(db.calculator.calculationParts|db.claimant_history.claimHistoryEntry|db.agent_core.systemWorkGroupAllocation)$"
+    production  = "^(db.calculator.calculationParts|db.claimant_history.claimHistoryEntry|db.agent_core.systemWorkGroupAllocation)$"
   }
 
   // Use in DW-4508
