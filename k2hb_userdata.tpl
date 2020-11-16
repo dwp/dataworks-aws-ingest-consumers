@@ -114,6 +114,7 @@ cat << EOF > /opt/k2hb/settings
     export K2HB_JAR_COMPONENT_NAME="jar_file"
     export K2HB_KAFKA_CONSUMER_GROUP="${k2hb_kafka_consumer_group}"
     export K2HB_KAFKA_TOPIC_REGEX="${k2hb_kafka_topic_regex}"
+    export K2HB_KAFKA_TOPIC_EXCLUSION_REGEX="${k2hb_kafka_topic_exclusion_regex}"
     export K2HB_KAFKA_META_REFRESH_MS="${k2hb_kafka_meta_refresh_ms}"
     export K2HB_KAFKA_MAX_POLL_INTERVAL_MS="${k2hb_kafka_max_poll_interval_ms}"
     export K2HB_KAFKA_POLL_TIMEOUT="${k2hb_kafka_poll_timeout}"

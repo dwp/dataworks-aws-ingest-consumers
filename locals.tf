@@ -381,6 +381,15 @@ locals {
     production  = "^(db[.]{1}[-\\w]+[.]{1}[-.\\w]+)$"
   }
 
+  kafka_consumer_main_dedicated_topics_regex = {
+    // Match only the "db.*" collections that have the busiest workload
+    development = "^(db.core.a|db.core.b)$"
+    qa          = "^(db.core.a|db.core.b)$"
+    integration = "^(db.core.a|db.core.b)$"
+    preprod     = "^(db.core.a|db.core.b)$"
+    production  = "^(db.core.a|db.core.b)$"
+  }
+
   // Use in DW-4508
   kafka_consumer_equality_topics_regex = {
     //match exactly "data.equality" only, with a literal dot
