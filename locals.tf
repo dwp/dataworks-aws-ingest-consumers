@@ -453,7 +453,7 @@ locals {
     qa          = true
     integration = true
     preprod     = true
-    production  = true
+    production  = false
   }
 
   k2hb_metric_name_number_of_successfully_processed_batches = "The number of batches successfully processed"
