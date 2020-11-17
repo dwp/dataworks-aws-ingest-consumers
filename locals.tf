@@ -445,7 +445,7 @@ locals {
     qa          = true
     integration = true
     preprod     = true
-    production  = false # Will run ad-hoc as and when needed
+    production  = true
   }
 
   k2hb_audit_write_to_metadata_store = {

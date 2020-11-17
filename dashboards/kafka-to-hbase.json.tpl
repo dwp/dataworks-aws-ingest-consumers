@@ -148,7 +148,7 @@
       "height": 6,
       "properties": {
         "view": "timeSeries",
-        "stacked": true,
+        "stacked": false,
         "period": 900,
         "stat": "Sum",
         "metrics": [
@@ -208,7 +208,7 @@
           ]
         ],
         "view": "timeSeries",
-        "stacked": true,
+        "stacked": false,
         "region": "eu-west-2",
         "period": 900,
         "title": "Batch sizes over time",
@@ -267,19 +267,19 @@
           [
             {
               "expression": "MAX(METRICS(\"lag_count\"))",
-              "label": "Max consumer lag (5m)"
+              "label": "Max lag (5m)"
             }
           ],
           [
             {
               "expression": "AVG(METRICS(\"lag_count\"))",
-              "label": "Average consumer lag (5m)"
+              "label": "Average lag (5m)"
             }
           ],
           [
             {
               "expression": "MIN(METRICS(\"lag_count\"))",
-              "label": "Min consumer lag (5m)"
+              "label": "Min lag (5m)"
             }
           ]
         ],
@@ -287,7 +287,7 @@
         "stacked": false,
         "region": "eu-west-2",
         "period": 900,
-        "title": "Consumer lag over time",
+        "title": "Processing lag over time (all topics)",
         "yAxis": {
           "left": {
             "showUnits": false
@@ -299,45 +299,36 @@
       "type": "metric",
       "x": 0,
       "y": 27,
-      "width": 12,
-      "height": 3,
+      "width": 24,
+      "height": 6,
       "properties": {
         "metrics": [
           [
             "${namespace}",
-            "${k2hb_metric_name_failures_writing_hbase}",
+            "${k2hb_metric_name_failed_batches}",
             {
-              "label": "HBase write failures (15m)"
-            } ]
-        ],
-        "view": "timeSeries",
-        "stacked": false,
-        "region": "eu-west-2",
-        "title": "HBase write failures over time",
-        "period": 900,
-        "stat": "Sum"
-      }
-    },
-    {
-      "type": "metric",
-      "x": 12,
-      "y": 27,
-      "width": 12,
-      "height": 3,
-      "properties": {
-        "metrics": [
+              "label": "HBase failed batches (15m)"
+            }
+          ],
           [
             "${namespace}",
             "${k2hb_metric_name_timeouts_reading_kafka}",
             {
               "label": "HBase read failures (15m)"
             }
+          ],
+          [
+            "${namespace}",
+            "${k2hb_metric_name_failures_writing_hbase}",
+            {
+              "label": "HBase write failures (15m)"
+            }
           ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
-        "title": "HBase read failures (15m)",
+        "title": "HBase failures over time",
         "period": 900,
         "stat": "Sum"
       }
@@ -345,7 +336,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 30,
+      "y": 33,
       "width": 12,
       "height": 6,
       "properties": {
@@ -375,7 +366,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 30,
+      "y": 33,
       "width": 12,
       "height": 6,
       "properties": {
@@ -393,7 +384,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 36,
+      "y": 39,
       "width": 12,
       "height": 6,
       "properties": {
@@ -420,7 +411,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 36,
+      "y": 39,
       "width": 12,
       "height": 6,
       "properties": {
@@ -451,7 +442,7 @@
     {
       "type": "log",
       "x": 0,
-      "y": 42,
+      "y": 45,
       "width": 24,
       "height": 6,
       "properties": {
@@ -460,6 +451,20 @@
         "stacked": false,
         "view": "table",
         "title": "Time taken for inserts"
+      }
+    },
+    {
+      "type": "log",
+      "x": 0,
+      "y": 51,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "query": "SOURCE '${log_group}' | filter message = \"Put record\" and time_since_last_modified != \"\" and time_since_last_modified > 3600 | stats max(time_since_last_modified) as max_lag by table | sort max_lag desc",
+        "region": "eu-west-2",
+        "stacked": false,
+        "view": "table",
+        "title": "Max processing lag per topic (when over one hour)"
       }
     }
   ]
