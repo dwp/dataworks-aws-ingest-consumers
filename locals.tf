@@ -384,11 +384,11 @@ locals {
   kafka_consumer_main_dedicated_topics_regex = {
     // Match only the "db.*" collections that have the busiest workload
     // Use a pipe separated list.
-    development = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation)$"
-    qa          = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation)$"
-    integration = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation)$"
-    preprod     = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation)$"
-    production  = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation)$"
+    development = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation|db[.]core[.]wizard|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]claimant-history[.]resolvedProperties|db[.]agent-core[.]caseLoadEvent|db[.]deductions[.]estimatedDeductions|db[.]team-core[.]recalculateAgentStats|db[.]core[.]disclosureData|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]core[.]contract|db[.]agent-core[.]agentToDo|db[.]core[.]toDo|db[.]core[.]statement)$"
+    qa          = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation|db[.]core[.]wizard|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]claimant-history[.]resolvedProperties|db[.]agent-core[.]caseLoadEvent|db[.]deductions[.]estimatedDeductions|db[.]team-core[.]recalculateAgentStats|db[.]core[.]disclosureData|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]core[.]contract|db[.]agent-core[.]agentToDo|db[.]core[.]toDo|db[.]core[.]statement)$"
+    integration = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation|db[.]core[.]wizard|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]claimant-history[.]resolvedProperties|db[.]agent-core[.]caseLoadEvent|db[.]deductions[.]estimatedDeductions|db[.]team-core[.]recalculateAgentStats|db[.]core[.]disclosureData|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]core[.]contract|db[.]agent-core[.]agentToDo|db[.]core[.]toDo|db[.]core[.]statement)$"
+    preprod     = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation|db[.]core[.]wizard|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]claimant-history[.]resolvedProperties|db[.]agent-core[.]caseLoadEvent|db[.]deductions[.]estimatedDeductions|db[.]team-core[.]recalculateAgentStats|db[.]core[.]disclosureData|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]core[.]contract|db[.]agent-core[.]agentToDo|db[.]core[.]toDo|db[.]core[.]statement)$"
+    production  = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation|db[.]core[.]wizard|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]claimant-history[.]resolvedProperties|db[.]agent-core[.]caseLoadEvent|db[.]deductions[.]estimatedDeductions|db[.]team-core[.]recalculateAgentStats|db[.]core[.]disclosureData|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]core[.]contract|db[.]agent-core[.]agentToDo|db[.]core[.]toDo|db[.]core[.]statement)$"
   }
 
   // Use in DW-4508
@@ -453,7 +453,7 @@ locals {
     qa          = true
     integration = true
     preprod     = true
-    production  = true
+    production  = false
   }
 
   k2hb_metric_name_number_of_successfully_processed_batches = "The number of batches successfully processed"
@@ -502,12 +502,13 @@ locals {
   ingest_no_proxy_list                      = data.terraform_remote_state.ingest.outputs.vpc.vpc.no_proxy_list
   ingest_manifest_write_locations           = data.terraform_remote_state.ingest.outputs.k2hb_manifest_write_locations
   ingest_subnets                            = data.terraform_remote_state.ingest.outputs.ingestion_subnets
-  ingest_hbase_fqdn                         = data.terraform_remote_state.ingest.outputs.aws_emr_cluster.fqdn
-  ingest_hbase_emr_common_sg_id             = data.terraform_remote_state.ingest.outputs.emr_common_sg.id
   ingest_log_groups                         = data.terraform_remote_state.ingest.outputs.log_groups
   ingest_vpc_interface_vpce_sg_id           = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
   ingest_vpc_prefix_list_ids_s3             = data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3
   ingest_input_bucket_cmk_arn               = data.terraform_remote_state.ingest.outputs.input_bucket_cmk.arn
+  
+  ingest_hbase_fqdn                         = data.terraform_remote_state.internal_compute.outputs.aws_emr_cluster.fqdn
+  ingest_hbase_emr_common_sg_id             = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.common_sg_id
 
   internal_compute_manifest_bucket      = data.terraform_remote_state.internal_compute.outputs.manifest_bucket
   internal_compute_manifest_bucket_cmk  = data.terraform_remote_state.internal_compute.outputs.manifest_bucket_cmk
