@@ -183,36 +183,30 @@
       "height": 6,
       "properties": {
         "metrics": [
-          [
-              "${namespace}", 
-              "${k2hb_metric_name_number_of_successfully_processed_records}", 
-              {"id": "record_count", "visible": false }
+          [ 
+              { 
+                  "expression": "SEARCH('{${namespace}} MetricName=\"${k2hb_metric_name_number_of_successfully_processed_records}\"', 'Minimum', 900)",
+                  "label": "Min batch size (5m)" 
+              } 
           ],
-          [
-            {
-              "expression": "MAX(METRICS(\"record_count\"))",
-              "label": "Max batch size (5m)"
-            }
+          [ 
+              { 
+                  "expression": "SEARCH('{${namespace}} MetricName=\"${k2hb_metric_name_number_of_successfully_processed_records}\"', 'Average', 900)",
+                  "label": "Average batch size (5m)" 
+              } 
           ],
-          [
-            {
-              "expression": "AVG(METRICS(\"record_count\"))",
-              "label": "Average batch size (5m)"
-            }
-          ],
-          [
-            {
-              "expression": "MIN(METRICS(\"record_count\"))",
-              "label": "Min batch size (5m)"
-            }
+          [ 
+              { 
+                  "expression": "SEARCH('{${namespace}} MetricName=\"${k2hb_metric_name_number_of_successfully_processed_records}\"', 'Maximum', 900)",
+                  "label": "Max batch size (5m)" 
+              } 
           ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
-        "period": 900,
         "title": "Batch sizes over time",
-        "liveData": true
+        "liveData": false
       }
     },
     {
@@ -259,35 +253,29 @@
       "height": 6,
       "properties": {
         "metrics": [
-          [
-              "${namespace}", 
-              "${k2hb_metric_name_lag_per_partition}", 
-              {"id": "lag_count", "visible": false }
+          [ 
+              { 
+                  "expression": "SEARCH('{${namespace}} MetricName=\"${k2hb_metric_name_lag_per_partition}\"', 'Minimum', 900)",
+                  "label": "Min lag in seconds (5m)" 
+              } 
           ],
-          [
-            {
-              "expression": "MAX(METRICS(\"lag_count\"))",
-              "label": "Max lag (5m)"
-            }
+          [ 
+              { 
+                  "expression": "SEARCH('{${namespace}} MetricName=\"${k2hb_metric_name_lag_per_partition}\"', 'Average', 900)",
+                  "label": "Average lag in seconds (5m)" 
+              } 
           ],
-          [
-            {
-              "expression": "AVG(METRICS(\"lag_count\"))",
-              "label": "Average lag (5m)"
-            }
-          ],
-          [
-            {
-              "expression": "MIN(METRICS(\"lag_count\"))",
-              "label": "Min lag (5m)"
-            }
+          [ 
+              { 
+                  "expression": "SEARCH('{${namespace}} MetricName=\"${k2hb_metric_name_lag_per_partition}\"', 'Maximum', 900)",
+                  "label": "Max lag in seconds (5m)" 
+              } 
           ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "eu-west-2",
-        "period": 900,
-        "title": "Processing lag over time (all topics)",
+        "title": "Processing lag over time in seconds (all topics)",
         "yAxis": {
           "left": {
             "showUnits": false
@@ -464,7 +452,7 @@
         "region": "eu-west-2",
         "stacked": false,
         "view": "table",
-        "title": "Max processing lag per topic (when over one hour)"
+        "title": "Max processing lag in seconds per topic (when over one hour)"
       }
     }
   ]
