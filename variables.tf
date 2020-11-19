@@ -50,7 +50,7 @@ variable "k2hb_audit_ec2_size" {
     qa          = "t3.medium"
     integration = "t3.medium"
     preprod     = "t3.medium"
-    production  = "c5.large"
+    production  = "c5.xlarge"
   }
 }
 
@@ -80,7 +80,7 @@ variable "k2hb_audit_max_memory_allocation" {
     qa          = "-Xmx1g"
     integration = "-Xmx1g"
     preprod     = "-Xmx1g"
-    production  = "-Xmx2g"
+    production  = "-Xmx4g"
   }
 }
 
@@ -91,7 +91,7 @@ variable "k2hb_main_ireland_asg_desired" {
     qa          = 0  //stubbed env
     integration = 0  //stubbed env and UC now in London
     preprod     = 0  // UC now in London
-    production  = 21 // Switch to London on 21 Nov 2020
+    production  = 15 // Switch to London on 21 Nov 2020
   }
 }
 
@@ -102,7 +102,7 @@ variable "k2hb_main_ireland_asg_max" {
     qa          = 0  //stubbed env
     integration = 0  //stubbed env and now in London
     preprod     = 0  // UC now in London
-    production  = 21 // Switch to London on 21 Nov 2020
+    production  = 15 // Switch to London on 21 Nov 2020
   }
 }
 
@@ -113,7 +113,7 @@ variable "k2hb_main_dedicated_ireland_asg_desired" {
     qa          = 0  //stubbed env
     integration = 0  //stubbed env and UC now in London
     preprod     = 0  // UC now in London
-    production  = 21 // Switch to London on 21 Nov 2020
+    production  = 15 // Switch to London on 21 Nov 2020
   }
 }
 
@@ -124,7 +124,7 @@ variable "k2hb_main_dedicated_ireland_asg_max" {
     qa          = 0  //stubbed env
     integration = 0  //stubbed env and now in London
     preprod     = 0  // UC now in London
-    production  = 21 // Switch to London on 21 Nov 2020
+    production  = 15 // Switch to London on 21 Nov 2020
   }
 }
 
@@ -223,7 +223,7 @@ variable "k2hb_audit_ireland_asg_desired" {
     qa          = 0  //stubbed env
     integration = 0  //stubbed env + UC now in London
     preprod     = 0  // UC now in London
-    production  = 21 // Switch to London on 21 Nov 2020
+    production  = 15 // Switch to London on 21 Nov 2020
   }
 }
 
@@ -234,7 +234,7 @@ variable "k2hb_audit_ireland_asg_max" {
     qa          = 0  //stubbed env
     integration = 0  //stubbed env + UC now in London
     preprod     = 0  // UC now in London
-    production  = 21 // Switch to London on 21 Nov 2020
+    production  = 15 // Switch to London on 21 Nov 2020
   }
 }
 
