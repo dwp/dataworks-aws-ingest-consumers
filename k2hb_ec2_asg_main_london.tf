@@ -87,6 +87,7 @@ resource "aws_launch_template" "k2hb_main_london" {
     k2hb_rds_endpoint                                = local.ingest_metadata_store.rds.endpoint
     k2hb_rds_port                                    = local.ingest_metadata_store.rds.port
     k2hb_kafka_topic_regex                           = local.kafka_consumer_main_topics_regex[local.environment]
+    k2hb_kafka_topic_exclusion_regex                 = local.kafka_consumer_main_dedicated_topics_regex[local.environment] // exclude the dedicated ones
     k2hb_kafka_meta_refresh_ms                       = local.kafka_k2hb_meta_refresh_ms[local.environment]
     k2hb_kafka_max_poll_interval_ms                  = local.k2hb_max_poll_interval_ms[local.environment]
     k2hb_kafka_poll_timeout                          = local.kafka_k2hb_poll_timeout[local.environment]

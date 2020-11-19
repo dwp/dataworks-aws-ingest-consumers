@@ -109,12 +109,12 @@ module "hbase_connection_timeout_occurrences_greater_than_threshold_filter_k2hb_
 resource "aws_cloudwatch_log_metric_filter" "consumer_lag_k2hb_equalities" {
   log_group_name = local.k2hb_ec2_equality_logs_name
   name           = local.k2hb_metric_name_lag_per_partition
-  pattern        = "{ $.message = \"Max record lag\" && $.lag != \"NaN\"  }"
+  pattern        = "{ $.message = \"Put record\"  }"
 
   metric_transformation {
     name      = local.k2hb_metric_name_lag_per_partition
     namespace = local.cw_k2hb_equality_agent_namespace
-    value     = "$.lag"
+    value     = "$.time_since_last_modified"
   }
 }
 
