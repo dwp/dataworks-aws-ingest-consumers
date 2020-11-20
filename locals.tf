@@ -532,7 +532,7 @@ locals {
   stub_ucfs_kafka_ports        = data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports
   stub_ucfs_sg_id              = data.terraform_remote_state.ingest.outputs.stub_ucfs.sg_id
 
-  uc_kafaka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.uc_kafaka_broker_port_https
+  uc_kafka_broker_port_https  = data.terraform_remote_state.ingest.outputs.locals.uc_kafka_broker_port_https
   dlq_kafka_consumer_topic    = data.terraform_remote_state.ingest.outputs.locals.dlq_kafka_consumer_topic // must match what k2s3 uses
 
   // All of the following block is TOP SECRET, and must come from DIP or AWS Secrets via Bootstrap
@@ -564,9 +564,9 @@ locals {
   kafka_broker_port = {
     development = local.stub_kafka_broker_port_https
     qa          = local.stub_kafka_broker_port_https
-    integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.uc_kafaka_broker_port_https : local.stub_kafka_broker_port_https
-    preprod     = local.uc_kafaka_broker_port_https
-    production  = local.uc_kafaka_broker_port_https
+    integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.uc_kafka_broker_port_https : local.stub_kafka_broker_port_https
+    preprod     = local.uc_kafka_broker_port_https
+    production  = local.uc_kafka_broker_port_https
   }
 
   ucfs_ireland_current_domain = local.ucfs_domains[local.environment]
