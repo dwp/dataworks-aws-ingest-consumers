@@ -245,7 +245,7 @@ variable "k2hb_audit_london_asg_desired" {
     qa          = 1 //stubbed env
     integration = 1 //stubbed env + UC now in London
     preprod     = 1 // UC now in London
-    production  = 20 // Switch to London on 21 Nov 2020
+    production  = 0 // Switch to London on 21 Nov 2020
   }
 }
 
@@ -256,6 +256,6 @@ variable "k2hb_audit_london_asg_max" {
     qa          = 1 //stubbed env
     integration = 1 //stubbed env + UC now in London
     preprod     = 1 // UC now in London
-    production  = 20 // Switch to London on 21 Nov 2020
+    production  = 0 // Switch to London on 21 Nov 2020
   }
 }
