@@ -7,8 +7,8 @@ jobs:
         params:
           globs:
             - "*.tar.gz"
-      - .: (( inject meta.plan.terraform-output-management ))
-      - .: (( inject meta.plan.mirror-jar ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-management ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.mirror-jar ))
         input_mapping:
           jar-release: k2hb-release
         config:

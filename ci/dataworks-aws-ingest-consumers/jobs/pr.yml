@@ -27,7 +27,7 @@ jobs:
         input_mapping:
           dataworks-aws-ingest-consumers: dataworks-aws-ingest-consumers-pr
 
-      - .: (( inject meta.plan.terraform-plan ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
         input_mapping:
           dataworks-aws-ingest-consumers: dataworks-aws-ingest-consumers-pr
         params:

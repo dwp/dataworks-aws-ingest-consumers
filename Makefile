@@ -37,6 +37,10 @@ utility-login: ## Login to utility team using Fly
 update-pipeline: ## Update the main pipeline
 	aviator
 
+.PHONY: update-corporate-storage-coalescence-pipeline
+update-corporate-storage-coalescence-pipeline: ## Update the corporate-storage-coalescence pipeline
+	aviator -f aviator-corporate-storage-coalescence.yml
+
 .PHONY: terraform-init
 terraform-init: ## Run `terraform init` from repo root
 	terraform init

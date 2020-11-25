@@ -25,10 +25,10 @@ jobs:
               - mirror-k2hb
 
       - .: (( inject meta.plan.terraform-bootstrap ))
-      - .: (( inject meta.plan.terraform-apply ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-apply ))
         params:
           TF_WORKSPACE: 'qa'
-      - .: (( inject meta.plan.terraform-plan ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
         params:
           TF_WORKSPACE: 'qa'
 
@@ -41,7 +41,7 @@ jobs:
             config:
               params:
                 TF_WORKSPACE: qa
-          - .: (( inject meta.plan.terraform-output-snapshot-sender ))
+          - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-snapshot-sender ))
             config:
               params:
                 TF_WORKSPACE: qa
@@ -50,7 +50,7 @@ jobs:
               params:
                 TF_WORKSPACE: qa
 
-      - .: (( inject meta.plan.run-behave-job ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.run-behave-job ))
         task: data-streaming-tests
         config:
           params:
@@ -59,7 +59,7 @@ jobs:
             E2E_FEATURE_TAG_FILTER: "data-streaming"
             DATA_STREAMING_TESTS_SKIP_RECONCILING: "true"
 
-      - .: (( inject meta.plan.run-behave-job))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.run-behave-job))
         task: end-to-end-tests
         config:
           params:
@@ -69,7 +69,7 @@ jobs:
 
     ensure:
       do:
-        - .: (( inject meta.plan.tear-down ))
+        - .: (( inject meta-dataworks-aws-ingest-consumers.plan.tear-down ))
           config:
             params:
               AWS_ACC: ((aws_account.qa))

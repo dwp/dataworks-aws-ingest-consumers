@@ -1,0 +1,20 @@
+spruce:
+  - base: ci/shared/meta.yml
+    prune:
+      - meta
+    merge:
+      - with_in: ci/utility/corporate-storage-coalescence/
+        regexp: ".*.yml"
+      - with_in: ci/utility/corporate-storage-coalescence/jobs/
+        regexp: ".*.yml"
+      - with_in: ci/shared/
+        regexp: ".*.yml"
+    to: aviator_corporate_storage_coalescence_pipeline.yml
+fly:
+  name: corporate-storage-coalescence
+  target: utility
+  config: aviator_corporate_storage_coalescence_pipeline.yml
+  expose: true
+  check_creds: true
+  load_vars_from:
+    - ci/vars.yml

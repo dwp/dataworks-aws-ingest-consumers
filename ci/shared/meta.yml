@@ -1,0 +1,121 @@
+meta:
+  plan:
+    terraform-common-config:
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.terraform_repository))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
+        params:
+          TF_INPUT: false
+          AWS_REGION: ((dataworks.aws_region))
+          TF_CLI_ARGS_apply: -lock-timeout=300s
+          TF_CLI_ARGS_plan: -lock-timeout=300s
+          TF_VAR_costcode: ((dataworks.costcode))
+          TF_VAR_slack_webhook_url: ((dataworks.slack_webhook_url))
+
+    terraform-bootstrap:
+      task: terraform-bootstrap
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: dwpdigital/jinja-yaml-aws
+            version: 0.0.19
+            tag: 0.0.19
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              python bootstrap_terraform.py
+              cp terraform.tf ../terraform-bootstrap
+          dir: dataworks-aws-ingest-consumers
+        inputs:
+          - name: dataworks-aws-ingest-consumers
+        outputs:
+          - name: terraform-bootstrap
+      params:
+        AWS_REGION: eu-west-2
+
+    terraform-output-ingest:
+      task: terraform-output-ingest
+      .: (( inject meta.plan.terraform-common-config ))
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.terraform_repository))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              terraform workspace show
+              terraform init
+              terraform output --json > ../terraform-output-ingest/outputs.json
+          dir: aws-ingestion
+        inputs:
+          - name: aws-ingestion
+        outputs:
+          - name: terraform-output-ingest
+
+    terraform-output-internal-compute:
+      task: terraform-output-internal-compute
+      .: (( inject meta.plan.terraform-common-config ))
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.terraform_repository))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              terraform workspace show
+              terraform init
+              terraform output --json > ../terraform-output-internal-compute/outputs.json
+          dir: aws-internal-compute
+        inputs:
+          - name: aws-internal-compute
+        outputs:
+          - name: terraform-output-internal-compute
+
+    terraform-output-ingest-consumers:
+      task: terraform-output-ingest-consumers
+      .: (( inject meta.plan.terraform-common-config ))
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.terraform_repository))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              cp ../terraform-bootstrap/terraform.tf .
+              ls -la terraform.tf
+              terraform workspace show
+              terraform init
+              terraform output --json > ../terraform-output-ingest-consumers/outputs.json
+          dir: dataworks-aws-ingest-consumers
+        inputs:
+          - name: dataworks-aws-ingest-consumers
+          - name: terraform-bootstrap
+        outputs:
+          - name: terraform-output-ingest-consumers

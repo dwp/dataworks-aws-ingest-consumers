@@ -19,9 +19,9 @@ jobs:
               - preprod
 
       - .: (( inject meta.plan.terraform-bootstrap ))
-      - .: (( inject meta.plan.terraform-apply ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-apply ))
         params:
           TF_WORKSPACE: 'production'
-      - .: (( inject meta.plan.terraform-plan ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
         params:
           TF_WORKSPACE: 'production'

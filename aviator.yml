@@ -1,11 +1,13 @@
 spruce:
-  - base: ci/meta.yml
+  - base: ci/dataworks-aws-ingest-consumers/meta-dataworks-aws-ingest-consumers.yml
     prune:
       - meta
     merge:
-      - with_in: ci/
+      - with_in: ci/dataworks-aws-ingest-consumers/
         regexp: ".*.yml"
-      - with_in: ci/jobs/
+      - with_in: ci/dataworks-aws-ingest-consumers/jobs/
+        regexp: ".*.yml"
+      - with_in: ci/shared/
         regexp: ".*.yml"
     to: aviator_pipeline.yml
 fly:
