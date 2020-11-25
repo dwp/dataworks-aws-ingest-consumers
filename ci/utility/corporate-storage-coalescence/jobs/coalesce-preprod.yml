@@ -1,10 +1,12 @@
 jobs:
-  - name: audit-development
+  - name: coalesce-preprod
     max_in_flight: 1
     plan:
       - in_parallel:
         - put: meta
-          resource: meta-development
+          resource: meta-preprod
+        - get: utc-1am
+          trigger: false
         - get: dataworks-corporate-storage-coalescence
           trigger: false
         - get: aws-ingestion
@@ -18,15 +20,29 @@ jobs:
         - .: (( inject meta.plan.terraform-output-ingest ))
           config:
             params:
-              TF_WORKSPACE: default
+              TF_WORKSPACE: preprod
         - .: (( inject meta.plan.terraform-output-ingest-consumers ))
           config:
             params:
-              TF_WORKSPACE: default
+              TF_WORKSPACE: preprod
 
       - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
         task: coalesce-audit-storage-for-yesterday
         config:
           params:
             CORPORATE_STORAGE_TYPE: "audit"
+            DATE_TO_RUN_ON: "yesterday"
+
+      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+        task: coalesce-equalities-storage-for-yesterday
+        config:
+          params:
+            CORPORATE_STORAGE_TYPE: "equalities"
+            DATE_TO_RUN_ON: "yesterday"
+
+      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+        task: coalesce-main-storage-for-yesterday
+        config:
+          params:
+            CORPORATE_STORAGE_TYPE: "main"
             DATE_TO_RUN_ON: "yesterday"

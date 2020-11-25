@@ -1,8 +1,11 @@
 groups:
-  - name: audit
+  - name: coalesce
     jobs:
-      - audit-development
-      - audit-qa
+      - coalesce-development
+      - coalesce-qa
+      - coalesce-integration
+      - coalesce-preprod
+      - coalesce-production
 
   - name: update-pipeline
     jobs:
