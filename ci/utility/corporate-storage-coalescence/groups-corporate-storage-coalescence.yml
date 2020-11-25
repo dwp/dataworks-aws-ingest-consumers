@@ -1,0 +1,9 @@
+groups:
+  - name: audit
+    jobs:
+      - audit-development
+      - audit-qa
+
+  - name: update-pipeline
+    jobs:
+      - update-pipeline-corporate-storage-coalescence

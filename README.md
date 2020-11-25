@@ -18,16 +18,31 @@ make bootstrap
 
 You must also do this after every change to the terraform variables and inputs required by this repo.
 
-## Updating Concourse Pipelines
+## Concourse Pipelines
 
-This can be done with
+There are multiple pipelines maintained in this repository.
+
+### dataworks-aws-ingest-consumers
+
+This is the main pipeline that deploys the components held within this repository. Is is in the main AWS Concourse `dataworks` team. The files for this pipeline are in the `/ci` folder.
+
+The pipeline self updates every time there is a merge to master, but to update manually from the repo, the following commands can be executed:
 
 ```
 make concourse-login
 make update-pipeline
 ```
 
-The main pipeline will also self-update every time there is a merge to master, to ensure it's up to date.
+### corporate-storage-coalescence
+
+This is a utility pipeline which runs daily and coalesces the corporate storage files in S3. Is is in the AWS Concourse `utility` team. The files for this pipeline are in the `/ci/utility/corporate-storage-coalescence/` folder.
+
+The pipeline self updates every time there is a merge to master, but to update manually from the repo, the following commands can be executed:
+
+```
+make utility-login
+make update-corporate-storage-coalescence-pipeline
+```
 
 ### K2HB insight stats
 

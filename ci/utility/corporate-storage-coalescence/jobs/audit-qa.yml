@@ -1,0 +1,29 @@
+jobs:
+  - name: audit-qa
+    max_in_flight: 1
+    plan:
+      - in_parallel:
+        - put: meta
+          resource: meta-qa
+        - get: aws-internal-compute
+          trigger: false
+        - get: aws-ingestion
+          trigger: false
+        - get: dataworks-aws-ingest-consumers
+          trigger: false
+
+      - .: (( inject meta.plan.terraform-bootstrap ))
+
+      - in_parallel:
+        - .: (( inject meta.plan.terraform-output-ingest ))
+          config:
+            params:
+              TF_WORKSPACE: qa
+        - .: (( inject meta.plan.terraform-output-internal-compute ))
+          config:
+            params:
+              TF_WORKSPACE: qa
+        - .: (( inject meta.plan.terraform-output-ingest-consumers ))
+          config:
+            params:
+              TF_WORKSPACE: qa
