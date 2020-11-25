@@ -223,7 +223,7 @@ variable "k2hb_audit_ireland_asg_desired" {
     qa          = 0  //stubbed env
     integration = 0  //stubbed env + UC now in London
     preprod     = 0  // UC now in London
-    production  = 20 // Switch to London on 21 Nov 2020
+    production  = 0  // UC now in London
   }
 }
 
@@ -234,28 +234,28 @@ variable "k2hb_audit_ireland_asg_max" {
     qa          = 0  //stubbed env
     integration = 0  //stubbed env + UC now in London
     preprod     = 0  // UC now in London
-    production  = 20 // Switch to London on 21 Nov 2020
+    production  = 0  // UC now in London
   }
 }
 
 variable "k2hb_audit_london_asg_desired" {
   description = "Desired k2hb equality asg size. Connects to ha cluster."
   default = {
-    development = 1 //stubbed env
-    qa          = 1 //stubbed env
-    integration = 1 //stubbed env + UC now in London
-    preprod     = 1 // UC now in London
-    production  = 0 // Switch to London on 21 Nov 2020
+    development = 1  //stubbed env
+    qa          = 1  //stubbed env
+    integration = 1  //stubbed env + UC now in London
+    preprod     = 1  // UC now in London
+    production  = 20 // UC now in London
   }
 }
 
 variable "k2hb_audit_london_asg_max" {
   description = "Max k2hb equality asg size. Connects to ha cluster."
   default = {
-    development = 1 //stubbed env
-    qa          = 1 //stubbed env
-    integration = 1 //stubbed env + UC now in London
-    preprod     = 1 // UC now in London
-    production  = 0 // Switch to London on 21 Nov 2020
+    development = 1   //stubbed env
+    qa          = 1  //stubbed env
+    integration = 1  //stubbed env + UC now in London
+    preprod     = 1  // UC now in London
+    production  = 20 // UC now in London
   }
 }
