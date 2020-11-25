@@ -33,7 +33,7 @@ jobs:
           config:
             params:
               TF_WORKSPACE: default
-        - .: (( inject meta.plan.terraform-output-internal-compute ))
+        - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-internal-compute ))
           config:
             params:
               TF_WORKSPACE: default

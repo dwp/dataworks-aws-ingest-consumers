@@ -1,0 +1,62 @@
+meta-corporate-storage-coalescence:
+  plan:
+    run-coalesce-task:
+      task: run-coalesce-task
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.docker_python_boto_behave_repository))
+            tag: 0.0.25
+        params:
+          AWS_REGION: ((dataworks.aws_region))
+          AWS_DEFAULT_REGION: ((dataworks.aws_region))
+          ASSUME_DURATION: 43200
+        run:
+          dir: dataworks-corporate-storage-coalescence
+          path: sh
+          args:
+            - -exc
+            - |
+              source /assume-role
+              set +x
+
+              echo "Setting corporate storage values which apply to all storage types"
+              date_to_run=$(date -d "${DATE_TO_RUN_ON}" +"%y/%M/%d")
+              s3_bucket_id=$(cat ../terraform-output-ingest/outputs.json | jq -r '.corporate_storage_bucket.value.id')
+              echo "Set date_to_run to '${date_to_run}' and s3_bucket_id to '${s3_bucket_id}'"
+              
+              echo "Setting corporate storage values for given storage type"
+
+              if [[ "${CORPORATE_STORAGE_TYPE}" == "equalities" ]]; then
+                echo "Setting equalities corporate storage values"
+                s3_base_prefix=$(cat ../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_equalities')
+                max_size_files=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.equalities')
+                max_size_bytes=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.equalities')
+              elif [[ "${CORPORATE_STORAGE_TYPE}" == "audit" ]]; then
+                echo "Setting audit corporate storage values"
+                s3_base_prefix=$(cat ../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_audit')
+                max_size_files=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.audit')
+                max_size_bytes=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.audit')
+              else
+                echo "Setting main corporate storage values"
+                s3_base_prefix=$(cat ../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_ucfs')
+                max_size_files=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.main')
+                max_size_bytes=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.main')
+              else
+                echo "Unrecognised corporate storage type of '${CORPORATE_STORAGE_TYPE}'"
+                exit 1
+              fi
+
+              echo "Set s3_base_prefix to '${s3_base_prefix}', max_size_files to '${max_size_files}' and max_size_bytes to '${max_size_bytes}'"
+
+              full_s3_prefix="${s3_base_prefix}/${date_to_run}/"
+              echo "Set full_s3_prefix to '${full_s3_prefix}'"
+            
+              python main.py -b "${s3_bucket_id}" -f "${max_size_files}" -s "${max_size_bytes}" -p "${full_s3_prefix}"
+        inputs:
+          - name: dataworks-corporate-storage-coalescence
+          - name: meta
+          - name: terraform-output-ingest
+          - name: terraform-output-ingest-consumers
