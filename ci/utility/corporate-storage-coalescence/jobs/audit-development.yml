@@ -5,7 +5,7 @@ jobs:
       - in_parallel:
         - put: meta
           resource: meta-development
-        - get: aws-internal-compute
+        - get: dataworks-corporate-storage-coalescence
           trigger: false
         - get: aws-ingestion
           trigger: false
@@ -19,11 +19,14 @@ jobs:
           config:
             params:
               TF_WORKSPACE: default
-        - .: (( inject meta.plan.terraform-output-internal-compute ))
-          config:
-            params:
-              TF_WORKSPACE: default
         - .: (( inject meta.plan.terraform-output-ingest-consumers ))
           config:
             params:
               TF_WORKSPACE: default
+
+      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+        task: coalesce-audit-storage-for-yesterday
+        config:
+          params:
+            CORPORATE_STORAGE_TYPE: "audit"
+            DATE_TO_RUN_ON: "yesterday"
