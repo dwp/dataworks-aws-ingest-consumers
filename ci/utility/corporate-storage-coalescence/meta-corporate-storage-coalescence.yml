@@ -67,7 +67,11 @@ meta-corporate-storage-coalescence:
 
               function set_global_storage_values {
                 echo "Setting corporate storage values which apply to all storage types"
-                export FIRST_DATE_TO_RUN=$(date -d "${START_DATE}" +"%y%M%d")
+                if [[ -z "${START_DATE}" ]]; then
+                  export FIRST_DATE_TO_RUN=$(date -d "yesterday" +"%y%M%d")
+                else
+                  export FIRST_DATE_TO_RUN=$(date -d "${START_DATE}" +"%y%M%d")
+                fi
 
                 if [[ -z "${END_DATE}" ]]; then
                   export LAST_DATE_TO_RUN="${FIRST_DATE_TO_RUN}"
@@ -77,6 +81,11 @@ meta-corporate-storage-coalescence:
 
                 export S3_BUCKET_ID=$(cat ../terraform-output-ingest/outputs.json | jq -r '.corporate_storage_bucket.value.id')
                 echo "Set FIRST_DATE_TO_RUN to '${FIRST_DATE_TO_RUN}', LAST_DATE_TO_RUN to '${LAST_DATE_TO_RUN}' and S3_BUCKET_ID to '${S3_BUCKET_ID}'"
+
+                if [[ ${FIRST_DATE_TO_RUN} -gt ${LAST_DATE_TO_RUN} ]]; then
+                  echo "Exiting abnormally because start date to after end date"
+                  exit 1
+                fi
               }
 
               set_global_storage_values
