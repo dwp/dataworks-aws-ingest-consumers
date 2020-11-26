@@ -31,18 +31,18 @@ jobs:
         config:
           params:
             CORPORATE_STORAGE_TYPE: "audit"
-            DATE_TO_RUN_ON: "yesterday"
+            START_DATE: "yesterday"
 
       - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
         task: coalesce-equalities-storage-for-yesterday
         config:
           params:
             CORPORATE_STORAGE_TYPE: "equalities"
-            DATE_TO_RUN_ON: "yesterday"
+            START_DATE: "yesterday"
 
       - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
         task: coalesce-main-storage-for-yesterday
         config:
           params:
             CORPORATE_STORAGE_TYPE: "main"
-            DATE_TO_RUN_ON: "yesterday"
+            START_DATE: "yesterday"
