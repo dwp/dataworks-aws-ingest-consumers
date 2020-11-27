@@ -224,27 +224,27 @@ locals {
   }
 
   k2hb_main_corporate_storage_coalesce_max_files = {
-    development = 1000
-    qa          = 1000
-    integration = 1000
-    preprod     = 1000
-    production  = 1000
+    development = 1000000
+    qa          = 1000000
+    integration = 1000000
+    preprod     = 1000000
+    production  = 1000000
   }
 
   k2hb_equalities_corporate_storage_coalesce_max_files = {
-    development = 1000
-    qa          = 1000
-    integration = 1000
-    preprod     = 1000
-    production  = 1000
+    development = 1000000
+    qa          = 1000000
+    integration = 1000000
+    preprod     = 1000000
+    production  = 1000000
   }
 
   k2hb_audit_corporate_storage_coalesce_max_files = {
-    development = 1000
-    qa          = 1000
-    integration = 1000
-    preprod     = 1000
-    production  = 1000
+    development = 1000000
+    qa          = 1000000
+    integration = 1000000
+    preprod     = 1000000
+    production  = 1000000
   }
 
 
