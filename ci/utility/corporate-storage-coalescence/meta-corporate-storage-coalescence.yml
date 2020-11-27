@@ -37,7 +37,7 @@ meta-corporate-storage-coalescence:
                 local date_to_run=$(date -d "$1" +'%Y/%m/%d')
                 local full_prefix="${S3_BASE_PREFIX}/${date_to_run}/"
 
-                echo "Running coalesce for bucket of '${S3_BUCKET_ID}', file max of '${MAX_SIZE_FILES}', size max of '${MAX_SIZE_BYTES}' and prefix of '${full_prefix}'"
+                echo "Running coalesce for bucket of '${S3_BUCKET_ID}', file max of '${MAX_SIZE_FILES}', size max of '${MAX_SIZE_BYTES}', prefix of '${full_prefix}' and thread count of '${THREAD_COUNT}'"
 
                 python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${full_prefix}" -t "${THREAD_COUNT}"
                 local result=$?
