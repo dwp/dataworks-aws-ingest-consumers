@@ -249,27 +249,27 @@ locals {
 
 
   k2hb_main_corporate_storage_coalesce_max_size_bytes = {
-    development = 100000000
-    qa          = 100000000
-    integration = 100000000
-    preprod     = 100000000
-    production  = 100000000
+    development = 128000000
+    qa          = 128000000
+    integration = 128000000
+    preprod     = 128000000
+    production  = 128000000
   }
 
   k2hb_equalities_corporate_storage_coalesce_max_size_bytes = {
-    development = 100000000
-    qa          = 100000000
-    integration = 100000000
-    preprod     = 100000000
-    production  = 100000000
+    development = 128000000
+    qa          = 128000000
+    integration = 128000000
+    preprod     = 128000000
+    production  = 128000000
   }
 
   k2hb_audit_corporate_storage_coalesce_max_size_bytes = {
-    development = 100000000
-    qa          = 100000000
-    integration = 100000000
-    preprod     = 100000000
-    production  = 100000000
+    development = 128000000
+    qa          = 128000000
+    integration = 128000000
+    preprod     = 128000000
+    production  = 128000000
   }
 
   k2hb_kafka_main_consumer_group     = "dataworks-ucfs-kafka-to-hbase-ingest-${local.environment}"
