@@ -30,6 +30,7 @@ jobs:
         task: coalesce-audit-storage-for-yesterday
         config:
           params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
             CORPORATE_STORAGE_TYPE: "audit"
             START_DATE: "yesterday"
 
@@ -37,6 +38,7 @@ jobs:
         task: coalesce-equalities-storage-for-yesterday
         config:
           params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
             CORPORATE_STORAGE_TYPE: "equalities"
             START_DATE: "yesterday"
 
@@ -44,5 +46,6 @@ jobs:
         task: coalesce-main-storage-for-yesterday
         config:
           params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
             CORPORATE_STORAGE_TYPE: "main"
             START_DATE: "yesterday"

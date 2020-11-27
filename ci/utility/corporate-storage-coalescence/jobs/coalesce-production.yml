@@ -30,19 +30,22 @@ jobs:
         task: coalesce-audit-storage-for-yesterday
         config:
           params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
             CORPORATE_STORAGE_TYPE: "audit"
-            START_DATE: "yesterday"
+            START_DATE: "2020-11-05"
 
-      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
-        task: coalesce-equalities-storage-for-yesterday
-        config:
-          params:
-            CORPORATE_STORAGE_TYPE: "equalities"
-            START_DATE: "yesterday"
+      # - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+      #   task: coalesce-equalities-storage-for-yesterday
+      #   config:
+      #     params:
+      #       AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
+      #       CORPORATE_STORAGE_TYPE: "equalities"
+      #       START_DATE: "yesterday"
 
-      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
-        task: coalesce-main-storage-for-yesterday
-        config:
-          params:
-            CORPORATE_STORAGE_TYPE: "main"
-            START_DATE: "yesterday"
+      # - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+      #   task: coalesce-main-storage-for-yesterday
+      #   config:
+      #     params:
+      #       AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
+      #       CORPORATE_STORAGE_TYPE: "main"
+      #       START_DATE: "yesterday"

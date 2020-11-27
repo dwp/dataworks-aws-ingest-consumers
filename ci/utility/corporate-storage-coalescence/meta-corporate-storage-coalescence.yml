@@ -22,11 +22,21 @@ meta-corporate-storage-coalescence:
               source /assume-role
               set +x
 
+              echo "Install aws cli v2"
+              pip install awscli --upgrade --user
+
+              echo "Installing python required packages"
+              pip install -r requirements.txt --use-feature=2020-resolver
+
               function execute_coalesce {
                 local date_to_run=$(date -d "$1" +'%Y/%m/%d')
                 local full_prefix="${S3_BASE_PREFIX}/${date_to_run}/"
 
-                echo "Running coalesce for date of '${date_to_run}' and prefix of '${full_prefix}'"
+                echo "Switching to script directory"
+                cd coalescer
+
+                echo "Running coalesce for bucket of '${S3_BUCKET_ID}', file max of '${MAX_SIZE_FILES}', size max of '${MAX_SIZE_BYTES}' and prefix of '${full_prefix}'"
+              
                 python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${full_prefix}"
                 local result=$?
 
@@ -37,6 +47,9 @@ meta-corporate-storage-coalescence:
                 else
                     echo "Coalesce successful"
                 fi
+
+                echo "Switching to root directory"
+                cd ../
               }
 
               function set_storage_type_values {
@@ -68,15 +81,15 @@ meta-corporate-storage-coalescence:
               function set_global_storage_values {
                 echo "Setting corporate storage values which apply to all storage types"
                 if [[ -z "${START_DATE}" ]]; then
-                  export FIRST_DATE_TO_RUN=$(date -d "yesterday" +"%y%M%d")
+                  export FIRST_DATE_TO_RUN=$(date -d "yesterday" +"%Y%m%d")
                 else
-                  export FIRST_DATE_TO_RUN=$(date -d "${START_DATE}" +"%y%M%d")
+                  export FIRST_DATE_TO_RUN=$(date -d "${START_DATE}" +"%Y%m%d")
                 fi
 
                 if [[ -z "${END_DATE}" ]]; then
                   export LAST_DATE_TO_RUN="${FIRST_DATE_TO_RUN}"
                 else
-                  export LAST_DATE_TO_RUN=$(date -d "${END_DATE}" +"%y%M%d")
+                  export LAST_DATE_TO_RUN=$(date -d "${END_DATE}" +"%Y%m%d")
                 fi
 
                 export S3_BUCKET_ID=$(cat ../terraform-output-ingest/outputs.json | jq -r '.corporate_storage_bucket.value.id')
