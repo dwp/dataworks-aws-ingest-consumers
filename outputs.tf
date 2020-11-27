@@ -23,3 +23,18 @@ output "asg_properties" {
     }
   }
 }
+
+output "k2hb_corporate_storage_coalesce_values" {
+    value = {
+        max_size_files = {
+            main = local.k2hb_main_corporate_storage_coalesce_max_files[local.environment]
+            equalities = local.k2hb_equalities_corporate_storage_coalesce_max_files[local.environment]
+            audit = local.k2hb_audit_corporate_storage_coalesce_max_files[local.environment]
+        }
+        max_size_bytes = {
+            main = local.k2hb_main_corporate_storage_coalesce_max_size_bytes[local.environment]
+            equalities = local.k2hb_equalities_corporate_storage_coalesce_max_size_bytes[local.environment]
+            audit = local.k2hb_audit_corporate_storage_coalesce_max_size_bytes[local.environment]
+        }
+    }
+}
