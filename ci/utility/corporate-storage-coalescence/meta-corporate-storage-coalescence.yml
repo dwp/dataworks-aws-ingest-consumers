@@ -101,7 +101,7 @@ meta-corporate-storage-coalescence:
               current_date_to_run="${FIRST_DATE_TO_RUN}"
               while [ ${current_date_to_run} -le ${LAST_DATE_TO_RUN} ]; do
                 execute_coalesce "${current_date_to_run}"
-                current_date_to_run=$(date -d "${current_date_to_run}+1 day")
+                current_date_to_run=$(date -d "${current_date_to_run}+1 day" +"%Y%m%d")
               done
         inputs:
           - name: dataworks-corporate-storage-coalescence
