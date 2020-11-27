@@ -6,7 +6,7 @@ jobs:
         - put: meta
           resource: meta-production
         - get: utc-1am
-          trigger: false
+          trigger: true
         - get: dataworks-corporate-storage-coalescence
           trigger: false
         - get: aws-ingestion
@@ -32,20 +32,20 @@ jobs:
           params:
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
             CORPORATE_STORAGE_TYPE: "audit"
-            START_DATE: "2020-11-05"
+            START_DATE: "yesterday"
 
-      # - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
-      #   task: coalesce-equalities-storage-for-yesterday
-      #   config:
-      #     params:
-      #       AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
-      #       CORPORATE_STORAGE_TYPE: "equalities"
-      #       START_DATE: "yesterday"
+      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+        task: coalesce-equalities-storage-for-yesterday
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
+            CORPORATE_STORAGE_TYPE: "equalities"
+            START_DATE: "yesterday"
 
-      # - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
-      #   task: coalesce-main-storage-for-yesterday
-      #   config:
-      #     params:
-      #       AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
-      #       CORPORATE_STORAGE_TYPE: "main"
-      #       START_DATE: "yesterday"
+      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+        task: coalesce-main-storage-for-yesterday
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
+            CORPORATE_STORAGE_TYPE: "main"
+            START_DATE: "yesterday"

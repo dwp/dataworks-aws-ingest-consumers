@@ -6,7 +6,7 @@ jobs:
         - put: meta
           resource: meta-development
         - get: utc-1am
-          trigger: false
+          trigger: true
         - get: dataworks-corporate-storage-coalescence
           trigger: false
         - get: aws-ingestion
