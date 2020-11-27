@@ -22,8 +22,8 @@ meta-corporate-storage-coalescence:
               source /assume-role
               set +x
 
-              echo "Install aws cli v2"
-              pip install awscli --upgrade --user
+              echo "Switching to script directory"
+              cd coalescer
 
               echo "Installing python required packages"
               pip install -r requirements.txt --use-feature=2020-resolver
@@ -31,9 +31,6 @@ meta-corporate-storage-coalescence:
               function execute_coalesce {
                 local date_to_run=$(date -d "$1" +'%Y/%m/%d')
                 local full_prefix="${S3_BASE_PREFIX}/${date_to_run}/"
-
-                echo "Switching to script directory"
-                cd coalescer
 
                 echo "Running coalesce for bucket of '${S3_BUCKET_ID}', file max of '${MAX_SIZE_FILES}', size max of '${MAX_SIZE_BYTES}' and prefix of '${full_prefix}'"
               
@@ -47,9 +44,6 @@ meta-corporate-storage-coalescence:
                 else
                     echo "Coalesce successful"
                 fi
-
-                echo "Switching to root directory"
-                cd ../
               }
 
               function set_storage_type_values {
@@ -57,19 +51,19 @@ meta-corporate-storage-coalescence:
 
                 if [[ "${CORPORATE_STORAGE_TYPE}" == "equalities" ]]; then
                   echo "Setting equalities corporate storage values"
-                  export S3_BASE_PREFIX=$(cat ../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_equalities')
-                  export MAX_SIZE_FILES=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.equalities')
-                  export MAX_SIZE_BYTES=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.equalities')
+                  export S3_BASE_PREFIX=$(cat ../../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_equalities')
+                  export MAX_SIZE_FILES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.equalities')
+                  export MAX_SIZE_BYTES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.equalities')
                 elif [[ "${CORPORATE_STORAGE_TYPE}" == "audit" ]]; then
                   echo "Setting audit corporate storage values"
-                  export S3_BASE_PREFIX=$(cat ../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_audit')
-                  export MAX_SIZE_FILES=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.audit')
-                  export MAX_SIZE_BYTES=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.audit')
+                  export S3_BASE_PREFIX=$(cat ../../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_audit')
+                  export MAX_SIZE_FILES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.audit')
+                  export MAX_SIZE_BYTES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.audit')
                 elif [[ "${CORPORATE_STORAGE_TYPE}" == "main" ]]; then
                   echo "Setting main corporate storage values"
-                  export S3_BASE_PREFIX=$(cat ../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_ucfs')
-                  export MAX_SIZE_FILES=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.main')
-                  export MAX_SIZE_BYTES=$(cat ../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.main')
+                  export S3_BASE_PREFIX=$(cat ../../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_ucfs')
+                  export MAX_SIZE_FILES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.main')
+                  export MAX_SIZE_BYTES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.main')
                 else
                   echo "Unrecognised corporate storage type of '${CORPORATE_STORAGE_TYPE}'"
                   exit 1
@@ -92,7 +86,7 @@ meta-corporate-storage-coalescence:
                   export LAST_DATE_TO_RUN=$(date -d "${END_DATE}" +"%Y%m%d")
                 fi
 
-                export S3_BUCKET_ID=$(cat ../terraform-output-ingest/outputs.json | jq -r '.corporate_storage_bucket.value.id')
+                export S3_BUCKET_ID=$(cat ../../terraform-output-ingest/outputs.json | jq -r '.corporate_storage_bucket.value.id')
                 echo "Set FIRST_DATE_TO_RUN to '${FIRST_DATE_TO_RUN}', LAST_DATE_TO_RUN to '${LAST_DATE_TO_RUN}' and S3_BUCKET_ID to '${S3_BUCKET_ID}'"
 
                 if [[ ${FIRST_DATE_TO_RUN} -gt ${LAST_DATE_TO_RUN} ]]; then
