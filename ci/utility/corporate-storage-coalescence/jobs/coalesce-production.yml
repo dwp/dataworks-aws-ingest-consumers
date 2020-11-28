@@ -34,6 +34,7 @@ jobs:
             CORPORATE_STORAGE_TYPE: "audit"
             START_DATE: "yesterday"
             THREAD_COUNT: 3
+            AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT: "true"
 
       - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
         task: coalesce-equalities-storage-for-yesterday
@@ -43,6 +44,7 @@ jobs:
             CORPORATE_STORAGE_TYPE: "equalities"
             START_DATE: "yesterday"
             THREAD_COUNT: 3
+            AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT: "true"
 
       - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
         task: coalesce-main-storage-for-yesterday
@@ -52,3 +54,4 @@ jobs:
             CORPORATE_STORAGE_TYPE: "main"
             START_DATE: "yesterday"
             THREAD_COUNT: 3
+            AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT: "true"
