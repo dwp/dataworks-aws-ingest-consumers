@@ -71,13 +71,12 @@ meta-corporate-storage-coalescence:
                   wait $!
                   exit $?
                 else
+                  partitions=($(seq 0 19))
                   for ((i=0; i<=19; i+=RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE)); do
                       pids=""
                       FAILURE_COUNT=0
 
-                      echo "Executing coalesce batch starting with count of '$partition_count'"
-
-                      for partition_count in "${s[@]:i:i+RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE}"; do
+                      for partition_count in "${partitions[@]:i:i+RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE}"; do
                         run_script "${full_prefix}" "${partition_count}" &
                         pids="$pids $!"
                       done
@@ -86,7 +85,7 @@ meta-corporate-storage-coalescence:
 
                       for pid in $pids; do
                         wait $pid
-                        if [ ! $result -eq 0 ]; then
+                        if [ ! $? -eq 0 ]; then
                           ((FAILURE_COUNT=FAILURE_COUNT+1))
                         fi
                       done
