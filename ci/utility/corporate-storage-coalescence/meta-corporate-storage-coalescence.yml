@@ -72,8 +72,8 @@ meta-corporate-storage-coalescence:
                   wait $!
                   exit $?
                 else
-                  partition_count=0
-                  batch_start_count=0
+                  partition_count=1
+                  batch_start_count=1
 
                   while [[ $batch_start_count -le 19 ]]; do
                       pids=""
@@ -84,9 +84,10 @@ meta-corporate-storage-coalescence:
                       echo "Running batch with start of '$partition_count'"
 
                       while [[ $partition_count -le $batch_end_count ]]; do
-                        echo "Running partition count of '$partition_count'"
                         if [[ $partition_count -le 19 ]]; then
-                          run_script "${full_prefix}" "${partition_count}" &
+                          partition_count_qualified=$(( partition_count - 1 ))
+                          echo "Running partition count of '$partition_count_qualified'"
+                          run_script "${full_prefix}" "${partition_count_qualified}" &
                           pids="$pids $!"
                         fi
                         partition_count=$(( partition_count + 1 ))
