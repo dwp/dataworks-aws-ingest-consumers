@@ -39,19 +39,20 @@ meta-corporate-storage-coalescence:
                 local prefix="${1}"
                 local partition="${2}"
 
-                if [[ ! -z "${partition} "]]; then
-                  local partition_param=" -n ${partition}"
+                if [[ ! -z "${partition}" ]]; then
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}" -n "${partition}"
+                else
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}"
                 fi
 
-                python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}""${partition_param}"
                 local result=$?
 
                 echo "Checking result of coalesce"
-                if [ $result -eq $EXIT_CODE_FOR_CREDENTIALS_ERROR ] && [ "${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}" -eq "true" ]; then
+                if [[ $result -eq $EXIT_CODE_FOR_CREDENTIALS_ERROR ]] && [[ "${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}" -eq "true" ]]; then
                     echo "Assuming credentials again and re-running script due to exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
                     source /assume-role
                     run_script "${prefix}" "${partition}"
-                elif [ ! $result -eq 0 ]; then
+                elif [[ ! $result -eq 0 ]]; then
                     echo "Exiting with error due to failed coalesce with exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
                     exit 1
                 else
@@ -71,34 +72,46 @@ meta-corporate-storage-coalescence:
                   wait $!
                   exit $?
                 else
-                  partitions=($(seq 0 19))
-                  for ((i=0; i<${#partitions[@]}; i+=RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE)); do
-                      pids=""
-                      FAILURE_COUNT=0
+                  batch_start_count=0
 
-                      for partition_count in "${partitions[@]:i:i+RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE}"; do
-                        run_script "${full_prefix}" "${partition_count}" &
-                        pids="$pids $!"
+                  while [[ $batch_start_count -le 18 ]]; do
+                      local pids=""
+                      local failure_count=0
+                      local partition_count=$batch_start_count
+                      local batch_end_count=$((batch_start_count + $RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE))
+
+                      echo "Running batch with start of '$partition_count'"
+
+                      while [[ $partition_count -lt $batch_end_count ]]; do
+                        if [[ $partition_count -le 18 ]]; then
+                          echo "Running partition count of '$partition_count'"
+                          run_script "${full_prefix}" "${partition_count}" &
+                          pids="$pids $!"
+                        fi
+                        partition_count=$(( partition_count + 1 ))
                       done
-                      
+
                       echo "Waiting for all executions in batch to finish"
 
                       for pid in $pids; do
                         wait $pid
-                        if [ ! $? -eq 0 ]; then
-                          ((FAILURE_COUNT=FAILURE_COUNT+1))
+                        local result=$?
+                        if [[ ! $result -eq 0 ]]; then
+                          failure_count=$((failure_count + 1))
                         fi
                       done
-                      
+
                       echo "Checking results of batch"
 
-                      if [[ $FAILURE_COUNT -gt 0 ]]; then
-                        echo "Exiting abnormally due to '$FAILURE_COUNT' failed executions in batch starting with count of '$partition_count'"
+                      if [[ $failure_count -gt 0 ]]; then
+                        echo "Exiting abnormally due to '${failure_count}' failed executions in batch starting with count of '$partition_count'"
                         exit 1
                       fi
-                      
+
                       echo "Batch succeeded"
+                      batch_start_count=$(( batch_start_count + $RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE ))
                   done
+                fi
               }
 
               function set_storage_type_values {
@@ -154,7 +167,7 @@ meta-corporate-storage-coalescence:
               set_storage_type_values
 
               current_date_to_run="${FIRST_DATE_TO_RUN}"
-              while [ ${current_date_to_run} -le ${LAST_DATE_TO_RUN} ]; do
+              while [[ ${current_date_to_run} -le ${LAST_DATE_TO_RUN} ]]; do
                 execute_coalesce "${current_date_to_run}"
                 current_date_to_run=$(date -d "${current_date_to_run}+1 day" +"%Y%m%d")
               done
