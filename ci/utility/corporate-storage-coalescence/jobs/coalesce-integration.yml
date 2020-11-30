@@ -33,6 +33,7 @@ jobs:
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.integration)):role/ci
             CORPORATE_STORAGE_TYPE: "audit"
             START_DATE: "yesterday"
+            RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE: 3
 
       - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
         task: coalesce-equalities-storage-for-yesterday
