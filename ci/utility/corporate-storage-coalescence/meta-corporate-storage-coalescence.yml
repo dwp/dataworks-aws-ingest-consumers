@@ -72,7 +72,7 @@ meta-corporate-storage-coalescence:
                   exit $?
                 else
                   partitions=($(seq 0 19))
-                  for ((i=0; i<=19; i+=RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE)); do
+                  for ((i=0; i<${#partitions[@]}; i+=RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE)); do
                       pids=""
                       FAILURE_COUNT=0
 
