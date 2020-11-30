@@ -40,10 +40,11 @@ meta-corporate-storage-coalescence:
                 local partition="${2}"
 
                 if [[ ! -z "${partition}" ]]; then
-                  local partition_param=" -n ${partition}"
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}" -n "${partition}"
+                else
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}"
                 fi
 
-                python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}""${partition_param}"
                 local result=$?
 
                 echo "Checking result of coalesce"
