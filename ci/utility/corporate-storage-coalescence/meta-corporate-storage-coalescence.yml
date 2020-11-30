@@ -50,6 +50,7 @@ meta-corporate-storage-coalescence:
                     exit 1
                 else
                     echo "Coalesce successful"
+                    exit 0
                 fi
               }
 
@@ -59,7 +60,41 @@ meta-corporate-storage-coalescence:
 
                 echo "Running coalesce for bucket of '${S3_BUCKET_ID}', file max of '${MAX_SIZE_FILES}', size max of '${MAX_SIZE_BYTES}', prefix of '${full_prefix}' and thread count of '${THREAD_COUNT}'"
 
-                run_script "${full_prefix}"
+                if [[ -z "${RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE}" ]]; then
+                  run_script "${full_prefix}" &
+                  wait $!
+                  exit $?
+                else
+                  for ((i=0; i<=20; i+=RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE)); do
+                      pids=""
+                      FAILURE_COUNT=0
+
+                      echo "Executing coalesce batch starting with count of '$partition_count'"
+
+                      for partition_count in "${s[@]:i:i+RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE}"; do
+                        full_prefix_with_partition= "${full_prefix}_${partition_count}_"
+                        run_script "${full_prefix_with_partition}" &
+                        pids="$pids $!"
+                      done
+                      
+                      echo "Waiting for all executions in batch to finish"
+
+                      for pid in $pids; do
+                        wait $pid
+                        if [ ! $result -eq 0 ]; then
+                          ((FAILURE_COUNT=FAILURE_COUNT+1))
+                        fi
+                      done
+                      
+                      echo "Checking results of batch"
+
+                      if [[ $FAILURE_COUNT -gt 0 ]]; then
+                        echo "Exiting abnormally due to '$FAILURE_COUNT' failed executions in batch starting with count of '$partition_count'"
+                        exit 1
+                      fi
+                      
+                      echo "Batch succeeded"
+                  done
               }
 
               function set_storage_type_values {
