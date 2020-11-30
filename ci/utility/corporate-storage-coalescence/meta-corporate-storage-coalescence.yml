@@ -72,22 +72,20 @@ meta-corporate-storage-coalescence:
                   wait $!
                   exit $?
                 else
-                  partition_count=1
-                  batch_start_count=1
+                  batch_start_count=0
 
-                  while [[ $batch_start_count -le 19 ]]; do
-                      pids=""
-                      failure_count=0
-                      partition_count=$batch_start_count
-                      batch_end_count=$((batch_start_count + $RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE))
+                  while [[ $batch_start_count -le 18 ]]; do
+                      local pids=""
+                      local failure_count=0
+                      local partition_count=$batch_start_count
+                      local batch_end_count=$((batch_start_count + $RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE))
 
                       echo "Running batch with start of '$partition_count'"
 
-                      while [[ $partition_count -le $batch_end_count ]]; do
-                        if [[ $partition_count -le 19 ]]; then
-                          partition_count_qualified=$(( partition_count - 1 ))
-                          echo "Running partition count of '$partition_count_qualified'"
-                          run_script "${full_prefix}" "${partition_count_qualified}" &
+                      while [[ $partition_count -lt $batch_end_count ]]; do
+                        if [[ $partition_count -le 18 ]]; then
+                          echo "Running partition count of '$partition_count'"
+                          run_script "${full_prefix}" "${partition_count}" &
                           pids="$pids $!"
                         fi
                         partition_count=$(( partition_count + 1 ))
@@ -97,7 +95,7 @@ meta-corporate-storage-coalescence:
 
                       for pid in $pids; do
                         wait $pid
-                        result=$?
+                        local result=$?
                         if [[ ! $result -eq 0 ]]; then
                           failure_count=$((failure_count + 1))
                         fi
