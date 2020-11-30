@@ -22,6 +22,8 @@ meta-corporate-storage-coalescence:
               source /assume-role
               set +x
 
+              export EXIT_CODE_FOR_CREDENTIALS_ERROR=2
+
               echo "Switching to script directory"
               cd coalescer
 
@@ -33,22 +35,31 @@ meta-corporate-storage-coalescence:
                 export THREAD_COUNT=1
               fi
 
+              function run_script {
+                local prefix="${1}"
+                python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}"
+                local result=$?
+
+                echo "Checking result of coalesce"
+                if [ $result -eq $EXIT_CODE_FOR_CREDENTIALS_ERROR ] && [ "${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}" -eq "true" ]; then
+                    echo "Assuming credentials again and re-running script due to exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
+                    source /assume-role
+                    run_script "${prefix}"
+                elif [ ! $result -eq 0 ]; then
+                    echo "Exiting with error due to failed coalesce with exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
+                    exit 1
+                else
+                    echo "Coalesce successful"
+                fi
+              }
+
               function execute_coalesce {
                 local date_to_run=$(date -d "$1" +'%Y/%m/%d')
                 local full_prefix="${S3_BASE_PREFIX}/${date_to_run}/"
 
                 echo "Running coalesce for bucket of '${S3_BUCKET_ID}', file max of '${MAX_SIZE_FILES}', size max of '${MAX_SIZE_BYTES}', prefix of '${full_prefix}' and thread count of '${THREAD_COUNT}'"
 
-                python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${full_prefix}" -t "${THREAD_COUNT}"
-                local result=$?
-
-                echo "Checking result of coalesce"
-                if [ ! $result -eq 0 ]; then
-                    echo "Exiting with error due to failed coalesce with exit code of '$result'"
-                    exit 1
-                else
-                    echo "Coalesce successful"
-                fi
+                run_script "${full_prefix}"
               }
 
               function set_storage_type_values {
