@@ -22,16 +22,43 @@ meta-corporate-storage-coalescence:
               source /assume-role
               set +x
 
+              export EXIT_CODE_FOR_CREDENTIALS_ERROR=2
+
               echo "Switching to script directory"
               cd coalescer
 
               echo "Installing python required packages"
               pip install -r requirements.txt --use-feature=2020-resolver
 
-              if [[ -z "${THREAD_COUNT}" ]]; then
-                echo "Defaulting thread count to 1"
-                export THREAD_COUNT=1
-              fi
+              function run_script {
+                local prefix="${1}"
+                local partition="${2}"
+
+                if [[ ! -z "${partition}" ]] && [[ ! -z "${THREAD_COUNT}" ]]; then
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -n "${partition}" -t "${THREAD_COUNT}" -m
+                elif [[ ! -z "${partition}" ]]; then
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -n "${partition}" -m
+                elif [[ ! -z "${THREAD_COUNT}" ]]; then
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}" -m
+                else
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -m
+                fi
+
+                local result=$?
+
+                echo "Checking result of coalesce"
+                if [[ $result -eq $EXIT_CODE_FOR_CREDENTIALS_ERROR ]] && [[ "${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}" -eq "true" ]]; then
+                    echo "Assuming credentials again and re-running script due to exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
+                    source /assume-role
+                    run_script "${prefix}" "${partition}"
+                elif [[ ! $result -eq 0 ]]; then
+                    echo "Error occurred due to failed coalesce with exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
+                    return 1
+                else
+                    echo "Coalesce successful"
+                    return 0
+                fi
+              }
 
               function execute_coalesce {
                 local date_to_run=$(date -d "$1" +'%Y/%m/%d')
@@ -39,15 +66,51 @@ meta-corporate-storage-coalescence:
 
                 echo "Running coalesce for bucket of '${S3_BUCKET_ID}', file max of '${MAX_SIZE_FILES}', size max of '${MAX_SIZE_BYTES}', prefix of '${full_prefix}' and thread count of '${THREAD_COUNT}'"
 
-                python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${full_prefix}" -t "${THREAD_COUNT}"
-                local result=$?
-
-                echo "Checking result of coalesce"
-                if [ ! $result -eq 0 ]; then
-                    echo "Exiting with error due to failed coalesce with exit code of '$result'"
-                    exit 1
+                if [[ -z "${RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE}" ]]; then
+                  run_script "${full_prefix}" &
+                  wait $!
+                  return $?
                 else
-                    echo "Coalesce successful"
+                  batch_start_count=0
+
+                  while [[ $batch_start_count -le 18 ]]; do
+                      local pids=""
+                      local failure_count=0
+                      local partition_count=$batch_start_count
+                      local batch_end_count=$((batch_start_count + $RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE))
+
+                      echo "Running batch with start of '$partition_count'"
+
+                      while [[ $partition_count -lt $batch_end_count ]]; do
+                        if [[ $partition_count -le 18 ]]; then
+                          echo "Running partition count of '$partition_count'"
+                          run_script "${full_prefix}" "${partition_count}" &
+                          pids="$pids $!"
+                        fi
+                        partition_count=$(( partition_count + 1 ))
+                      done
+
+                      echo "Waiting for all executions in batch to finish"
+
+                      for pid in $pids; do
+                        wait $pid
+                        local result=$?
+                        if [[ ! $result -eq 0 ]]; then
+                          failure_count=$((failure_count + 1))
+                        fi
+                      done
+
+                      echo "Checking results of batch"
+
+                      if [[ $failure_count -gt 0 ]]; then
+                        echo "Batch failed due to '${failure_count}' failed executions in batch starting with count of '$partition_count'"
+                        return 1
+                      fi
+
+                      echo "Batch succeeded"
+                      batch_start_count=$(( batch_start_count + $RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE ))
+                  done
+                  return 0
                 fi
               }
 
@@ -70,7 +133,7 @@ meta-corporate-storage-coalescence:
                   export MAX_SIZE_FILES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.main')
                   export MAX_SIZE_BYTES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.main')
                 else
-                  echo "Unrecognised corporate storage type of '${CORPORATE_STORAGE_TYPE}'"
+                  echo "Exiting abnormally due to nrecognised corporate storage type of '${CORPORATE_STORAGE_TYPE}'"
                   exit 1
                 fi
 
@@ -104,8 +167,12 @@ meta-corporate-storage-coalescence:
               set_storage_type_values
 
               current_date_to_run="${FIRST_DATE_TO_RUN}"
-              while [ ${current_date_to_run} -le ${LAST_DATE_TO_RUN} ]; do
-                execute_coalesce "${current_date_to_run}"
+              while [[ ${current_date_to_run} -le ${LAST_DATE_TO_RUN} ]]; do
+                result=$(execute_coalesce "${current_date_to_run}")
+                if [[ ! $result -eq 0 ]]; then
+                  echo "Exiting abnormally because the last run had one or more failures - see previous logs for details"
+                  exit 1
+                fi
                 current_date_to_run=$(date -d "${current_date_to_run}+1 day" +"%Y%m%d")
               done
         inputs:
