@@ -30,19 +30,18 @@ meta-corporate-storage-coalescence:
               echo "Installing python required packages"
               pip install -r requirements.txt --use-feature=2020-resolver
 
-              if [[ -z "${THREAD_COUNT}" ]]; then
-                echo "Defaulting thread count to 1"
-                export THREAD_COUNT=1
-              fi
-
               function run_script {
                 local prefix="${1}"
                 local partition="${2}"
 
-                if [[ ! -z "${partition}" ]]; then
-                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}" -n "${partition}"
+                if [[ ! -z "${partition}" ]] && [[ ! -z "${THREAD_COUNT}" ]]; then
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -n "${partition}" -t "${THREAD_COUNT}" -m
+                elif [[ ! -z "${partition}" ]]; then
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -n "${partition}" -m
+                elif [[ ! -z "${THREAD_COUNT}" ]]; then
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}" -m
                 else
-                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}"
+                  python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -m
                 fi
 
                 local result=$?
@@ -53,11 +52,11 @@ meta-corporate-storage-coalescence:
                     source /assume-role
                     run_script "${prefix}" "${partition}"
                 elif [[ ! $result -eq 0 ]]; then
-                    echo "Exiting with error due to failed coalesce with exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
-                    exit 1
+                    echo "Error occurred due to failed coalesce with exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
+                    return 1
                 else
                     echo "Coalesce successful"
-                    exit 0
+                    return 0
                 fi
               }
 
@@ -70,7 +69,7 @@ meta-corporate-storage-coalescence:
                 if [[ -z "${RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE}" ]]; then
                   run_script "${full_prefix}" &
                   wait $!
-                  exit $?
+                  return $?
                 else
                   batch_start_count=0
 
@@ -104,13 +103,14 @@ meta-corporate-storage-coalescence:
                       echo "Checking results of batch"
 
                       if [[ $failure_count -gt 0 ]]; then
-                        echo "Exiting abnormally due to '${failure_count}' failed executions in batch starting with count of '$partition_count'"
-                        exit 1
+                        echo "Batch failed due to '${failure_count}' failed executions in batch starting with count of '$partition_count'"
+                        return 1
                       fi
 
                       echo "Batch succeeded"
                       batch_start_count=$(( batch_start_count + $RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE ))
                   done
+                  return 0
                 fi
               }
 
@@ -133,7 +133,7 @@ meta-corporate-storage-coalescence:
                   export MAX_SIZE_FILES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.main')
                   export MAX_SIZE_BYTES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.main')
                 else
-                  echo "Unrecognised corporate storage type of '${CORPORATE_STORAGE_TYPE}'"
+                  echo "Exiting abnormally due to nrecognised corporate storage type of '${CORPORATE_STORAGE_TYPE}'"
                   exit 1
                 fi
 
@@ -168,7 +168,11 @@ meta-corporate-storage-coalescence:
 
               current_date_to_run="${FIRST_DATE_TO_RUN}"
               while [[ ${current_date_to_run} -le ${LAST_DATE_TO_RUN} ]]; do
-                execute_coalesce "${current_date_to_run}"
+                result=$(execute_coalesce "${current_date_to_run}")
+                if [[ ! $result -eq 0 ]]; then
+                  echo "Exiting abnormally because the last run had one or more failures - see previous logs for details"
+                  exit 1
+                fi
                 current_date_to_run=$(date -d "${current_date_to_run}+1 day" +"%Y%m%d")
               done
         inputs:
