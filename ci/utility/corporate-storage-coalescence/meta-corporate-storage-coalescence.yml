@@ -168,8 +168,7 @@ meta-corporate-storage-coalescence:
 
               current_date_to_run="${FIRST_DATE_TO_RUN}"
               while [[ ${current_date_to_run} -le ${LAST_DATE_TO_RUN} ]]; do
-                result=$(execute_coalesce "${current_date_to_run}")
-                if [[ ! $result -eq 0 ]]; then
+                if ! execute_coalesce "${current_date_to_run}"; then
                   echo "Exiting abnormally because the last run had one or more failures - see previous logs for details"
                   exit 1
                 fi
