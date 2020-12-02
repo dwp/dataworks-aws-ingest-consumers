@@ -26,29 +26,30 @@ jobs:
             params:
               TF_WORKSPACE: production
 
-      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
-        task: coalesce-audit-storage-for-yesterday
-        config:
-          params:
-            AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
-            CORPORATE_STORAGE_TYPE: "audit"
-            START_DATE: "yesterday"
-            THREAD_COUNT: 3
+      - in_parallel:
+        - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+          task: coalesce-audit-storage-for-yesterday
+          config:
+            params:
+              AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
+              CORPORATE_STORAGE_TYPE: "audit"
+              START_DATE: "yesterday"
+              AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT: "true"
 
-      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
-        task: coalesce-equalities-storage-for-yesterday
-        config:
-          params:
-            AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
-            CORPORATE_STORAGE_TYPE: "equalities"
-            START_DATE: "yesterday"
-            THREAD_COUNT: 3
+        - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+          task: coalesce-equalities-storage-for-yesterday
+          config:
+            params:
+              AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
+              CORPORATE_STORAGE_TYPE: "equalities"
+              START_DATE: "yesterday"
+              AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT: "true"
 
-      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
-        task: coalesce-main-storage-for-yesterday
-        config:
-          params:
-            AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
-            CORPORATE_STORAGE_TYPE: "main"
-            START_DATE: "yesterday"
-            THREAD_COUNT: 3
+        - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+          task: coalesce-main-storage-for-yesterday
+          config:
+            params:
+              AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
+              CORPORATE_STORAGE_TYPE: "main"
+              START_DATE: "yesterday"
+              AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT: "true"
