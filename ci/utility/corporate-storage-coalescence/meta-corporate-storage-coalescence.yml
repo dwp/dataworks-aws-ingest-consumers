@@ -34,6 +34,7 @@ meta-corporate-storage-coalescence:
                 local prefix="${1}"
                 local partition="${2}"
 
+                set +e
                 if [[ ! -z "${partition}" ]] && [[ ! -z "${THREAD_COUNT}" ]]; then
                   python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -n "${partition}" -t "${THREAD_COUNT}" -m
                 elif [[ ! -z "${partition}" ]]; then
@@ -45,7 +46,8 @@ meta-corporate-storage-coalescence:
                 fi
 
                 local result=$?
-
+                set -e
+                
                 echo "Checking result of coalesce"
                 if [[ $result -eq $EXIT_CODE_FOR_CREDENTIALS_ERROR ]] && [[ "${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}" -eq "true" ]]; then
                     echo "Assuming credentials again and re-running script due to exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
