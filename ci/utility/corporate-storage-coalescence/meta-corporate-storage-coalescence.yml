@@ -35,11 +35,11 @@ meta-corporate-storage-coalescence:
                 local partition="${2}"
 
                 set +e
-                if [[ ! -z "${partition}" ]] && [[ ! -z "${THREAD_COUNT}" ]]; then
+                if [ ! -z "${partition}" ] && [ ! -z "${THREAD_COUNT}" ]; then
                   python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -n "${partition}" -t "${THREAD_COUNT}" -m
-                elif [[ ! -z "${partition}" ]]; then
+                elif [ ! -z "${partition}" ]; then
                   python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -n "${partition}" -m
-                elif [[ ! -z "${THREAD_COUNT}" ]]; then
+                elif [ ! -z "${THREAD_COUNT}" ]; then
                   python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -t "${THREAD_COUNT}" -m
                 else
                   python main.py -b "${S3_BUCKET_ID}" -f "${MAX_SIZE_FILES}" -s "${MAX_SIZE_BYTES}" -p "${prefix}" -m
@@ -49,11 +49,11 @@ meta-corporate-storage-coalescence:
                 set -e
                 
                 echo "Checking result of coalesce"
-                if [[ $result -eq $EXIT_CODE_FOR_CREDENTIALS_ERROR ]] && [[ "${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}" -eq "true" ]]; then
+                if [ $result -eq $EXIT_CODE_FOR_CREDENTIALS_ERROR ] && [ "${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}" -eq "true" ]; then
                     echo "Assuming credentials again and re-running script due to exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
                     source /assume-role
                     run_script "${prefix}" "${partition}"
-                elif [[ ! $result -eq 0 ]]; then
+                elif [ ! $result -eq 0 ]; then
                     echo "Error occurred due to failed coalesce with exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
                     return 1
                 else
@@ -68,14 +68,14 @@ meta-corporate-storage-coalescence:
 
                 echo "Running coalesce for bucket of '${S3_BUCKET_ID}', file max of '${MAX_SIZE_FILES}', size max of '${MAX_SIZE_BYTES}', prefix of '${full_prefix}' and thread count of '${THREAD_COUNT}'"
 
-                if [[ -z "${RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE}" ]]; then
+                if [ -z "${RUN_IN_PARTITION_BATCHES_OF_THIS_SIZE}" ]; then
                   run_script "${full_prefix}" &
                   wait $!
                   return $?
                 else
                   batch_start_count=0
 
-                  while [[ $batch_start_count -le 18 ]]; do
+                  while [ $batch_start_count -le 18 ]; do
                       local pids=""
                       local failure_count=0
                       local partition_count=$batch_start_count
@@ -83,8 +83,8 @@ meta-corporate-storage-coalescence:
 
                       echo "Running batch with start of '$partition_count'"
 
-                      while [[ $partition_count -lt $batch_end_count ]]; do
-                        if [[ $partition_count -le 18 ]]; then
+                      while [ $partition_count -lt $batch_end_count ]; do
+                        if [ $partition_count -le 18 ]; then
                           echo "Running partition count of '$partition_count'"
                           run_script "${full_prefix}" "${partition_count}" &
                           pids="$pids $!"
@@ -97,14 +97,14 @@ meta-corporate-storage-coalescence:
                       for pid in $pids; do
                         wait $pid
                         local result=$?
-                        if [[ ! $result -eq 0 ]]; then
+                        if [ ! $result -eq 0 ]; then
                           failure_count=$((failure_count + 1))
                         fi
                       done
 
                       echo "Checking results of batch"
 
-                      if [[ $failure_count -gt 0 ]]; then
+                      if [ $failure_count -gt 0 ]; then
                         echo "Batch failed due to '${failure_count}' failed executions in batch starting with count of '$partition_count'"
                         return 1
                       fi
@@ -119,17 +119,17 @@ meta-corporate-storage-coalescence:
               function set_storage_type_values {
                 echo "Setting corporate storage values for given storage type"
 
-                if [[ "${CORPORATE_STORAGE_TYPE}" == "equalities" ]]; then
+                if [ "${CORPORATE_STORAGE_TYPE}" == "equalities" ]; then
                   echo "Setting equalities corporate storage values"
                   export S3_BASE_PREFIX=$(cat ../../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_equalities')
                   export MAX_SIZE_FILES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.equalities')
                   export MAX_SIZE_BYTES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.equalities')
-                elif [[ "${CORPORATE_STORAGE_TYPE}" == "audit" ]]; then
+                elif [ "${CORPORATE_STORAGE_TYPE}" == "audit" ]; then
                   echo "Setting audit corporate storage values"
                   export S3_BASE_PREFIX=$(cat ../../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_audit')
                   export MAX_SIZE_FILES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.audit')
                   export MAX_SIZE_BYTES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_bytes.audit')
-                elif [[ "${CORPORATE_STORAGE_TYPE}" == "main" ]]; then
+                elif [ "${CORPORATE_STORAGE_TYPE}" == "main" ]; then
                   echo "Setting main corporate storage values"
                   export S3_BASE_PREFIX=$(cat ../../terraform-output-ingest/outputs.json | jq -r '.corporate_data_loader.value.s3_base_prefix_ucfs')
                   export MAX_SIZE_FILES=$(cat ../../terraform-output-ingest-consumers/outputs.json | jq -r '.k2hb_corporate_storage_coalesce_values.value.max_size_files.main')
@@ -144,13 +144,13 @@ meta-corporate-storage-coalescence:
 
               function set_global_storage_values {
                 echo "Setting corporate storage values which apply to all storage types"
-                if [[ -z "${START_DATE}" ]]; then
+                if [ -z "${START_DATE}" ]; then
                   export FIRST_DATE_TO_RUN=$(date -d "yesterday" +"%Y%m%d")
                 else
                   export FIRST_DATE_TO_RUN=$(date -d "${START_DATE}" +"%Y%m%d")
                 fi
 
-                if [[ -z "${END_DATE}" ]]; then
+                if [ -z "${END_DATE}" ]; then
                   export LAST_DATE_TO_RUN="${FIRST_DATE_TO_RUN}"
                 else
                   export LAST_DATE_TO_RUN=$(date -d "${END_DATE}" +"%Y%m%d")
@@ -159,7 +159,7 @@ meta-corporate-storage-coalescence:
                 export S3_BUCKET_ID=$(cat ../../terraform-output-ingest/outputs.json | jq -r '.corporate_storage_bucket.value.id')
                 echo "Set FIRST_DATE_TO_RUN to '${FIRST_DATE_TO_RUN}', LAST_DATE_TO_RUN to '${LAST_DATE_TO_RUN}' and S3_BUCKET_ID to '${S3_BUCKET_ID}'"
 
-                if [[ ${FIRST_DATE_TO_RUN} -gt ${LAST_DATE_TO_RUN} ]]; then
+                if [ ${FIRST_DATE_TO_RUN} -gt ${LAST_DATE_TO_RUN} ]; then
                   echo "Exiting abnormally because start date to after end date"
                   exit 1
                 fi
@@ -169,7 +169,7 @@ meta-corporate-storage-coalescence:
               set_storage_type_values
 
               current_date_to_run="${FIRST_DATE_TO_RUN}"
-              while [[ ${current_date_to_run} -le ${LAST_DATE_TO_RUN} ]]; do
+              while [ ${current_date_to_run} -le ${LAST_DATE_TO_RUN} ]; do
                 if ! execute_coalesce "${current_date_to_run}"; then
                   echo "Exiting abnormally because the last run had one or more failures - see previous logs for details"
                   exit 1
