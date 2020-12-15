@@ -247,7 +247,6 @@ locals {
     production  = 1000000
   }
 
-
   k2hb_main_corporate_storage_coalesce_max_size_bytes = {
     development = 128000000
     qa          = 128000000
