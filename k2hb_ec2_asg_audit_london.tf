@@ -70,8 +70,8 @@ resource "aws_launch_template" "k2hb_audit_london" {
     k2hb_hbase_zookeeper_parent                      = "/hbase"
     k2hb_hbase_zookeeper_quorum                      = local.ingest_hbase_fqdn
     k2hb_hbase_zookeeper_port                        = "2181"
-    k2hb_hbase_data_family                           = local.k2hb_data_family[local.environment]
-    k2hb_hbase_data_qualifier                        = local.k2hb_data_qualifier[local.environment]
+    k2hb_hbase_data_family                           = local.k2hb_data_family
+    k2hb_hbase_data_qualifier                        = local.k2hb_data_qualifier
     k2hb_hbase_log_keys                              = local.k2hb_output_hbase_keys[local.environment]
     k2hb_hbase_region_replication                    = local.k2hb_hbase_region_replication[local.environment]
     k2hb_hbase_rpc_timeout_milliseconds              = local.kafka_k2hb_hbase_rpc_timeout_milliseconds[local.environment]
