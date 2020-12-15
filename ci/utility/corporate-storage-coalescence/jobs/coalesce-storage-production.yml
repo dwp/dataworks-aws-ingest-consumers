@@ -1,5 +1,5 @@
 jobs:
-  - name: coalesce-production
+  - name: coalesce-storage-production
     max_in_flight: 1
     plan:
       - in_parallel:
@@ -27,7 +27,7 @@ jobs:
               TF_WORKSPACE: production
 
       - in_parallel:
-        - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+        - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-storage-task ))
           task: coalesce-audit-storage-for-yesterday
           config:
             params:
@@ -36,7 +36,7 @@ jobs:
               START_DATE: "yesterday"
               AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT: "true"
 
-        - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+        - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-storage-task ))
           task: coalesce-equalities-storage-for-yesterday
           config:
             params:
@@ -45,7 +45,7 @@ jobs:
               START_DATE: "yesterday"
               AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT: "true"
 
-        - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
+        - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-storage-task ))
           task: coalesce-main-storage-for-yesterday
           config:
             params:

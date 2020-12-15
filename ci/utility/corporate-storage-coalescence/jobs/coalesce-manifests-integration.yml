@@ -1,15 +1,15 @@
 jobs:
-  - name: coalesce-integration
+  - name: coalesce-manifests-integration
     max_in_flight: 1
     plan:
       - in_parallel:
         - put: meta
           resource: meta-integration
-        - get: utc-1am
-          trigger: true
         - get: dataworks-corporate-storage-coalescence
           trigger: false
         - get: aws-ingestion
+          trigger: false
+        - get: aws-internal-compute
           trigger: false
         - get: dataworks-aws-ingest-consumers
           trigger: false
@@ -21,31 +21,32 @@ jobs:
           config:
             params:
               TF_WORKSPACE: integration
+        - .: (( inject meta.plan.terraform-output-internal-compute ))
+          config:
+            params:
+              TF_WORKSPACE: integration
         - .: (( inject meta.plan.terraform-output-ingest-consumers ))
           config:
             params:
               TF_WORKSPACE: integration
 
-      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
-        task: coalesce-audit-storage-for-yesterday
+      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-manifests-task ))
+        task: coalesce-audit-manifests
         config:
           params:
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.integration)):role/ci
             CORPORATE_STORAGE_TYPE: "audit"
-            START_DATE: "yesterday"
 
-      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
-        task: coalesce-equalities-storage-for-yesterday
+      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-manifests-task ))
+        task: coalesce-equalities-manifests
         config:
           params:
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.integration)):role/ci
             CORPORATE_STORAGE_TYPE: "equalities"
-            START_DATE: "yesterday"
 
-      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-task ))
-        task: coalesce-main-storage-for-yesterday
+      - .: (( inject meta-corporate-storage-coalescence.plan.run-coalesce-manifests-task ))
+        task: coalesce-main-manifests
         config:
           params:
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.integration)):role/ci
             CORPORATE_STORAGE_TYPE: "main"
-            START_DATE: "yesterday"
