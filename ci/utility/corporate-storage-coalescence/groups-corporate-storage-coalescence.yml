@@ -1,11 +1,19 @@
 groups:
-  - name: coalesce
+  - name: coalesce-storage
     jobs:
-      - coalesce-development
-      - coalesce-qa
-      - coalesce-integration
-      - coalesce-preprod
-      - coalesce-production
+      - coalesce-storage-development
+      - coalesce-storage-qa
+      - coalesce-storage-integration
+      - coalesce-storage-preprod
+      - coalesce-storage-production
+
+  - name: coalesce-manifests
+    jobs:
+      - coalesce-manifests-development
+      - coalesce-manifests-qa
+      - coalesce-manifests-integration
+      - coalesce-manifests-preprod
+      - coalesce-manifests-production
 
   - name: update-pipeline
     jobs:
