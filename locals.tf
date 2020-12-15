@@ -247,7 +247,6 @@ locals {
     production  = 1000000
   }
 
-
   k2hb_main_corporate_storage_coalesce_max_size_bytes = {
     development = 128000000
     qa          = 128000000
@@ -302,21 +301,8 @@ locals {
   cw_agent_mem_metrics_collection_interval              = 60
   cw_agent_netstat_metrics_collection_interval          = 60
 
-  k2hb_data_family = {
-    development = "cf"
-    qa          = "cf"
-    integration = "cf"
-    preprod     = "cf"
-    production  = "cf"
-  }
-
-  k2hb_data_qualifier = {
-    development = "record"
-    qa          = "record"
-    integration = "record"
-    preprod     = "record"
-    production  = "record"
-  }
+  k2hb_data_family = "cf"
+  k2hb_data_qualifier = "record"
 
   # These should be in ISO-8601 duration format, see https://en.wikipedia.org/wiki/ISO_8601
   # The poll timeout is the longest time we will wait for talking to the downstream system (i.e. hbase) before
@@ -607,7 +593,6 @@ locals {
   k2hb_ec2_equality_logs_name = local.ingest_log_groups.k2hb_ec2_equality_logs.name
   k2hb_ec2_audit_logs_name    = "/aws/ec2/main/k2hb_audit"
 
-
   ## Calculate all the things based on the imports from aws-ingest ##
 
   kafka_broker_port = {
@@ -616,21 +601,6 @@ locals {
     integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.uc_kafka_broker_port_https : local.stub_kafka_broker_port_https
     preprod     = local.uc_kafka_broker_port_https
     production  = local.uc_kafka_broker_port_https
-  }
-
-  ucfs_ireland_current_domain = local.ucfs_domains[local.environment]
-  ucfs_ireland_broker_list = [
-    "${local.ucfs_ha_broker_prefix}00.${local.ucfs_ireland_current_domain}",
-    "${local.ucfs_ha_broker_prefix}01.${local.ucfs_ireland_current_domain}",
-    "${local.ucfs_ha_broker_prefix}02.${local.ucfs_ireland_current_domain}"
-  ]
-
-  ucfs_ireland_bootstrap_servers = {
-    development = ["n/a"]                        // stubbed only
-    qa          = ["n/a"]                        // stubbed only
-    integration = local.ucfs_ireland_broker_list //this exists on UC's end, but we do not use it as the env is stubbed as at Oct 2020
-    preprod     = local.ucfs_ireland_broker_list
-    production  = local.ucfs_ireland_broker_list
   }
 
   ucfs_london_current_domain = local.ucfs_london_domains[local.environment]
@@ -646,16 +616,6 @@ locals {
     integration = local.ucfs_london_ha_broker_list //this exists on UC's end, but we do not use it as the env is stubbed as at Oct 2020
     preprod     = local.ucfs_london_ha_broker_list
     production  = local.ucfs_london_ha_broker_list
-  }
-
-  // This should be a list of server names. For a HA cluster, it will have multiple entries.
-  // Intermediate map to allow us to cherry pick Subbed or HA per env
-  kafka_ireland_bootstrap_servers = {
-    development = local.stub_bootstrap_servers[local.environment] // stubbed
-    qa          = local.stub_bootstrap_servers[local.environment] // stubbed
-    integration = local.k2hb_data_source_is_ucfs[local.environment] ? local.ucfs_ireland_bootstrap_servers[local.environment] : local.stub_bootstrap_servers[local.environment]
-    preprod     = local.ucfs_ireland_bootstrap_servers[local.environment] // now on UCFS Staging HA
-    production  = local.ucfs_ireland_bootstrap_servers[local.environment] // now on UCFS Production HA
   }
 
   // This should be a list of server names. For a HA cluster, it will have multiple entries.
