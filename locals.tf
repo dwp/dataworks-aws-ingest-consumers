@@ -301,21 +301,8 @@ locals {
   cw_agent_mem_metrics_collection_interval              = 60
   cw_agent_netstat_metrics_collection_interval          = 60
 
-  k2hb_data_family = {
-    development = "cf"
-    qa          = "cf"
-    integration = "cf"
-    preprod     = "cf"
-    production  = "cf"
-  }
-
-  k2hb_data_qualifier = {
-    development = "record"
-    qa          = "record"
-    integration = "record"
-    preprod     = "record"
-    production  = "record"
-  }
+  k2hb_data_family = "cf"
+  k2hb_data_qualifier = "record"
 
   # These should be in ISO-8601 duration format, see https://en.wikipedia.org/wiki/ISO_8601
   # The poll timeout is the longest time we will wait for talking to the downstream system (i.e. hbase) before
