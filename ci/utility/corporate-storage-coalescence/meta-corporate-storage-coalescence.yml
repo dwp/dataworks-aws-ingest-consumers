@@ -233,6 +233,7 @@ meta-corporate-storage-coalescence:
                 echo "Checking result of coalesce"
                 if [ $result -eq $EXIT_CODE_FOR_CREDENTIALS_ERROR ] && [ "${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}" == "true" ]; then
                     echo "Assuming credentials again and re-running script due to exit code of '$result' and auto-run setting of '${AUTO_RERUN_ON_CRENDENTIALS_TIMEOUT}'"
+                    export ASSUME_DURATION=3600
                     source /assume-role
                     run_script "${prefix}" "${partition}"
                 elif [ ! $result -eq 0 ]; then
