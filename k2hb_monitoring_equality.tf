@@ -139,12 +139,13 @@ resource "aws_cloudwatch_metric_alarm" "consumer_lag_k2hb_alarm_equalities" {
   threshold           = 100000
   statistic           = "Average"
   comparison_operator = "GreaterThanThreshold"
-  tags                = { notification_type = "Information", severity = "High" }
 
   tags = merge(
     local.common_tags,
     {
-      Name = "consumer-lag-k2hb-alarm-equalities"
+      Name              = "consumer-lag-k2hb-alarm-equalities",
+      notification_type = "Information",
+      severity          = "High"
     },
   )
 }
@@ -174,12 +175,13 @@ resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_eq
   threshold           = 5
   statistic           = "Sum"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  tags                = { notification_type = "Warning", severity = "Critical" }
 
   tags = merge(
     local.common_tags,
     {
-      Name = "failed-k2hb-batches-exceeds-threshold-equalities"
+      Name              = "failed-k2hb-batches-exceeds-threshold-equalities",
+      notification_type = "Warning",
+      severity          = "Critical"
     },
   )
 }

@@ -301,7 +301,7 @@ locals {
   cw_agent_mem_metrics_collection_interval              = 60
   cw_agent_netstat_metrics_collection_interval          = 60
 
-  k2hb_data_family = "cf"
+  k2hb_data_family    = "cf"
   k2hb_data_qualifier = "record"
 
   # These should be in ISO-8601 duration format, see https://en.wikipedia.org/wiki/ISO_8601
@@ -542,8 +542,8 @@ locals {
   ingest_vpc_prefix_list_ids_s3             = data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3
   ingest_input_bucket_cmk_arn               = data.terraform_remote_state.ingest.outputs.input_bucket_cmk.arn
 
-  ingest_hbase_fqdn                         = data.terraform_remote_state.internal_compute.outputs.aws_emr_cluster.fqdn
-  ingest_hbase_emr_common_sg_id             = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.common_sg_id
+  ingest_hbase_fqdn             = data.terraform_remote_state.internal_compute.outputs.aws_emr_cluster.fqdn
+  ingest_hbase_emr_common_sg_id = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.common_sg_id
 
   internal_compute_manifest_bucket      = data.terraform_remote_state.internal_compute.outputs.manifest_bucket
   internal_compute_manifest_bucket_cmk  = data.terraform_remote_state.internal_compute.outputs.manifest_bucket_cmk
@@ -567,8 +567,8 @@ locals {
   stub_ucfs_kafka_ports        = data.terraform_remote_state.ingest.outputs.stub_ucfs.stub_ucfs_kafka_ports
   stub_ucfs_sg_id              = data.terraform_remote_state.ingest.outputs.stub_ucfs.sg_id
 
-  uc_kafka_broker_port_https  = data.terraform_remote_state.ingest.outputs.locals.uc_kafka_broker_port_https
-  dlq_kafka_consumer_topic    = data.terraform_remote_state.ingest.outputs.locals.dlq_kafka_consumer_topic // must match what k2s3 uses
+  uc_kafka_broker_port_https = data.terraform_remote_state.ingest.outputs.locals.uc_kafka_broker_port_https
+  dlq_kafka_consumer_topic   = data.terraform_remote_state.ingest.outputs.locals.dlq_kafka_consumer_topic // must match what k2s3 uses
 
   // All of the following block is TOP SECRET, and must come from DIP or AWS Secrets via Bootstrap
   ucfs_broker_cidr_blocks             = data.terraform_remote_state.ingest.outputs.locals.ucfs_broker_cidr_blocks
