@@ -36,7 +36,7 @@ resource "aws_cloudwatch_log_metric_filter" "time_to_process_batch_filter_k2hb_e
 
 module "rate_of_dlq_messages_written_filter_k2hb_alarm_equalities" {
   source  = "dwp/metric-filter-alarm/aws"
-  version = "1.1.6"
+  version = "1.1.7"
 
   log_group_name      = local.k2hb_ec2_equality_logs_name
   metric_namespace    = local.cw_k2hb_equality_agent_namespace
@@ -50,11 +50,13 @@ module "rate_of_dlq_messages_written_filter_k2hb_alarm_equalities" {
   threshold           = 0
   statistic           = "Sum"
   comparison_operator = "GreaterThanThreshold"
+  severity            = "Warning"
+  notification_type   = "High"
 }
 
 module "kafka_read_timeout_occurrences_greater_than_threshold_filter_k2hb_alarm_equalities" {
   source  = "dwp/metric-filter-alarm/aws"
-  version = "1.1.6"
+  version = "1.1.7"
 
   log_group_name      = local.k2hb_ec2_equality_logs_name
   metric_namespace    = local.cw_k2hb_equality_agent_namespace
@@ -68,11 +70,13 @@ module "kafka_read_timeout_occurrences_greater_than_threshold_filter_k2hb_alarm_
   threshold           = 5
   statistic           = "Sum"
   comparison_operator = "GreaterThanOrEqualToThreshold"
+  severity            = "Warning"
+  notification_type   = "High"
 }
 
 module "hbase_batch_failures_greater_than_threshold_filter_k2hb_alarm_equalities" {
   source  = "dwp/metric-filter-alarm/aws"
-  version = "1.1.6"
+  version = "1.1.7"
 
   log_group_name      = local.k2hb_ec2_equality_logs_name
   metric_namespace    = local.cw_k2hb_equality_agent_namespace
@@ -86,11 +90,13 @@ module "hbase_batch_failures_greater_than_threshold_filter_k2hb_alarm_equalities
   threshold           = 5
   statistic           = "Sum"
   comparison_operator = "GreaterThanOrEqualToThreshold"
+  severity            = "Warning"
+  notification_type   = "High"
 }
 
 module "hbase_connection_timeout_occurrences_greater_than_threshold_filter_k2hb_alarm_equalities" {
   source  = "dwp/metric-filter-alarm/aws"
-  version = "1.1.6"
+  version = "1.1.7"
 
   log_group_name      = local.k2hb_ec2_equality_logs_name
   metric_namespace    = local.cw_k2hb_equality_agent_namespace
@@ -104,6 +110,8 @@ module "hbase_connection_timeout_occurrences_greater_than_threshold_filter_k2hb_
   threshold           = 5
   statistic           = "Sum"
   comparison_operator = "GreaterThanOrEqualToThreshold"
+  severity            = "Warning"
+  notification_type   = "High"
 }
 
 resource "aws_cloudwatch_log_metric_filter" "consumer_lag_k2hb_equalities" {
@@ -131,6 +139,7 @@ resource "aws_cloudwatch_metric_alarm" "consumer_lag_k2hb_alarm_equalities" {
   threshold           = 100000
   statistic           = "Average"
   comparison_operator = "GreaterThanThreshold"
+  tags                = { notification_type = "Information", severity = "High" }
 
   tags = merge(
     local.common_tags,
@@ -165,6 +174,7 @@ resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_eq
   threshold           = 5
   statistic           = "Sum"
   comparison_operator = "GreaterThanOrEqualToThreshold"
+  tags                = { notification_type = "Warning", severity = "Critical" }
 
   tags = merge(
     local.common_tags,
