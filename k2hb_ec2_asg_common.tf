@@ -407,28 +407,6 @@ resource "aws_security_group_rule" "k2hb_common_to_ucfs_london_broker" {
   security_group_id = aws_security_group.k2hb_common.id
 }
 
-resource "aws_security_group_rule" "k2hb_common_to_ucfs_ireland_dns_tcp" {
-  count             = local.peer_with_ucfs[local.environment] ? 1 : 0
-  description       = "Allow k2hb to reach ucfs DNS name servers (Ireland)"
-  type              = "egress"
-  from_port         = 53
-  to_port           = 53
-  protocol          = "tcp"
-  cidr_blocks       = local.ucfs_nameservers_cidr_blocks[local.environment]
-  security_group_id = aws_security_group.k2hb_common.id
-}
-
-resource "aws_security_group_rule" "k2hb_common_to_ucfs_ireland_dns_udp" {
-  count             = local.peer_with_ucfs[local.environment] ? 1 : 0
-  description       = "Allow k2hb to reach ucfs DNS name servers (Ireland)"
-  type              = "egress"
-  from_port         = 53
-  to_port           = 53
-  protocol          = "udp"
-  cidr_blocks       = local.ucfs_nameservers_cidr_blocks[local.environment]
-  security_group_id = aws_security_group.k2hb_common.id
-}
-
 resource "aws_security_group_rule" "k2hb_common_to_ucfs_london_dns_tcp" {
   count             = local.peer_with_ucfs_london[local.environment] ? 1 : 0
   description       = "Allow k2hb to reach UCFS DNS (London)"

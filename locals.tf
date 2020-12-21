@@ -586,7 +586,6 @@ locals {
   ingest_vpc_id = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
 
   k2hb_data_source_is_ucfs = data.terraform_remote_state.ingest.outputs.locals.k2hb_data_source_is_ucfs
-  peer_with_ucfs           = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs
   peer_with_ucfs_london    = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs_london
 
   k2hb_ec2_business_logs_name = local.ingest_log_groups.k2hb_ec2_logs.name
