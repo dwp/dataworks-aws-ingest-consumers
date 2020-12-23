@@ -35,6 +35,7 @@ resource "aws_cloudwatch_log_metric_filter" "time_to_process_batch_filter_k2hb_u
 }
 
 module "rate_of_dlq_messages_written_filter_k2hb_alarm_ucfs" {
+  count = local.k2hb_alarm_on_dlq_ucfs[local.environment] ? 1 : 0
   source  = "dwp/metric-filter-alarm/aws"
   version = "1.1.7"
 
@@ -55,6 +56,7 @@ module "rate_of_dlq_messages_written_filter_k2hb_alarm_ucfs" {
 }
 
 module "kafka_read_timeout_occurrences_greater_than_threshold_filter_k2hb_alarm_ucfs" {
+  count = local.k2hb_alarm_on_kafka_read_timeouts_ucfs[local.environment] ? 1 : 0
   source  = "dwp/metric-filter-alarm/aws"
   version = "1.1.7"
 
@@ -75,6 +77,7 @@ module "kafka_read_timeout_occurrences_greater_than_threshold_filter_k2hb_alarm_
 }
 
 module "hbase_batch_failures_greater_than_threshold_filter_k2hb_alarm_ucfs" {
+  count = local.k2hb_alarm_on_hbase_write_timeouts_ucfs[local.environment] ? 1 : 0
   source  = "dwp/metric-filter-alarm/aws"
   version = "1.1.7"
 
@@ -95,6 +98,7 @@ module "hbase_batch_failures_greater_than_threshold_filter_k2hb_alarm_ucfs" {
 }
 
 module "hbase_connection_timeout_occurrences_greater_than_threshold_filter_k2hb_alarm_ucfs" {
+  count = local.k2hb_alarm_on_hbase_connection_timeouts_ucfs[local.environment] ? 1 : 0
   source  = "dwp/metric-filter-alarm/aws"
   version = "1.1.7"
 
@@ -127,6 +131,7 @@ resource "aws_cloudwatch_log_metric_filter" "consumer_lag_k2hb_ucfs" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "consumer_lag_k2hb_alarm_ucfs" {
+  count = local.k2hb_alarm_on_consumer_lag_ucfs[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.consumer_lag_k2hb_ucfs.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
@@ -163,6 +168,7 @@ resource "aws_cloudwatch_log_metric_filter" "failed_k2hb_batches_ucfs" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_ucfs" {
+  count = local.k2hb_alarm_on_failed_batches_ucfs[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.failed_k2hb_batches_ucfs.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
