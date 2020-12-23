@@ -34,88 +34,148 @@ resource "aws_cloudwatch_log_metric_filter" "time_to_process_batch_filter_k2hb_e
   }
 }
 
-module "rate_of_dlq_messages_written_filter_k2hb_alarm_equalities" {
-  count = local.k2hb_alarm_on_dlq_equalities[local.environment] ? 1 : 0
-  source  = "dwp/metric-filter-alarm/aws"
-  version = "1.1.7"
+resource "aws_cloudwatch_log_metric_filter" "rate_of_dlq_messages_written_equalities" {
+  log_group_name = local.k2hb_ec2_equality_logs_name
+  name           = local.k2hb_metric_name_messages_written_to_dlq
+  pattern        = "{ $.message = \"Error processing record, sending to dlq\" }"
 
-  log_group_name      = local.k2hb_ec2_equality_logs_name
-  metric_namespace    = local.cw_k2hb_equality_agent_namespace
-  pattern             = "{ $.message = \"Error processing record, sending to dlq\" }"
+  metric_transformation {
+    name      = local.k2hb_metric_name_messages_written_to_dlq
+    namespace = local.cw_k2hb_equality_agent_namespace
+    value     = 1
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "rate_of_dlq_messages_written_equalities" {
+  count = local.k2hb_alarm_on_dlq_equalities[local.environment] ? 1 : 0
+  metric_name = aws_cloudwatch_log_metric_filter.rate_of_dlq_messages_written_equalities.name
+
+  namespace           = local.cw_k2hb_equality_agent_namespace
   alarm_name          = "K2HB equalities - Messages written to DLQ in last half an hour"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
-  metric_filter_name  = local.k2hb_metric_name_messages_written_to_dlq
-  alarm_action_arns   = [local.monitoring_topic_arn]
+  alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 1800
   threshold           = 0
   statistic           = "Sum"
   comparison_operator = "GreaterThanThreshold"
-  severity            = "Warning"
-  notification_type   = "High"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name              = "dlq-written-rate-alarm-equalities",
+      notification_type = "Warning",
+      severity          = "High"
+    },
+  )
 }
 
-module "kafka_read_timeout_occurrences_greater_than_threshold_filter_k2hb_alarm_equalities" {
-  count = local.k2hb_alarm_on_kafka_read_timeouts_equalities[local.environment] ? 1 : 0
-  source  = "dwp/metric-filter-alarm/aws"
-  version = "1.1.7"
+resource "aws_cloudwatch_log_metric_filter" "kafka_read_timeout_equalities" {
+  log_group_name = local.k2hb_ec2_equality_logs_name
+  name           = local.k2hb_metric_name_timeouts_reading_kafka
+  pattern        = "{ $.message = \"Error reading from Kafka\" }"
 
-  log_group_name      = local.k2hb_ec2_equality_logs_name
-  metric_namespace    = local.cw_k2hb_equality_agent_namespace
-  pattern             = "{ $.message = \"Error reading from Kafka\" }"
+  metric_transformation {
+    name      = local.k2hb_metric_name_timeouts_reading_kafka
+    namespace = local.cw_k2hb_equality_agent_namespace
+    value     = 1
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "kafka_read_timeout_equalities" {
+  count = local.k2hb_alarm_on_kafka_read_timeouts_equalities[local.environment] ? 1 : 0
+  metric_name = aws_cloudwatch_log_metric_filter.kafka_read_timeout_equalities.name
+
+  namespace           = local.cw_k2hb_equality_agent_namespace
   alarm_name          = "K2HB equalities - Kafka read timeout occurrences exceeds 5 in last hour"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
-  metric_filter_name  = local.k2hb_metric_name_timeouts_reading_kafka
-  alarm_action_arns   = [local.monitoring_topic_arn]
+  alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 3600
   threshold           = 5
   statistic           = "Sum"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  severity            = "Warning"
-  notification_type   = "High"
+  comparison_operator = "GreaterThanThreshold"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name              = "kafka-read-timeouts-equalities",
+      notification_type = "Warning",
+      severity          = "High"
+    },
+  )
 }
 
-module "hbase_batch_failures_greater_than_threshold_filter_k2hb_alarm_equalities" {
+resource "aws_cloudwatch_log_metric_filter" "kafka_write_timeout_equalities" {
+  log_group_name = local.k2hb_ec2_equality_logs_name
+  name           = local.k2hb_metric_name_failures_writing_hbase
+  pattern        = "{ $.message = \"Failed to put batch into hbase\"}"
+
+  metric_transformation {
+    name      = local.k2hb_metric_name_failures_writing_hbase
+    namespace = local.cw_k2hb_equality_agent_namespace
+    value     = 1
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "kafka_write_timeout_equalities" {
   count = local.k2hb_alarm_on_hbase_write_timeouts_equalities[local.environment] ? 1 : 0
-  source  = "dwp/metric-filter-alarm/aws"
-  version = "1.1.7"
+  metric_name = aws_cloudwatch_log_metric_filter.kafka_write_timeout_equalities.name
 
-  log_group_name      = local.k2hb_ec2_equality_logs_name
-  metric_namespace    = local.cw_k2hb_equality_agent_namespace
-  pattern             = "{ $.message = \"Failed to put batch into hbase\"}"
-  alarm_name          = "K2HB equalities - Hbase write failures exceeds 5 in last hour"
+  namespace           = local.cw_k2hb_equality_agent_namespace
+  alarm_name          = "K2HB equalities - Kafka write failures exceeds 5 in last hour"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
-  metric_filter_name  = local.k2hb_metric_name_failures_writing_hbase
-  alarm_action_arns   = [local.monitoring_topic_arn]
+  alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 3600
   threshold           = 5
   statistic           = "Sum"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  severity            = "Warning"
-  notification_type   = "High"
+  comparison_operator = "GreaterThanThreshold"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name              = "kafka-write-timeouts-equalities",
+      notification_type = "Warning",
+      severity          = "High"
+    },
+  )
 }
 
-module "hbase_connection_timeout_occurrences_greater_than_threshold_filter_k2hb_alarm_equalities" {
-  count = local.k2hb_alarm_on_hbase_connection_timeouts_equalities[local.environment] ? 1 : 0
-  source  = "dwp/metric-filter-alarm/aws"
-  version = "1.1.7"
+resource "aws_cloudwatch_log_metric_filter" "kafka_connection_timeout_equalities" {
+  log_group_name = local.k2hb_ec2_equality_logs_name
+  name           = local.k2hb_metric_name_timeouts_connecting_hbase
+  pattern        = "{ $.message = \"Error connecting to Hbase\" }"
 
-  log_group_name      = local.k2hb_ec2_equality_logs_name
-  metric_namespace    = local.cw_k2hb_equality_agent_namespace
-  pattern             = "{ $.message = \"Error connecting to Hbase\" }"
-  alarm_name          = "K2HB equalities - Hbase connection timeout occurrences exceeds 5 in last hour"
+  metric_transformation {
+    name      = local.k2hb_metric_name_timeouts_connecting_hbase
+    namespace = local.cw_k2hb_equality_agent_namespace
+    value     = 1
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "kafka_connection_timeout_equalities" {
+  count = local.k2hb_alarm_on_hbase_connection_timeouts_equalities[local.environment] ? 1 : 0
+  metric_name = aws_cloudwatch_log_metric_filter.kafka_connection_timeout_equalities.name
+
+  namespace           = local.cw_k2hb_equality_agent_namespace
+  alarm_name          = "K2HB equalities - Kafka connection failures exceeds 5 in last hour"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
-  metric_filter_name  = local.k2hb_metric_name_timeouts_connecting_hbase
-  alarm_action_arns   = [local.monitoring_topic_arn]
+  alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 3600
   threshold           = 5
   statistic           = "Sum"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  severity            = "Warning"
-  notification_type   = "High"
+  comparison_operator = "GreaterThanThreshold"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name              = "kafka-connection-timeouts-equalities",
+      notification_type = "Warning",
+      severity          = "High"
+    },
+  )
 }
 
 resource "aws_cloudwatch_log_metric_filter" "consumer_lag_k2hb_equalities" {
