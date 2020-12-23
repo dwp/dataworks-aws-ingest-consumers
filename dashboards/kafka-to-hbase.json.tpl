@@ -325,7 +325,7 @@
       "type": "metric",
       "x": 0,
       "y": 33,
-      "width": 12,
+      "width": 24,
       "height": 6,
       "properties": {
         "metrics": [
@@ -349,24 +349,6 @@
             "showUnits": false
           }
         }
-      }
-    },
-    {
-      "type": "metric",
-      "x": 12,
-      "y": 33,
-      "width": 12,
-      "height": 6,
-      "properties": {
-        "title": "Unreconciled records after specified age",
-        "annotations": {
-          "alarms": [
-              "${number_of_unreconciled_records_after_specified_age_alarm_arn}"
-          ]
-        },
-        "view": "bar",
-        "stacked": true,
-        "type": "chart"
       }
     },
     {

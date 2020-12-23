@@ -627,4 +627,147 @@ locals {
     production  = local.ucfs_london_bootstrap_servers[local.environment] // now on UCFS Production HA
   }
 
+  k2hb_alarm_on_consumer_lag_ucfs = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_consumer_lag_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_consumer_lag_equalities = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_failed_batches_ucfs = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_failed_batches_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_failed_batches_equalities = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_dlq_ucfs = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_dlq_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_dlq_equalities = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_kafka_read_timeouts_ucfs = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_kafka_read_timeouts_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_kafka_read_timeouts_equalities = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_hbase_write_timeouts_ucfs = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_hbase_write_timeouts_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_hbase_write_timeouts_equalities = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_hbase_connection_timeouts_ucfs = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_hbase_connection_timeouts_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_hbase_connection_timeouts_equalities = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
 }

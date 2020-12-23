@@ -15,7 +15,6 @@ resource "aws_cloudwatch_dashboard" "k2hb" {
     reconciliation_metric_name_successfully_reconciled           = data.terraform_remote_state.ingest.outputs.locals.k2hb_reconciliation_metric_name_number_of_successfully_reconciled_records["ucfs_reconciliation"]
     reconciliation_metric_name_failed_to_be_reconciled           = data.terraform_remote_state.ingest.outputs.locals.k2hb_reconciliation_metric_name_number_of_records_which_failed_reconciliation["ucfs_reconciliation"]
     reconciliation_metric_name_trimmed_records                   = data.terraform_remote_state.ingest.outputs.locals.k2hb_reconciliation_trimmer_metric_name_number_of_records_which_have_been_trimmed["ucfs_reconciliation"]
-    number_of_unreconciled_records_after_specified_age_alarm_arn = data.terraform_remote_state.ingest.outputs.metrics.number_of_unreconciled_records_after_specified_age_alarm.ucfs.arn
     k2hb_metric_name_lag_per_partition                           = local.k2hb_metric_name_lag_per_partition
   })
 }
@@ -37,7 +36,6 @@ resource "aws_cloudwatch_dashboard" "k2hb_equality" {
     reconciliation_metric_name_successfully_reconciled           = data.terraform_remote_state.ingest.outputs.locals.k2hb_reconciliation_metric_name_number_of_successfully_reconciled_records["equality_reconciliation"]
     reconciliation_metric_name_failed_to_be_reconciled           = data.terraform_remote_state.ingest.outputs.locals.k2hb_reconciliation_metric_name_number_of_records_which_failed_reconciliation["equality_reconciliation"]
     reconciliation_metric_name_trimmed_records                   = data.terraform_remote_state.ingest.outputs.locals.k2hb_reconciliation_trimmer_metric_name_number_of_records_which_have_been_trimmed["equality_reconciliation"]
-    number_of_unreconciled_records_after_specified_age_alarm_arn = data.terraform_remote_state.ingest.outputs.metrics.number_of_unreconciled_records_after_specified_age_alarm.equality.arn
     k2hb_metric_name_lag_per_partition                           = local.k2hb_metric_name_lag_per_partition
   })
 }
@@ -59,7 +57,6 @@ resource "aws_cloudwatch_dashboard" "k2hb_audit" {
     reconciliation_metric_name_successfully_reconciled           = data.terraform_remote_state.ingest.outputs.locals.k2hb_reconciliation_metric_name_number_of_successfully_reconciled_records["audit_reconciliation"]
     reconciliation_metric_name_failed_to_be_reconciled           = data.terraform_remote_state.ingest.outputs.locals.k2hb_reconciliation_metric_name_number_of_records_which_failed_reconciliation["audit_reconciliation"]
     reconciliation_metric_name_trimmed_records                   = data.terraform_remote_state.ingest.outputs.locals.k2hb_reconciliation_trimmer_metric_name_number_of_records_which_have_been_trimmed["audit_reconciliation"]
-    number_of_unreconciled_records_after_specified_age_alarm_arn = data.terraform_remote_state.ingest.outputs.metrics.number_of_unreconciled_records_after_specified_age_alarm.audit.arn
     k2hb_metric_name_lag_per_partition                           = local.k2hb_metric_name_lag_per_partition
   })
 }
