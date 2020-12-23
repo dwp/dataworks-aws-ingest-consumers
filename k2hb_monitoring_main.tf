@@ -118,30 +118,6 @@ resource "aws_cloudwatch_log_metric_filter" "kafka_write_timeout_ucfs" {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "kafka_write_timeout_ucfs" {
-  count = local.k2hb_alarm_on_hbase_write_timeouts_ucfs[local.environment] ? 1 : 0
-  metric_name = aws_cloudwatch_log_metric_filter.kafka_write_timeout_ucfs.name
-
-  namespace           = local.cw_k2hb_main_agent_namespace
-  alarm_name          = "K2HB UCFS - Kafka write failures exceeds 5 in last hour"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
-  alarm_actions       = [local.monitoring_topic_arn]
-  evaluation_periods  = 1
-  period              = 3600
-  threshold           = 5
-  statistic           = "Sum"
-  comparison_operator = "GreaterThanThreshold"
-
-  tags = merge(
-    local.common_tags,
-    {
-      Name              = "kafka-write-timeouts-ucfs",
-      notification_type = "Warning",
-      severity          = "High"
-    },
-  )
-}
-
 resource "aws_cloudwatch_log_metric_filter" "kafka_connection_timeout_ucfs" {
   log_group_name = local.k2hb_ec2_business_logs_name
   name           = local.k2hb_metric_name_timeouts_connecting_hbase
@@ -232,13 +208,13 @@ resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_uc
   metric_name = aws_cloudwatch_log_metric_filter.failed_k2hb_batches_ucfs.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
-  alarm_name          = "K2HB UCFS - Failed batches exceeds 5 in last 30 minutes"
+  alarm_name          = "K2HB UCFS - Failed batches exceeds 50 in last 30 minutes"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 1800
   datapoints_to_alarm = 1
-  threshold           = 5
+  threshold           = 50
   statistic           = "Sum"
   comparison_operator = "GreaterThanOrEqualToThreshold"
 
