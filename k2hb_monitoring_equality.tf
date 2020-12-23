@@ -118,30 +118,6 @@ resource "aws_cloudwatch_log_metric_filter" "kafka_write_timeout_equalities" {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "kafka_write_timeout_equalities" {
-  count = local.k2hb_alarm_on_hbase_write_timeouts_equalities[local.environment] ? 1 : 0
-  metric_name = aws_cloudwatch_log_metric_filter.kafka_write_timeout_equalities.name
-
-  namespace           = local.cw_k2hb_equality_agent_namespace
-  alarm_name          = "K2HB equalities - Kafka write failures exceeds 5 in last hour"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
-  alarm_actions       = [local.monitoring_topic_arn]
-  evaluation_periods  = 1
-  period              = 3600
-  threshold           = 5
-  statistic           = "Sum"
-  comparison_operator = "GreaterThanThreshold"
-
-  tags = merge(
-    local.common_tags,
-    {
-      Name              = "kafka-write-timeouts-equalities",
-      notification_type = "Warning",
-      severity          = "High"
-    },
-  )
-}
-
 resource "aws_cloudwatch_log_metric_filter" "kafka_connection_timeout_equalities" {
   log_group_name = local.k2hb_ec2_equality_logs_name
   name           = local.k2hb_metric_name_timeouts_connecting_hbase
