@@ -239,7 +239,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_a
   evaluation_periods  = 1
   period              = 900
   datapoints_to_alarm = 1
-  threshold           = 1000
+  threshold           = 10000
   statistic           = "Sum"
   comparison_operator = "LessThanThreshold"
   treat_missing_data  = "breaching"
@@ -268,7 +268,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_a
   evaluation_periods  = 1
   period              = 900
   datapoints_to_alarm = 1
-  threshold           = 1000
+  threshold           = 10000
   statistic           = "Sum"
   comparison_operator = "LessThanThreshold"
   treat_missing_data  = "breaching"
