@@ -470,24 +470,24 @@ locals {
   k2hb_main_write_to_metadata_store = {
     development = true
     qa          = true
-    integration = true
-    preprod     = true
+    integration = false # Not used in this environment
+    preprod     = false # Not used in this environment
     production  = false # Will run ad-hoc as and when needed
   }
 
   k2hb_equality_write_to_metadata_store = {
     development = true
     qa          = true
-    integration = true
-    preprod     = true
+    integration = false # Not used in this environment
+    preprod     = false # Not used in this environment
     production  = true
   }
 
   k2hb_audit_write_to_metadata_store = {
     development = true
     qa          = true
-    integration = true
-    preprod     = true
+    integration = false # Not used in this environment
+    preprod     = false # Not used in this environment
     production  = false # Will run ad-hoc as and when needed
   }
 
@@ -652,6 +652,30 @@ locals {
   }
 
   k2hb_alarm_on_failed_batches_ucfs = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_number_of_batches_ucfs = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_number_of_batches_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_number_of_batches_equalities = {
     development = false
     qa          = false
     integration = false
