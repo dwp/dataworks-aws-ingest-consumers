@@ -262,7 +262,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_u
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_ucfs.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
-  alarm_name          = "K2HB UCFS - Processed batches under 1000 in last 15 minutes"
+  alarm_name          = "K2HB UCFS - Processed batches under 1000 in last 15 minutes (Saturday)"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
@@ -276,7 +276,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_u
   tags = merge(
     local.common_tags,
     {
-      Name              = "processed-k2hb-batches-under-threshold-ucfs",
+      Name              = "processed-k2hb-batches-under-threshold-ucfs-saturday",
       notification_type = "Error",
       severity          = "High",
       active_days       = "Saturday",
