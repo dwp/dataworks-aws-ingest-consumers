@@ -16,6 +16,12 @@ output "asg_properties" {
   }
 }
 
+output "security_group" {
+  value = {
+    k2hb_common = aws_security_group.k2hb_common.id
+  }
+}
+
 output "k2hb_corporate_storage_coalesce_values" {
   value = {
     max_size_files = {
