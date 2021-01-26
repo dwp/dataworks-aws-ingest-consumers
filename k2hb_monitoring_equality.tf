@@ -47,7 +47,7 @@ resource "aws_cloudwatch_log_metric_filter" "rate_of_dlq_messages_written_equali
 }
 
 resource "aws_cloudwatch_metric_alarm" "rate_of_dlq_messages_written_equalities" {
-  count = local.k2hb_alarm_on_dlq_equalities[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_dlq_equalities[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.rate_of_dlq_messages_written_equalities.name
 
   namespace           = local.cw_k2hb_equality_agent_namespace
@@ -83,7 +83,7 @@ resource "aws_cloudwatch_log_metric_filter" "kafka_read_timeout_equalities" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "kafka_read_timeout_equalities" {
-  count = local.k2hb_alarm_on_kafka_read_timeouts_equalities[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_kafka_read_timeouts_equalities[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.kafka_read_timeout_equalities.name
 
   namespace           = local.cw_k2hb_equality_agent_namespace
@@ -131,7 +131,7 @@ resource "aws_cloudwatch_log_metric_filter" "kafka_connection_timeout_equalities
 }
 
 resource "aws_cloudwatch_metric_alarm" "kafka_connection_timeout_equalities" {
-  count = local.k2hb_alarm_on_hbase_connection_timeouts_equalities[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_hbase_connection_timeouts_equalities[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.kafka_connection_timeout_equalities.name
 
   namespace           = local.cw_k2hb_equality_agent_namespace
@@ -167,7 +167,7 @@ resource "aws_cloudwatch_log_metric_filter" "consumer_lag_k2hb_equalities" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "consumer_lag_k2hb_alarm_equalities" {
-  count = local.k2hb_alarm_on_consumer_lag_equalities[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_consumer_lag_equalities[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.consumer_lag_k2hb_equalities.name
 
   namespace           = local.cw_k2hb_equality_agent_namespace
@@ -204,7 +204,7 @@ resource "aws_cloudwatch_log_metric_filter" "failed_k2hb_batches_equalities" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_equalities" {
-  count = local.k2hb_alarm_on_failed_batches_equalities[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_failed_batches_equalities[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.failed_k2hb_batches_equalities.name
 
   namespace           = local.cw_k2hb_equality_agent_namespace
@@ -229,7 +229,7 @@ resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_eq
 }
 
 resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_equalities" {
-  count = local.k2hb_alarm_on_number_of_batches_equalities[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_number_of_batches_equalities[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_equalities.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
@@ -247,18 +247,18 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
   tags = merge(
     local.common_tags,
     {
-      Name              = "processed-k2hb-batches-under-threshold-equalities",
-      notification_type = "Error",
-      severity          = "High",
-      active_days       = "Monday+Tuesday+Wednesday+Thursday+Friday+Sunday",
+      Name                = "processed-k2hb-batches-under-threshold-equalities",
+      notification_type   = "Error",
+      severity            = "High",
+      active_days         = "Monday+Tuesday+Wednesday+Thursday+Friday+Sunday",
       do_not_alert_before = "11:00",
-      do_not_alert_after = "23:59",
+      do_not_alert_after  = "23:59",
     },
   )
 }
 
 resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_equalities_saturday" {
-  count = local.k2hb_alarm_on_number_of_batches_equalities[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_number_of_batches_equalities[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_equalities.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
@@ -276,12 +276,12 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
   tags = merge(
     local.common_tags,
     {
-      Name              = "processed-k2hb-batches-under-threshold-equalities-saturday",
-      notification_type = "Error",
-      severity          = "High",
-      active_days       = "Saturday",
+      Name                = "processed-k2hb-batches-under-threshold-equalities-saturday",
+      notification_type   = "Error",
+      severity            = "High",
+      active_days         = "Saturday",
       do_not_alert_before = "17:00",
-      do_not_alert_after = "23:59",
+      do_not_alert_after  = "23:59",
     },
   )
 }
