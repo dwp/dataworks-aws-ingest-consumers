@@ -47,7 +47,7 @@ resource "aws_cloudwatch_log_metric_filter" "rate_of_dlq_messages_written_ucfs" 
 }
 
 resource "aws_cloudwatch_metric_alarm" "rate_of_dlq_messages_written_ucfs" {
-  count = local.k2hb_alarm_on_dlq_ucfs[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_dlq_ucfs[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.rate_of_dlq_messages_written_ucfs.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
@@ -83,7 +83,7 @@ resource "aws_cloudwatch_log_metric_filter" "kafka_read_timeout_ucfs" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "kafka_read_timeout_ucfs" {
-  count = local.k2hb_alarm_on_kafka_read_timeouts_ucfs[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_kafka_read_timeouts_ucfs[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.kafka_read_timeout_ucfs.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
@@ -131,7 +131,7 @@ resource "aws_cloudwatch_log_metric_filter" "kafka_connection_timeout_ucfs" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "kafka_connection_timeout_ucfs" {
-  count = local.k2hb_alarm_on_hbase_connection_timeouts_ucfs[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_hbase_connection_timeouts_ucfs[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.kafka_connection_timeout_ucfs.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
@@ -167,7 +167,7 @@ resource "aws_cloudwatch_log_metric_filter" "consumer_lag_k2hb_ucfs" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "consumer_lag_k2hb_alarm_ucfs" {
-  count = local.k2hb_alarm_on_consumer_lag_ucfs[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_consumer_lag_ucfs[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.consumer_lag_k2hb_ucfs.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
@@ -204,7 +204,7 @@ resource "aws_cloudwatch_log_metric_filter" "failed_k2hb_batches_ucfs" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_ucfs" {
-  count = local.k2hb_alarm_on_failed_batches_ucfs[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_failed_batches_ucfs[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.failed_k2hb_batches_ucfs.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
@@ -229,7 +229,7 @@ resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_uc
 }
 
 resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_ucfs" {
-  count = local.k2hb_alarm_on_number_of_batches_ucfs[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_number_of_batches_ucfs[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_ucfs.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
@@ -247,18 +247,18 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_u
   tags = merge(
     local.common_tags,
     {
-      Name              = "processed-k2hb-batches-under-threshold-ucfs",
-      notification_type = "Error",
-      severity          = "High",
-      active_days       = "Monday+Tuesday+Wednesday+Thursday+Friday+Sunday",
+      Name                = "processed-k2hb-batches-under-threshold-ucfs",
+      notification_type   = "Error",
+      severity            = "High",
+      active_days         = "Monday+Tuesday+Wednesday+Thursday+Friday+Sunday",
       do_not_alert_before = "11:00",
-      do_not_alert_after = "23:59",
+      do_not_alert_after  = "23:59",
     },
   )
 }
 
 resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_ucfs_saturday" {
-  count = local.k2hb_alarm_on_number_of_batches_ucfs[local.environment] ? 1 : 0
+  count       = local.k2hb_alarm_on_number_of_batches_ucfs[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_ucfs.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
@@ -276,12 +276,12 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_u
   tags = merge(
     local.common_tags,
     {
-      Name              = "processed-k2hb-batches-under-threshold-ucfs-saturday",
-      notification_type = "Error",
-      severity          = "High",
-      active_days       = "Saturday",
+      Name                = "processed-k2hb-batches-under-threshold-ucfs-saturday",
+      notification_type   = "Error",
+      severity            = "High",
+      active_days         = "Saturday",
       do_not_alert_before = "17:00",
-      do_not_alert_after = "23:59",
+      do_not_alert_after  = "23:59",
     },
   )
 }
