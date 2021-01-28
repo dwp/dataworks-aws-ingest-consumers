@@ -4,7 +4,7 @@ locals {
   k2hb_equality_london_tags_asg = merge(
     local.k2hb_equality_tags_asg,
     {
-      Name     = "k2hb-equality-london"
+      Name     = "k2hb-equality-london",
       Location = "London",
     }
   )
@@ -22,8 +22,7 @@ resource "aws_launch_template" "k2hb_equality_london" {
     k2hb_application_name     = local.k2hb_equality_consumer_name
     k2hb_kafka_consumer_group = local.k2hb_kafka_equality_consumer_group
     k2hb_log_level            = local.k2hb_log_level[local.environment]
-    aws_default_region        = var.region
-    name                      = local.name
+    name                      = "k2hb-equality-london"
 
     k2hb_kafka_bootstrap_servers = join(
       ",",
