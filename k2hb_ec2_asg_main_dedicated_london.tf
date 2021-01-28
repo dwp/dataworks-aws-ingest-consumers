@@ -24,6 +24,8 @@ resource "aws_launch_template" "k2hb_main_dedicated_london" {
     k2hb_application_name     = local.k2hb_main_consumer_name
     k2hb_kafka_consumer_group = local.k2hb_kafka_main_consumer_group
     k2hb_log_level            = local.k2hb_log_level[local.environment]
+    aws_default_region        = var.region
+    name                      = local.name
 
     k2hb_kafka_bootstrap_servers = join(
       ",",

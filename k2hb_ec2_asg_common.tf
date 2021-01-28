@@ -260,6 +260,21 @@ data "aws_iam_policy_document" "k2hb_common" {
       local.internal_compute_manifest_bucket_cmk.arn,
     ]
   }
+
+
+  statement {
+    sid    = "AllowInstanceToEditTags"
+    effect = "Allow"
+
+    actions = [
+      "ec2:ModifyInstanceMetadataOptions",
+      "ec2:*Tags",
+    ]
+
+    resources = [
+    "arn:aws:ec2:${var.region}:${local.account[local.environment]}:instance/*", ]
+  }
+
 }
 
 data "aws_iam_policy_document" "k2hb_common_policy" {
@@ -306,6 +321,8 @@ resource "aws_iam_role_policy_attachment" "k2hb_common_ssm" {
   role       = aws_iam_role.k2hb_common.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
 }
+
+
 
 # This updates the broker security group to let us in
 resource "aws_security_group_rule" "k2hb_common_ec2_to_stub_ucfs_kafka" {
