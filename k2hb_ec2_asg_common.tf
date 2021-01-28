@@ -260,6 +260,19 @@ data "aws_iam_policy_document" "k2hb_common" {
       local.internal_compute_manifest_bucket_cmk.arn,
     ]
   }
+
+  statement {
+    sid    = "AllowInstanceToEditTags"
+    effect = "Allow"
+
+    actions = [
+      "ec2:ModifyInstanceMetadataOptions",
+      "ec2:*Tags",
+    ]
+
+    resources = [
+    "arn:aws:ec2:${var.region}:${local.account[local.environment]}:instance/*", ]
+  }
 }
 
 data "aws_iam_policy_document" "k2hb_common_policy" {

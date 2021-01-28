@@ -186,3 +186,9 @@ service k2hb start
 
 # Adds respawn_k2hb to crontab and run every minute
 crontab -l | { cat; echo "* * * * * /opt/k2hb/respawn_k2hb.sh "${k2hb_application_name}" >> /var/log/k2hb/respawn_k2hb.log 2>&1"; } | crontab -
+
+# Uniquely name ec2 host
+UUID=$(dbus-uuidgen | cut -c 1-8)
+export HOSTNAME=${name}-$UUID
+hostnamectl set-hostname $HOSTNAME
+aws ec2 create-tags --resources $INSTANCE_ID --tags Key=Name,Value=$HOSTNAME
