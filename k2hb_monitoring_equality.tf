@@ -233,13 +233,13 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_equalities.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
-  alarm_name          = "K2HB equalities - Processed batches under 100 in 10 of last 24 hours"
+  alarm_name          = "K2HB equalities - Processed batches under 20 in 10 of last 24 hours"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 24
   period              = 3600
-  datapoints_to_alarm = 100
-  threshold           = 5
+  datapoints_to_alarm = 10
+  threshold           = 20
   statistic           = "Sum"
   comparison_operator = "LessThanThreshold"
   treat_missing_data  = "breaching"
@@ -262,13 +262,13 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_equalities.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
-  alarm_name          = "K2HB equalities - Processed batches under 100 in 10 of last 24 hours (Saturday)"
+  alarm_name          = "K2HB equalities - Processed batches under 20 in 10 of last 24 hours (Saturday)"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 24
   period              = 3600
-  datapoints_to_alarm = 100
-  threshold           = 5
+  datapoints_to_alarm = 10
+  threshold           = 20
   statistic           = "Sum"
   comparison_operator = "LessThanThreshold"
   treat_missing_data  = "breaching"
