@@ -24,7 +24,6 @@ resource "aws_launch_template" "k2hb_audit_london" {
     k2hb_log_level            = local.k2hb_log_level[local.environment]
     name                      = "k2hb-audit-london"
 
-
     k2hb_kafka_bootstrap_servers = join(
       ",",
       formatlist(

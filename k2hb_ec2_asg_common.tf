@@ -273,7 +273,6 @@ data "aws_iam_policy_document" "k2hb_common" {
     resources = [
     "arn:aws:ec2:${var.region}:${local.account[local.environment]}:instance/*", ]
   }
-
 }
 
 data "aws_iam_policy_document" "k2hb_common_policy" {
