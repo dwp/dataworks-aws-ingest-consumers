@@ -236,9 +236,9 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_a
   alarm_name          = "K2HB audit - Processed batches under 10000 in 10 of last 24 hours"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
-  evaluation_periods  = 24
+  evaluation_periods  = 10
   period              = 3600
-  datapoints_to_alarm = 10
+  datapoints_to_alarm = 9
   threshold           = 10000
   statistic           = "Sum"
   comparison_operator = "LessThanThreshold"
@@ -265,9 +265,9 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_a
   alarm_name          = "K2HB audit - Processed batches under 10000 in 10 of last 24 hours (Saturday)"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
-  evaluation_periods  = 24
+  evaluation_periods  = 10
   period              = 3600
-  datapoints_to_alarm = 10
+  datapoints_to_alarm = 9
   threshold           = 10000
   statistic           = "Sum"
   comparison_operator = "LessThanThreshold"
