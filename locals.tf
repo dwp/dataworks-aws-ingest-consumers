@@ -606,7 +606,9 @@ locals {
   ucfs_london_ha_broker_list = [
     "${local.ucfs_ha_broker_prefix}00.${local.ucfs_london_current_domain}",
     "${local.ucfs_ha_broker_prefix}01.${local.ucfs_london_current_domain}",
-    "${local.ucfs_ha_broker_prefix}02.${local.ucfs_london_current_domain}"
+    "${local.ucfs_ha_broker_prefix}02.${local.ucfs_london_current_domain}",
+    "${local.ucfs_ha_broker_prefix}03.${local.ucfs_london_current_domain}",
+    "${local.ucfs_ha_broker_prefix}04.${local.ucfs_london_current_domain}"
   ]
 
   ucfs_london_bootstrap_servers = {
