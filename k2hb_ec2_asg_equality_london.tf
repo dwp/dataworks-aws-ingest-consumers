@@ -136,6 +136,12 @@ resource "aws_launch_template" "k2hb_equality_london" {
 
     tags = local.k2hb_equality_london_tags_asg
   }
+
+  tag_specifications {
+    resource_type = "volume"
+
+    tags = local.k2hb_equality_london_tags_asg
+  }
 }
 
 resource "aws_autoscaling_group" "k2hb_equality_london" {
