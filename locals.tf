@@ -796,4 +796,68 @@ locals {
     preprod     = false
     production  = true
   }
+
+  k2hb_main_ebs_size = {
+    development = 50
+    qa          = 50
+    integration = 50
+    preprod     = 50
+    production  = 150
+  }
+
+  k2hb_main_ebs_type = {
+    development = "gp3"
+    qa          = "gp3"
+    integration = "gp3"
+    preprod     = "gp3"
+    production  = "gp3"
+  }
+
+  k2hb_main_dedicated_ebs_size = {
+    development = 50
+    qa          = 50
+    integration = 50
+    preprod     = 50
+    production  = 150
+  }
+
+  k2hb_main_dedicated_ebs_type = {
+    development = "gp3"
+    qa          = "gp3"
+    integration = "gp3"
+    preprod     = "gp3"
+    production  = "gp3"
+  }
+
+  k2hb_audit_ebs_size = {
+    development = 50
+    qa          = 50
+    integration = 50
+    preprod     = 50
+    production  = 150
+  }
+
+  k2hb_audit_ebs_type = {
+    development = "gp3"
+    qa          = "gp3"
+    integration = "gp3"
+    preprod     = "gp3"
+    production  = "gp3"
+  }
+
+  k2hb_equalities_ebs_size = {
+    development = 50
+    qa          = 50
+    integration = 50
+    preprod     = 50
+    production  = 150
+  }
+
+  k2hb_equalities_ebs_type = {
+    development = "gp3"
+    qa          = "gp3"
+    integration = "gp3"
+    preprod     = "gp3"
+    production  = "gp3"
+  }
 }

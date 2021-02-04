@@ -122,9 +122,8 @@ resource "aws_launch_template" "k2hb_main_london" {
     device_name = "/dev/xvda"
 
     ebs {
-      volume_size           = 1024
-      volume_type           = "io1"
-      iops                  = "2000"
+      volume_size           = local.k2hb_main_ebs_size
+      volume_type           = local.k2hb_main_ebs_type
       delete_on_termination = true
       encrypted             = true
     }
