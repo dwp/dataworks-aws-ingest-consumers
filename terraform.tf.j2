@@ -110,7 +110,7 @@ data "terraform_remote_state" "ingest" {
 }
 
 provider "aws" {
-  version = "~> 3.12.0"
+  version = "~> 3.25.0"
   region  = "{{terraform.provider_region}}"
 
   assume_role {

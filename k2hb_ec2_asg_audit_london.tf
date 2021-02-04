@@ -122,9 +122,8 @@ resource "aws_launch_template" "k2hb_audit_london" {
     device_name = "/dev/xvda"
 
     ebs {
-      volume_size           = 1024
-      volume_type           = "io1"
-      iops                  = "2000"
+      volume_size           = local.k2hb_audit_ebs_size[local.environment]
+      volume_type           = local.k2hb_audit_ebs_type[local.environment]
       delete_on_termination = true
       encrypted             = true
     }
