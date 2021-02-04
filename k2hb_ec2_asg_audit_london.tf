@@ -122,8 +122,8 @@ resource "aws_launch_template" "k2hb_audit_london" {
     device_name = "/dev/xvda"
 
     ebs {
-      volume_size           = local.k2hb_audit_ebs_size
-      volume_type           = local.k2hb_audit_ebs_type
+      volume_size           = local.k2hb_audit_ebs_size[local.environment]
+      volume_type           = local.k2hb_audit_ebs_type[local.environment]
       delete_on_termination = true
       encrypted             = true
     }
