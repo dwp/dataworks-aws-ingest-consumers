@@ -5,13 +5,7 @@ jobs:
       - in_parallel:
           - put: meta
             resource: meta-qa
-          - get: aws-internal-compute
-            trigger: false
-          - get: aws-ingestion
-            trigger: false
           - get: aws-dataworks-e2e-framework
-            trigger: false
-          - get: aws-snapshot-sender
             trigger: false
           - get: dw-al2-hardened-ami
             trigger: true
@@ -31,24 +25,6 @@ jobs:
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
         params:
           TF_WORKSPACE: 'qa'
-
-      - in_parallel:
-          - .: (( inject meta.plan.terraform-output-ingest ))
-            config:
-              params:
-                TF_WORKSPACE: qa
-          - .: (( inject meta.plan.terraform-output-internal-compute ))
-            config:
-              params:
-                TF_WORKSPACE: qa
-          - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-snapshot-sender ))
-            config:
-              params:
-                TF_WORKSPACE: qa
-          - .: (( inject meta.plan.terraform-output-ingest-consumers ))
-            config:
-              params:
-                TF_WORKSPACE: qa
 
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.run-behave-job ))
         task: data-streaming-tests

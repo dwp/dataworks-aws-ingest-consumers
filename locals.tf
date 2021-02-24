@@ -860,4 +860,20 @@ locals {
     preprod     = "gp3"
     production  = "gp3"
   }
+
+  coalescer_max_files = {
+    development = 1000000
+    qa          = 1000000
+    integration = 1000000
+    preprod     = 1000000
+    production  = 1000000
+  }
+
+  coalescer_max_size = {
+    development = 128000000
+    qa          = 128000000
+    integration = 128000000
+    preprod     = 128000000
+    production  = 128000000
+  }
 }
