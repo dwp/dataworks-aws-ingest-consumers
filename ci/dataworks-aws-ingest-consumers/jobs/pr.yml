@@ -4,10 +4,6 @@ jobs:
       - in_parallel:
           - put: meta
             resource: meta-qa
-          - get: aws-internal-compute
-          - get: aws-ingestion
-          - get: aws-dataworks-e2e-framework
-          - get: aws-snapshot-sender
           - get: dw-al2-hardened-ami
           - get: k2hb-release
             version:

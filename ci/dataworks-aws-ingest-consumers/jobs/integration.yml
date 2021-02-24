@@ -3,22 +3,6 @@ jobs:
     max_in_flight: 1
     plan:
       - in_parallel:
-          - get: aws-internal-compute
-            trigger: false
-            passed:
-              - qa
-          - get: aws-ingestion
-            trigger: false
-            passed:
-              - qa
-          - get: aws-dataworks-e2e-framework
-            trigger: false
-            passed:
-              - qa
-          - get: aws-snapshot-sender
-            trigger: false
-            passed:
-              - qa
           - get: dw-al2-hardened-ami
             trigger: true
             passed:
