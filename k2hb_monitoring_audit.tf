@@ -285,32 +285,3 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_a
     },
   )
 }
-
-resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_audit_saturday" {
-  count       = local.k2hb_alarm_on_number_of_batches_audit[local.environment] ? 1 : 0
-  metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_audit.name
-
-  namespace           = local.cw_k2hb_main_agent_namespace
-  alarm_name          = "K2HB audit - Processed batches under 10000 in 10 of last 24 hours (Saturday)"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
-  alarm_actions       = [local.monitoring_topic_arn]
-  evaluation_periods  = 1
-  period              = 360
-  datapoints_to_alarm = 9
-  threshold           = 10000
-  statistic           = "Sum"
-  comparison_operator = "LessThanThreshold"
-  treat_missing_data  = "breaching"
-
-  tags = merge(
-    local.common_tags,
-    {
-      Name                = "processed-k2hb-batches-under-threshold-audit-saturday",
-      notification_type   = "Error",
-      severity            = "High",
-      active_days         = "Saturday",
-      do_not_alert_before = "17:00",
-      do_not_alert_after  = "23:59",
-    },
-  )
-}
