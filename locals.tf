@@ -541,6 +541,7 @@ locals {
   ingest_vpc_interface_vpce_sg_id           = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
   ingest_vpc_prefix_list_ids_s3             = data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3
   ingest_input_bucket_cmk_arn               = data.terraform_remote_state.ingest.outputs.input_bucket_cmk.arn
+  ingest_vpc_id                             = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
 
   ingest_hbase_fqdn             = data.terraform_remote_state.internal_compute.outputs.aws_emr_cluster.fqdn
   ingest_hbase_emr_common_sg_id = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.common_sg_id
@@ -582,8 +583,6 @@ locals {
   ucfs_london_domains     = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_domains
   ucfs_nameservers        = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers
   ucfs_london_nameservers = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers
-
-  ingest_vpc_id = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
 
   k2hb_data_source_is_ucfs = data.terraform_remote_state.ingest.outputs.locals.k2hb_data_source_is_ucfs
   peer_with_ucfs_london    = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs_london

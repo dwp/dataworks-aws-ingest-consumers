@@ -1,6 +1,6 @@
 locals {
-  batch_corporate_storage_coalescer_image            = "${local.account.management}.${data.terraform_remote_state.aws_ingestion.outputs.vpc.vpc.ecr_dkr_domain_name}/dataworks-s3-object-tagger:${var.image_version.s3-object-tagger}"
-  batch_corporate_storage_coalescer_application_name = "pdm-s3-object-tagger"
+  batch_corporate_storage_coalescer_image            = "${local.account.management}.${data.terraform_remote_state.ingest.outputs.vpc.vpc.ecr_dkr_domain_name}/dataworks-corporate-storage-coalescence:${var.image_version.corporate-storage-coalescer}"
+  batch_corporate_storage_coalescer_application_name = "corporate-storage-coalescer"
   config_prefix                      = "component/rbac"
   config_filename                    = "data_classification.csv"
   data_s3_prefix                     = "data/uc/uc.db"
@@ -71,8 +71,8 @@ data "aws_iam_policy_document" "batch_corporate_storage_coalescer_s3" {
     ]
 
     resources = [
-      "${data.terraform_remote_state.common.outputs.internal_compute_manifest_bucket.arn}/*",
-      "${data.terraform_remote_state.common.outputs.ingest_corporate_storage_bucket.arn}/*",
+      "${local.internal_compute_manifest_bucket.arn}/*",
+      "${local.ingest_corporate_storage_bucket.arn}/*",
     ]
   }
 
@@ -86,8 +86,8 @@ data "aws_iam_policy_document" "batch_corporate_storage_coalescer_s3" {
     ]
 
     resources = [
-      data.terraform_remote_state.common.outputs.internal_compute_manifest_bucket.arn,
-      data.terraform_remote_state.common.outputs.ingest_corporate_storage_bucket.arn,
+      local.internal_compute_manifest_bucket.arn,
+      local.ingest_corporate_storage_bucket.arn,
     ]
   }
 
@@ -145,13 +145,13 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer" {
   container_properties = <<CONTAINER_PROPERTIES
   {
       "command": [
-          "-b", "Ref::s3-bucket-id",
-          "-p", "Ref::s3-prefix",
-          "-n", "Ref::partition",
-          "-t", "Ref::threads",
-          "-f", "Ref::max-files}",
-          "-s", "Ref::max-size}",
-          "-m",
+            "-b", "Ref::s3-bucket-id",
+            "-p", "Ref::s3-prefix",
+            "-n", "Ref::partition",
+            "-t", "Ref::threads",
+            "-f", "Ref::max-files",
+            "-s", "Ref::max-size",
+            "-m"
           ],
       "image": "${local.batch_corporate_storage_coalescer_image}",
       "jobRoleArn" : "${aws_iam_role.batch_corporate_storage_coalescer.arn}",
