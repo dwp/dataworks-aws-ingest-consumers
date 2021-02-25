@@ -5,6 +5,7 @@ jobs:
           - put: meta
             resource: meta-qa
           - get: dw-al2-hardened-ami
+          - get: dw-al2-ecs-ami
           - get: k2hb-release
             version:
               tag: ((k2hb_version))
