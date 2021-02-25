@@ -541,6 +541,7 @@ locals {
   ingest_vpc_interface_vpce_sg_id           = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
   ingest_vpc_prefix_list_ids_s3             = data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3
   ingest_input_bucket_cmk_arn               = data.terraform_remote_state.ingest.outputs.input_bucket_cmk.arn
+  ingest_vpc_id                             = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
 
   ingest_hbase_fqdn             = data.terraform_remote_state.internal_compute.outputs.aws_emr_cluster.fqdn
   ingest_hbase_emr_common_sg_id = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.common_sg_id
@@ -582,8 +583,6 @@ locals {
   ucfs_london_domains     = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_domains
   ucfs_nameservers        = data.terraform_remote_state.ingest.outputs.locals.ucfs_nameservers
   ucfs_london_nameservers = data.terraform_remote_state.ingest.outputs.locals.ucfs_london_nameservers
-
-  ingest_vpc_id = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
 
   k2hb_data_source_is_ucfs = data.terraform_remote_state.ingest.outputs.locals.k2hb_data_source_is_ucfs
   peer_with_ucfs_london    = data.terraform_remote_state.ingest.outputs.locals.peer_with_ucfs_london
@@ -859,21 +858,5 @@ locals {
     integration = "gp3"
     preprod     = "gp3"
     production  = "gp3"
-  }
-
-  coalescer_max_files = {
-    development = 1000000
-    qa          = 1000000
-    integration = 1000000
-    preprod     = 1000000
-    production  = 1000000
-  }
-
-  coalescer_max_size = {
-    development = 128000000
-    qa          = 128000000
-    integration = 128000000
-    preprod     = 128000000
-    production  = 128000000
   }
 }
