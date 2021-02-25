@@ -12,6 +12,7 @@ meta-dataworks-aws-ingest-consumers:
               cp ../terraform-bootstrap/terraform.tf .
               export TF_VAR_al2_hardened_ami_id=$(cat ../dw-al2-hardened-ami/id)
               export TF_VAR_k2hb_version=$(cat ../k2hb-release/version)
+              export TF_VAR_ecs_hardened_ami_id=$(cat ../dw-al2-ecs-ami/id)
               terraform workspace show
               terraform init
               terraform plan -out terraform.plan
@@ -22,6 +23,7 @@ meta-dataworks-aws-ingest-consumers:
           - name: dw-al2-hardened-ami
           - name: dataworks-aws-ingest-consumers
           - name: terraform-bootstrap
+          - name: dw-al2-ecs-ami
 
     terraform-plan:
       task: terraform-plan
@@ -36,6 +38,7 @@ meta-dataworks-aws-ingest-consumers:
               terraform workspace show
               export TF_VAR_al2_hardened_ami_id=$(cat ../dw-al2-hardened-ami/id)
               export TF_VAR_k2hb_version=$(cat ../k2hb-release/version)
+              export TF_VAR_ecs_hardened_ami_id=$(cat ../dw-al2-ecs-ami/id)
               terraform init
               terraform plan $DETAILED_EXITCODE
           dir: dataworks-aws-ingest-consumers
@@ -44,6 +47,7 @@ meta-dataworks-aws-ingest-consumers:
           - name: dw-al2-hardened-ami
           - name: dataworks-aws-ingest-consumers
           - name: terraform-bootstrap
+          - name: dw-al2-ecs-ami
       params:
         DETAILED_EXITCODE: -detailed-exitcode
 

@@ -171,3 +171,8 @@ variable "k2hb_audit_london_asg_max" {
     production  = 20 // UC now in London
   }
 }
+
+variable "ecs_hardened_ami_id" {
+  description = "The AMI ID of the latest/pinned Hardened AMI AL2 Image"
+  type        = string
+}
