@@ -119,7 +119,7 @@ meta-dataworks-aws-ingest-consumers:
           E2E_TEST_TIMEOUT: 500
           ASSUME_DURATION: 14400
         run:
-          dir: aws-dataworks-e2e-framework
+          dir: dataworks-behavioural-framework
           path: sh
           args:
             - -exc
@@ -132,7 +132,7 @@ meta-dataworks-aws-ingest-consumers:
               ./run-ci.sh \
               "../../../meta"
         inputs:
-          - name: aws-dataworks-e2e-framework
+          - name: dataworks-behavioural-framework
           - name: meta
 
     tear-down:
