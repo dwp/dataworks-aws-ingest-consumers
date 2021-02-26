@@ -20,8 +20,6 @@ You must also do this after every change to the terraform variables and inputs r
 
 ## Concourse Pipelines
 
-There are multiple pipelines maintained in this repository.
-
 ### dataworks-aws-ingest-consumers
 
 This is the main pipeline that deploys the components held within this repository. Is is in the main AWS Concourse `dataworks` team. The files for this pipeline are in the `/ci` folder.
@@ -32,24 +30,6 @@ The pipeline self updates every time there is a merge to master, but to update m
 make concourse-login
 make update-pipeline
 ```
-
-### corporate-storage-coalescence
-
-This is a utility pipeline which runs daily and coalesces the corporate storage files in S3. Is is in the AWS Concourse `utility` team. The files for this pipeline are in the `/ci/utility/corporate-storage-coalescence/` folder.
-
-The pipeline self updates every time there is a merge to master, but to update manually from the repo, the following commands can be executed:
-
-```
-make utility-login
-make update-corporate-storage-coalescence-pipeline
-```
-
-##### Override
-
-The following overrides can be passed to the jobs in this pipeline:
-
-1. `START_DATE` -> This date represents the first date that the coalesce will be performed on. This is optional and will default to `yesterday` if not passed in. The format of this override must be any date that is recognised by the bash `date` command so can be freeform like `yesterday` or `2 days ago` or a formatted date such as `YYYY-MM-DD`
-2. `END_DATE` -> This date represents the last date that the coalesce will be performed on - it will loop on all the inbetween days if an end date is passed in. This is optional and if it is not passed in then the coalesce will only be performed once - on the given start date or the start date default (see above). The format of this override must be any date that is recognised by the bash `date` command so can be freeform like `yesterday` or `2 days ago` or a formatted date such as `YYYY-MM-DD`
 
 ### K2HB insight stats
 
