@@ -18,7 +18,8 @@ output "asg_properties" {
 
 output "security_group" {
   value = {
-    k2hb_common = aws_security_group.k2hb_common.id
+    k2hb_common                       = aws_security_group.k2hb_common.id
+    corporate_storage_coalescer_batch = aws_security_group.corporate_storage_coalescer_batch.id
   }
 }
 
