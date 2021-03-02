@@ -180,6 +180,6 @@ variable "ecs_hardened_ami_id" {
 variable "image_version" {
   description = "Container tag values."
   default = {
-    corporate-storage-coalescer = "0.0.19"
+    corporate-storage-coalescer = "0.0.20"
   }
 }
