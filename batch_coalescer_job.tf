@@ -155,7 +155,7 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer" {
           ],
       "image": "${local.batch_corporate_storage_coalescer_image}",
       "jobRoleArn" : "${aws_iam_role.batch_corporate_storage_coalescer.arn}",
-      "memory": 5120,
+      "memory": 30720,
       "vcpus": 5,
       "environment": [
           {"name": "LOG_LEVEL", "value": "INFO"},
@@ -166,9 +166,9 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer" {
       ],
       "ulimits": [
         {
-          "hardLimit": 5120,
+          "hardLimit": 30720,
           "name": "nofile",
-          "softLimit": 5120
+          "softLimit": 30720
         }
       ]
   }
