@@ -166,6 +166,7 @@ cat << EOF > /opt/k2hb/settings
     export K2HB_METADATA_STORE_AUTO_COMMIT="${k2hb_auto_commit_metadata_store_inserts}"
     export K2HB_KAFKA_MAX_FETCH_BYTES="${k2hb_kafka_max_fetch_bytes}"
     export K2HB_KAFKA_MAX_PARTITION_FETCH_BYTES="${k2hb_kafka_max_partition_fetch_bytes}"
+    export K2HB_METRICS_PUSHGATEWAY="${k2hb_pushgateway_hostname}"
     # JAVA options
     export JAVA_OPTS="$MAX_MEMORY_ALLOCATION -DLOG_DIRECTORY=/var/log/k2hb -Dlogback.debug=true"
 EOF

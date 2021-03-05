@@ -1,9 +1,9 @@
 locals {
   batch_corporate_storage_coalescer_image            = "${local.account.management}.${data.terraform_remote_state.ingest.outputs.vpc.vpc.ecr_dkr_domain_name}/dataworks-corporate-storage-coalescence:${var.image_version.corporate-storage-coalescer}"
   batch_corporate_storage_coalescer_application_name = "corporate-storage-coalescer"
-  config_prefix                      = "component/rbac"
-  config_filename                    = "data_classification.csv"
-  data_s3_prefix                     = "data/uc/uc.db"
+  config_prefix                                      = "component/rbac"
+  config_filename                                    = "data_classification.csv"
+  data_s3_prefix                                     = "data/uc/uc.db"
 }
 
 data "aws_iam_policy_document" "batch_assume_policy" {
@@ -155,8 +155,8 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_storage" 
           ],
       "image": "${local.batch_corporate_storage_coalescer_image}",
       "jobRoleArn" : "${aws_iam_role.batch_corporate_storage_coalescer.arn}",
-      "memory": 32768,
-      "vcpus": 2,
+      "memory": 32768,=
+      "vcpus": 3,
       "environment": [
           {"name": "LOG_LEVEL", "value": "INFO"},
           {"name": "AWS_DEFAULT_REGION", "value": "eu-west-2"},
@@ -194,7 +194,7 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_manifests
       "image": "${local.batch_corporate_storage_coalescer_image}",
       "jobRoleArn" : "${aws_iam_role.batch_corporate_storage_coalescer.arn}",
       "memory": 32768,
-      "vcpus": 2,
+      "vcpus": 3,
       "environment": [
           {"name": "LOG_LEVEL", "value": "INFO"},
           {"name": "AWS_DEFAULT_REGION", "value": "eu-west-2"},
