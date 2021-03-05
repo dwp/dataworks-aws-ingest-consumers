@@ -155,7 +155,7 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_storage" 
           ],
       "image": "${local.batch_corporate_storage_coalescer_image}",
       "jobRoleArn" : "${aws_iam_role.batch_corporate_storage_coalescer.arn}",
-      "memory": 32768,=
+      "memory": 32768,
       "vcpus": 3,
       "environment": [
           {"name": "LOG_LEVEL", "value": "INFO"},
