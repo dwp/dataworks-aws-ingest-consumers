@@ -859,4 +859,19 @@ locals {
     preprod     = "gp3"
     production  = "gp3"
   }
+
+   k2hb_asg_enabled_metrics = [
+    "GroupMinSize",
+    "GroupMaxSize",
+    "GroupDesiredCapacity",
+    "GroupInServiceCapacity",
+    "GroupPendingCapacity",
+    "GroupPendingInstances",
+    "GroupStandbyInstances",
+    "GroupStandbyCapacity",
+    "GroupTerminatingCapacity",
+    "GroupTerminatingInstances",
+    "GroupTotalCapacity",
+    "GroupInServiceInstances",
+  ]
 }
