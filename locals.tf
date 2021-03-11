@@ -796,14 +796,6 @@ locals {
     production  = true
   }
 
-  k2hb_alarm_on_auto_scaling_failures = {
-    development = false
-    qa          = false
-    integration = false
-    preprod     = false
-    production  = true
-  }
-
   k2hb_main_ebs_size = {
     development = 50
     qa          = 50
