@@ -152,6 +152,8 @@ resource "aws_autoscaling_group" "k2hb_main_london" {
   health_check_type         = "EC2"
   force_delete              = true
   vpc_zone_identifier       = local.ingest_subnets.id
+  enabled_metrics           = local.k2hb_asg_enabled_metrics
+  metrics_granularity       = "1Minute"
 
   launch_template {
     id      = aws_launch_template.k2hb_main_london.id
