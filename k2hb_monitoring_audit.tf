@@ -285,3 +285,62 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_a
     },
   )
 }
+
+resource "aws_cloudwatch_metric_alarm" "k2hb_running_tasks_less_than_desired_audit" {
+  count               = local.k2hb_alarm_on_running_tasks_less_than_desired_audit[local.environment] ? 1 : 0
+  alarm_name          = "K2HB audit - Running tasks less than desired tasks for 15 minutes"
+  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_actions       = [local.monitoring_topic_arn]
+  treat_missing_data  = "breaching"
+  evaluation_periods  = 15
+  threshold           = 0
+  comparison_operator = "GreaterThanThreshold"
+
+  metric_query {
+    id          = "e1"
+    expression  = "IF(m1 < m2, 1, 0)"
+    label       = "DesiredCountNotMet"
+    return_data = "true"
+  }
+
+  metric_query {
+    id = "m1"
+
+    metric {
+      metric_name = "GroupInServiceInstances"
+      namespace   = "AWS/AutoScaling"
+      period      = "60"
+      stat        = "Sum"
+      unit        = "Count"
+
+      dimensions = {
+        AutoScalingGroupName = aws_autoscaling_group.k2hb_audit_london.name
+      }
+    }
+  }
+
+  metric_query {
+    id = "m2"
+
+    metric {
+      metric_name = "GroupDesiredCapacity"
+      namespace   = "AWS/AutoScaling"
+      period      = "60"
+      stat        = "Sum"
+      unit        = "Count"
+
+      dimensions = {
+        AutoScalingGroupName = aws_autoscaling_group.k2hb_audit_london.name
+      }
+    }
+  }
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name              = "k2hb-running-tasks-less-than-desired-audit",
+      notification_type = "Warning",
+      severity          = "High"
+    },
+  )
+}

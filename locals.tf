@@ -684,6 +684,38 @@ locals {
     production  = true
   }
 
+  k2hb_alarm_on_running_tasks_less_than_desired_main  = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_running_tasks_less_than_desired_main_dedicated  = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_running_tasks_less_than_desired_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_running_tasks_less_than_desired_equalities = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
   k2hb_alarm_on_failed_batches_audit = {
     development = false
     qa          = false
