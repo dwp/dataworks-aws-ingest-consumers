@@ -155,7 +155,7 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_storage" 
           ],
       "image": "${local.batch_corporate_storage_coalescer_image}",
       "jobRoleArn" : "${aws_iam_role.batch_corporate_storage_coalescer.arn}",
-      "memory": 32768,
+      "memory": 65536,
       "vcpus": 3,
       "environment": [
           {"name": "LOG_LEVEL", "value": "INFO"},
@@ -166,9 +166,9 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_storage" 
       ],
       "ulimits": [
         {
-          "hardLimit": 32768,
+          "hardLimit": 100000,
           "name": "nofile",
-          "softLimit": 32768
+          "softLimit": 100000
         }
       ]
   }
@@ -193,7 +193,7 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_manifests
           ],
       "image": "${local.batch_corporate_storage_coalescer_image}",
       "jobRoleArn" : "${aws_iam_role.batch_corporate_storage_coalescer.arn}",
-      "memory": 32768,
+      "memory": 65536,
       "vcpus": 3,
       "environment": [
           {"name": "LOG_LEVEL", "value": "INFO"},
@@ -204,9 +204,9 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_manifests
       ],
       "ulimits": [
         {
-          "hardLimit": 32768,
+          "hardLimit": 100000,
           "name": "nofile",
-          "softLimit": 32768
+          "softLimit": 100000
         }
       ]
   }
