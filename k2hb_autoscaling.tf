@@ -27,7 +27,7 @@ locals {
   cron_17_20_every_day                  = "20 17 * * *"
   cron_09_30_every_day_except_saturdays = "30 09 * * 1-5,7"
   cron_14_50_every_day                  = "50 14 * * *"
-  cron_00_45_every_day                  = "45 00 * * *"
+  cron_00_20_every_day                  = "20 00 * * *"
   cron_03_00_saturdays                  = "00 03 * * 6"
 }
 
@@ -67,7 +67,7 @@ resource "aws_autoscaling_schedule" "scale_down_before_daily_export" {
   min_size               = local.k2hb_asg_min[local.environment]
   max_size               = each.value.max_size
   desired_capacity       = 0
-  recurrence             = local.cron_00_45_every_day
+  recurrence             = local.cron_00_20_every_day
   autoscaling_group_name = each.value.asg_name
 }
 
