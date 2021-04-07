@@ -102,9 +102,10 @@ acm-cert-retriever \
 --truststore-aliases "${truststore_aliases}" \
 --truststore-certs "${truststore_certs}" >> /var/log/acm-cert-retriever.log 2>&1
 
+echo "Adding amazon root ca certificate to truststore"
 keytool -noprompt -import \
   -file /opt/k2hb/AmazonRootCA1.pem \
-  -keystore "$K2HB_TRUSTSTORE_PATH"
+  -keystore "$K2HB_TRUSTSTORE_PATH" \
   -storepass "$K2HB_TRUSTSTORE_PASSWORD"
 
 echo "Create settings file"
