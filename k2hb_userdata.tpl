@@ -102,6 +102,12 @@ acm-cert-retriever \
 --truststore-aliases "${truststore_aliases}" \
 --truststore-certs "${truststore_certs}" >> /var/log/acm-cert-retriever.log 2>&1
 
+echo "Adding amazon root ca certificate to truststore"
+keytool -noprompt -import \
+  -file /opt/k2hb/AmazonRootCA1.pem \
+  -keystore "$K2HB_TRUSTSTORE_PATH" \
+  -storepass "$K2HB_TRUSTSTORE_PASSWORD"
+
 echo "Create settings file"
 if [[ "${k2hb_max_memory_allocation}" == "NOT_SET" ]]; then
   MAX_MEMORY_ALLOCATION=""
@@ -167,6 +173,8 @@ cat << EOF > /opt/k2hb/settings
     export K2HB_KAFKA_MAX_FETCH_BYTES="${k2hb_kafka_max_fetch_bytes}"
     export K2HB_KAFKA_MAX_PARTITION_FETCH_BYTES="${k2hb_kafka_max_partition_fetch_bytes}"
     export K2HB_METRICS_PUSHGATEWAY="${k2hb_pushgateway_hostname}"
+    export METADATASTORE_TRUSTSTORE="$K2HB_TRUSTSTORE_PATH"
+    export METADATASTORE_TRUSTSTORE_PASSWORD="$K2HB_TRUSTSTORE_PASSWORD"
     # JAVA options
     export JAVA_OPTS="$MAX_MEMORY_ALLOCATION -DLOG_DIRECTORY=/var/log/k2hb -Dlogback.debug=true"
 EOF
