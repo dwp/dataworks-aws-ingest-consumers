@@ -155,8 +155,8 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_storage" 
           ],
       "image": "${local.batch_corporate_storage_coalescer_image}",
       "jobRoleArn" : "${aws_iam_role.batch_corporate_storage_coalescer.arn}",
-      "memory": 65536,
-      "vcpus": 3,
+      "memory": 32768,
+      "vcpus": 5,
       "environment": [
           {"name": "LOG_LEVEL", "value": "INFO"},
           {"name": "AWS_DEFAULT_REGION", "value": "eu-west-2"},
@@ -193,8 +193,46 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_manifests
           ],
       "image": "${local.batch_corporate_storage_coalescer_image}",
       "jobRoleArn" : "${aws_iam_role.batch_corporate_storage_coalescer.arn}",
+      "memory": 32768,
+      "vcpus": 5,
+      "environment": [
+          {"name": "LOG_LEVEL", "value": "INFO"},
+          {"name": "AWS_DEFAULT_REGION", "value": "eu-west-2"},
+          {"name": "DATA_BUCKET", "value": "${data.terraform_remote_state.common.outputs.published_bucket.id}"},
+          {"name": "ENVIRONMENT", "value": "${local.environment}"},
+          {"name": "APPLICATION", "value": "${local.batch_corporate_storage_coalescer_application_name}"}
+      ],
+      "ulimits": [
+        {
+          "hardLimit": 100000,
+          "name": "nofile",
+          "softLimit": 100000
+        }
+      ]
+  }
+  CONTAINER_PROPERTIES
+}
+
+resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_manifests_audit" {
+  name = "batch_corporate_storage_coalescer_job_manifests_audit"
+  type = "container"
+
+  container_properties = <<CONTAINER_PROPERTIES
+  {
+      "command": [
+            "-b", "Ref::s3-bucket-id",
+            "-p", "Ref::s3-prefix",
+            "-n", "Ref::partition",
+            "-t", "Ref::threads",
+            "-f", "Ref::max-files",
+            "-s", "Ref::max-size",
+            "-m",
+            "-a"
+          ],
+      "image": "${local.batch_corporate_storage_coalescer_image}",
+      "jobRoleArn" : "${aws_iam_role.batch_corporate_storage_coalescer.arn}",
       "memory": 65536,
-      "vcpus": 3,
+      "vcpus": 10,
       "environment": [
           {"name": "LOG_LEVEL", "value": "INFO"},
           {"name": "AWS_DEFAULT_REGION", "value": "eu-west-2"},
