@@ -906,4 +906,12 @@ locals {
     "GroupTotalCapacity",
     "GroupInServiceInstances",
   ]
+
+  batch_coalescer_compute_environment_max_cpus = {
+    development = 100
+    qa          = 100
+    integration = 100
+    preprod     = 100
+    production  = 650
+  }
 }

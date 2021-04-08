@@ -130,7 +130,7 @@ resource "aws_batch_compute_environment" "corporate_storage_coalescer" {
 
     min_vcpus     = 0
     desired_vcpus = 0
-    max_vcpus     = 100
+    max_vcpus     = local.batch_coalescer_compute_environment_max_cpus[local.environment]
 
     security_group_ids = [aws_security_group.corporate_storage_coalescer_batch.id]
     subnets            = local.ingest_subnets.id
