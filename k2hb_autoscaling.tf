@@ -4,6 +4,24 @@ locals {
     qa          = {}
     integration = {}
     preprod     = {}
+    production  = {
+      k2hb_main           = {
+          max_size = var.k2hb_main_london_asg_max[local.environment]
+          asg_name = aws_autoscaling_group.k2hb_main_london.name
+      }
+      k2hb_main_dedicated = {
+          max_size = var.k2hb_main_dedicated_london_asg_max[local.environment]
+          asg_name = aws_autoscaling_group.k2hb_main_dedicated_london.name
+      }
+      k2hb_audit          = {
+          max_size = var.k2hb_audit_london_asg_max[local.environment]
+          asg_name = aws_autoscaling_group.k2hb_audit_london.name
+      }
+      k2hb_equalities     = {
+          max_size = var.k2hb_equality_london_asg_max[local.environment]
+          asg_name = aws_autoscaling_group.k2hb_equality_london.name
+      }
+    }
   }
 
   cron_17_20_every_day                  = "20 17 * * *"
