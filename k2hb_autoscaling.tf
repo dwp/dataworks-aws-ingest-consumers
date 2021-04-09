@@ -4,7 +4,7 @@ locals {
     qa          = {}
     integration = {}
     preprod     = {}
-    production = {
+    production  = {
       k2hb_main           = {
           max_size = var.k2hb_main_london_asg_max[local.environment]
           asg_name = aws_autoscaling_group.k2hb_main_london.name

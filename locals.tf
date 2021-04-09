@@ -311,7 +311,7 @@ locals {
     development = "PT5M"
     qa          = "PT5M"
     integration = "PT5M"
-    preprod     = "PT5M"
+    preprod     = "PT20M"
     production  = "PT20M"
   }
 
@@ -321,7 +321,7 @@ locals {
     development = 600000
     qa          = 600000
     integration = 600000
-    preprod     = 600000
+    preprod     = 1800000
     production  = 1800000
   }
 
@@ -330,7 +330,7 @@ locals {
     development = 25
     qa          = 50
     integration = 50
-    preprod     = 25
+    preprod     = 5000
     production  = 5000
   }
 
@@ -339,7 +339,7 @@ locals {
     development = 25
     qa          = 50
     integration = 50
-    preprod     = 25
+    preprod     = 1000
     production  = 1000
   }
 
@@ -348,7 +348,7 @@ locals {
     development = 25
     qa          = 50
     integration = 50
-    preprod     = 25
+    preprod     = 2000
     production  = 2000
   }
 
@@ -366,7 +366,7 @@ locals {
     development = "60000"
     qa          = "60000"
     integration = "60000"
-    preprod     = "60000"
+    preprod     = "90000"
     production  = "90000"
   }
 
@@ -450,7 +450,7 @@ locals {
     development = "10000"
     qa          = "10000"
     integration = "10000"
-    preprod     = "10000"
+    preprod     = "100000"
     production  = "100000"
   }
 
@@ -832,7 +832,7 @@ locals {
     development = 50
     qa          = 50
     integration = 50
-    preprod     = 50
+    preprod     = 150
     production  = 150
   }
 
@@ -848,7 +848,7 @@ locals {
     development = 50
     qa          = 50
     integration = 50
-    preprod     = 50
+    preprod     = 150
     production  = 150
   }
 
@@ -864,7 +864,7 @@ locals {
     development = 50
     qa          = 50
     integration = 50
-    preprod     = 50
+    preprod     = 150
     production  = 150
   }
 
@@ -880,7 +880,7 @@ locals {
     development = 50
     qa          = 50
     integration = 50
-    preprod     = 50
+    preprod     = 150
     production  = 150
   }
 
