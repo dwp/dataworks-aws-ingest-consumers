@@ -89,9 +89,9 @@ variable "k2hb_main_london_asg_desired" {
   default = {
     development = 2  //stubbed env
     qa          = 2  //stubbed env
-    integration = 2  //stubbed env + UC now in London
-    preprod     = 10  // UC now in London
-    production  = 20 // Switch to London on 21 Nov 2020
+    integration = 2  //stubbed env
+    preprod     = 0  // Run ad-hoc when needed
+    production  = 20
   }
 }
 
@@ -101,8 +101,8 @@ variable "k2hb_main_london_asg_max" {
     development = 2  //stubbed env
     qa          = 2  //stubbed env
     integration = 2  //stubbed env
-    preprod     = 10  // UC now in London
-    production  = 20 // Switch to London on 21 Nov 2020
+    preprod     = 10
+    production  = 20
   }
 }
 
@@ -111,9 +111,9 @@ variable "k2hb_main_dedicated_london_asg_desired" {
   default = {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
-    integration = 1  //stubbed env + UC now in London
-    preprod     = 10  // UC now in London
-    production  = 20 // Switch to London on 21 Nov 2020
+    integration = 1  //stubbed env
+    preprod     = 0  // Run ad-hoc when needed
+    production  = 20
   }
 }
 
@@ -123,8 +123,8 @@ variable "k2hb_main_dedicated_london_asg_max" {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
     integration = 1  //stubbed env
-    preprod     = 10  // UC now in London
-    production  = 20 // Switch to London on 21 Nov 2020
+    preprod     = 10
+    production  = 20
   }
 }
 
@@ -133,9 +133,9 @@ variable "k2hb_equality_london_asg_desired" {
   default = {
     development = 1 //stubbed env
     qa          = 1 //stubbed env
-    integration = 1 //stubbed env + UC now in London
-    preprod     = 1 // UC now in London
-    production  = 1 // Switch to London on 21 Nov 2020
+    integration = 1 //stubbed env
+    preprod     = 0 // Run ad-hoc when needed
+    production  = 1
   }
 }
 
