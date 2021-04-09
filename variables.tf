@@ -29,7 +29,7 @@ variable "k2hb_main_ec2_size" {
     development = "t3.medium"
     qa          = "t3.medium"
     integration = "t3.medium"
-    preprod     = "t3.medium"
+    preprod     = "c5.xlarge"
     production  = "c5.xlarge"
   }
 }
@@ -39,7 +39,7 @@ variable "k2hb_equality_ec2_size" {
     development = "t3.medium"
     qa          = "t3.medium"
     integration = "t3.medium"
-    preprod     = "t3.medium"
+    preprod     = "c5.large"
     production  = "c5.large"
   }
 }
@@ -49,7 +49,7 @@ variable "k2hb_audit_ec2_size" {
     development = "t3.medium"
     qa          = "t3.medium"
     integration = "t3.medium"
-    preprod     = "t3.medium"
+    preprod     = "c5.xlarge"
     production  = "c5.xlarge"
   }
 }
@@ -59,7 +59,7 @@ variable "k2hb_main_max_memory_allocation" {
     development = "-Xmx1g"
     qa          = "-Xmx1g"
     integration = "-Xmx1g"
-    preprod     = "-Xmx1g"
+    preprod     = "-Xmx4g"
     production  = "-Xmx4g"
   }
 }
@@ -69,7 +69,7 @@ variable "k2hb_equality_max_memory_allocation" {
     development = "-Xmx1g"
     qa          = "-Xmx1g"
     integration = "-Xmx1g"
-    preprod     = "-Xmx1g"
+    preprod     = "-Xmx2g"
     production  = "-Xmx2g"
   }
 }
@@ -79,7 +79,7 @@ variable "k2hb_audit_max_memory_allocation" {
     development = "-Xmx1g"
     qa          = "-Xmx1g"
     integration = "-Xmx1g"
-    preprod     = "-Xmx1g"
+    preprod     = "-Xmx4g"
     production  = "-Xmx4g"
   }
 }
@@ -90,7 +90,7 @@ variable "k2hb_main_london_asg_desired" {
     development = 2  //stubbed env
     qa          = 2  //stubbed env
     integration = 2  //stubbed env + UC now in London
-    preprod     = 2  // UC now in London
+    preprod     = 10  // UC now in London
     production  = 20 // Switch to London on 21 Nov 2020
   }
 }
@@ -101,7 +101,7 @@ variable "k2hb_main_london_asg_max" {
     development = 2  //stubbed env
     qa          = 2  //stubbed env
     integration = 2  //stubbed env
-    preprod     = 2  // UC now in London
+    preprod     = 10  // UC now in London
     production  = 20 // Switch to London on 21 Nov 2020
   }
 }
@@ -112,7 +112,7 @@ variable "k2hb_main_dedicated_london_asg_desired" {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
     integration = 1  //stubbed env + UC now in London
-    preprod     = 2  // UC now in London
+    preprod     = 10  // UC now in London
     production  = 20 // Switch to London on 21 Nov 2020
   }
 }
@@ -123,7 +123,7 @@ variable "k2hb_main_dedicated_london_asg_max" {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
     integration = 1  //stubbed env
-    preprod     = 2  // UC now in London
+    preprod     = 10  // UC now in London
     production  = 20 // Switch to London on 21 Nov 2020
   }
 }
@@ -156,7 +156,7 @@ variable "k2hb_audit_london_asg_desired" {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
     integration = 1  //stubbed env + UC now in London
-    preprod     = 1  // UC now in London
+    preprod     = 10  // UC now in London
     production  = 20 // UC now in London
   }
 }
@@ -167,7 +167,7 @@ variable "k2hb_audit_london_asg_max" {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
     integration = 1  //stubbed env + UC now in London
-    preprod     = 1  // UC now in London
+    preprod     = 10  // UC now in London
     production  = 20 // UC now in London
   }
 }
