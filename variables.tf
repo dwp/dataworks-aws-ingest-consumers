@@ -123,7 +123,7 @@ variable "k2hb_main_dedicated_london_asg_max" {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
     integration = 1  //stubbed env
-    preprod     = 10
+    preprod     = 20
     production  = 20
   }
 }
@@ -144,9 +144,9 @@ variable "k2hb_equality_london_asg_max" {
   default = {
     development = 1 //stubbed env
     qa          = 1 //stubbed env
-    integration = 1 //stubbed env + UC now in London
-    preprod     = 1 // UC now in London
-    production  = 1 // Switch to London on 21 Nov 2020
+    integration = 1 //stubbed env
+    preprod     = 1
+    production  = 1
   }
 }
 
@@ -155,9 +155,9 @@ variable "k2hb_audit_london_asg_desired" {
   default = {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
-    integration = 1  //stubbed env + UC now in London
-    preprod     = 10  // UC now in London
-    production  = 20 // UC now in London
+    integration = 1  //stubbed env
+    preprod     = 0  // Run ad-hoc when needed
+    production  = 20
   }
 }
 
@@ -166,9 +166,9 @@ variable "k2hb_audit_london_asg_max" {
   default = {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
-    integration = 1  //stubbed env + UC now in London
-    preprod     = 10  // UC now in London
-    production  = 20 // UC now in London
+    integration = 1  //stubbed env
+    preprod     = 20
+    production  = 20
   }
 }
 
