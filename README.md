@@ -52,12 +52,19 @@ For a stable system, should always be a whole fraction of the partitions in the 
 #### Total records processed in time period
 
    ```
-  # k2hb total records processed and average duration in time period, by write success
-  fields @timestamp, message, record_count
-  | filter message = "Processed batch" 
-  | stats sum(size) as batch_total_records, avg(time_taken) / 1000 as batch_avg_duration_sec
-      by succeeded
+  # k2hb total records processed and average duration in time period
+  filter message = "Put record" 
+  | stats floor((sum(size) / 1024) / 1024) as batch_total_records_mb, floor(((sum(size) / 1024) / 1024) / 1024) as batch_total_records_gb, floor((((sum(size) / 1024) / 1024) / 1024) / 1024) as batch_total_records_tb, count(*) as total_record_count
   ```
+
+#### Total record counts and sizes per collection
+
+   ```
+  # k2hb record counts and sizes per collection
+  filter message = "Put record" 
+  | stats (floor(sum(size) / 1024)) as record_size_total_kb, (floor(sum(size) / count(*) / 1024)) as record_size_average_kb, count(*) as record_count by table
+  | sort record_count desc, table
+   ```
 
 #### Records processed and timings per batch grouped by hour and write success, oldest first
 
