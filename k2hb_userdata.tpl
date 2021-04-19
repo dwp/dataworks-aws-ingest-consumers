@@ -115,6 +115,12 @@ else
   MAX_MEMORY_ALLOCATION="${k2hb_max_memory_allocation}"
 fi
 
+# Uniquely name ec2 host
+UUID=$(dbus-uuidgen | cut -c 1-8)
+export HOSTNAME=${name}-$UUID
+hostnamectl set-hostname $HOSTNAME
+aws ec2 create-tags --resources $INSTANCE_ID --tags Key=Name,Value=$HOSTNAME
+
 cat << EOF > /opt/k2hb/settings
     export APPLICATION="${k2hb_application_name}"
     export COMPONENT="jar_file"
@@ -175,6 +181,7 @@ cat << EOF > /opt/k2hb/settings
     export K2HB_METRICS_PUSHGATEWAY="${k2hb_pushgateway_hostname}"
     export METADATASTORE_TRUSTSTORE="$K2HB_TRUSTSTORE_PATH"
     export METADATASTORE_TRUSTSTORE_PASSWORD="$K2HB_TRUSTSTORE_PASSWORD"
+    export K2HB_INSTANCE_NAME="$HOSTNAME"
     # JAVA options
     export JAVA_OPTS="$MAX_MEMORY_ALLOCATION -DLOG_DIRECTORY=/var/log/k2hb -Dlogback.debug=true"
 EOF
@@ -195,9 +202,3 @@ service k2hb start
 
 # Adds respawn_k2hb to crontab and run every minute
 crontab -l | { cat; echo "* * * * * /opt/k2hb/respawn_k2hb.sh "${k2hb_application_name}" >> /var/log/k2hb/respawn_k2hb.log 2>&1"; } | crontab -
-
-# Uniquely name ec2 host
-UUID=$(dbus-uuidgen | cut -c 1-8)
-export HOSTNAME=${name}-$UUID
-hostnamectl set-hostname $HOSTNAME
-aws ec2 create-tags --resources $INSTANCE_ID --tags Key=Name,Value=$HOSTNAME
