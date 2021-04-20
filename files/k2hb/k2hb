@@ -8,9 +8,9 @@
 #
 ### BEGIN INIT INFO
 # Provides:          k2hb
-# Required-Start:
+# Required-Start:   network netconsole awsagent
 # Should-Start:
-# Required-Stop:
+# Required-Stop:    network netconsole awsagent
 # Should-Stop:
 # Default-Start:     3 4 5
 # Default-Stop:      0 1 2 6
