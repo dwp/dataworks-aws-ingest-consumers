@@ -199,6 +199,6 @@ chown k2hb:k2hb -R  /var/log/k2hb
 chkconfig --add k2hb
 chkconfig k2hb on
 service k2hb start
-
+/usr/lib/systemd/system-generators/systemd-sysv-generator
 # Adds respawn_k2hb to crontab and run every minute
 crontab -l | { cat; echo "* * * * * /opt/k2hb/respawn_k2hb.sh "${k2hb_application_name}" >> /var/log/k2hb/respawn_k2hb.log 2>&1"; } | crontab -
