@@ -2,15 +2,15 @@
 #
 # k2hb       Start/Stop/Restart Kafka-to-Hbase application
 #
-# chkconfig: 345 70 90
+# chkconfig: 345 70 10
 # description: K2HB - Kafka-to-Hbase  \
 #              Starts at boot time.
 #
 ### BEGIN INIT INFO
 # Provides:          k2hb
-# Required-Start:
+# Required-Start:   network netconsole awsagent
 # Should-Start:
-# Required-Stop:
+# Required-Stop:    network netconsole awsagent
 # Should-Stop:
 # Default-Start:     3 4 5
 # Default-Stop:      0 1 2 6
@@ -50,18 +50,39 @@ start() {
     echo "$NAME started"
   fi
 }
+
+k2hb_running() {
+    jps | grep Kafka2HbaseKt
+}
+
+
 stop() {
   if [ ! -f $PID_FILE ]
   then
     echo "$PID_FILE does not exist, process is not running"
     return 1
   else
-    kill `cat $PID_FILE`;
-    rm -f $PID_FILE;
-    echo "$NAME stopped"
-    return 0
+      K2HB_PID=$(cat $PID_FILE)
+      kill "$K2HB_PID";
+      rm -f "$PID_FILE";
+
+      checks=0
+      while k2hb_running && [ $checks -lt 120 ]; do
+          echo K2HB STILL RUNNING: $checks/120 checks made
+          checks=$((checks+1))
+          sleep 1
+      done
+
+      if k2hb_running; then
+          echo FORCEABLY KILLING K2HB
+          kill -9 "$K2HB_PID"
+      fi
+
+      echo "$NAME stopped"
+      return 0
   fi
 }
+
 status() {
   if [ -f $PID_FILE ]
   then
