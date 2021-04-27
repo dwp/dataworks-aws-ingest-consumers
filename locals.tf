@@ -428,11 +428,11 @@ locals {
 
   // Use in DW-4508
   kafka_consumer_equality_topics_regex = {
-    //match exactly "data.equality" only, with a literal dot
-    development = "^(data[.]equality)$"
-    qa          = "^(data[.]equality)$"
-    integration = "^(data[.]equality)$"
-    preprod     = "^(data[.]equality)$"
+    //match exactly "data.equality" or "data.equality-ni" only, with a literal dot
+    development = "^(data[.]equality|data[.]equality-ni)$"
+    qa          = "^(data[.]equality|data[.]equality-ni)$"
+    integration = "^(data[.]equality|data[.]equality-ni)$"
+    preprod     = "^(data[.]equality|data[.]equality-ni)$"
     production  = "^(data[.]equality)$"
   }
 
