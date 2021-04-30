@@ -29,7 +29,7 @@ variable "k2hb_main_ec2_size" {
     development = "t3.medium"
     qa          = "t3.medium"
     integration = "t3.medium"
-    preprod     = "c5.xlarge"
+    preprod     = "c5.large"
     production  = "c5.xlarge"
   }
 }
@@ -49,7 +49,7 @@ variable "k2hb_audit_ec2_size" {
     development = "t3.medium"
     qa          = "t3.medium"
     integration = "t3.medium"
-    preprod     = "c5.xlarge"
+    preprod     = "c5.large"
     production  = "c5.xlarge"
   }
 }
@@ -90,7 +90,7 @@ variable "k2hb_main_london_asg_desired" {
     development = 2  //stubbed env
     qa          = 2  //stubbed env
     integration = 2  //stubbed env
-    preprod     = 0  // Run ad-hoc when needed
+    preprod     = 20  // Run ad-hoc when needed
     production  = 20
   }
 }
@@ -101,7 +101,7 @@ variable "k2hb_main_london_asg_max" {
     development = 2  //stubbed env
     qa          = 2  //stubbed env
     integration = 2  //stubbed env
-    preprod     = 10
+    preprod     = 20
     production  = 20
   }
 }
@@ -112,7 +112,7 @@ variable "k2hb_main_dedicated_london_asg_desired" {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
     integration = 1  //stubbed env
-    preprod     = 0  // Run ad-hoc when needed
+    preprod     = 20  // Run ad-hoc when needed
     production  = 20
   }
 }
@@ -134,7 +134,7 @@ variable "k2hb_equality_london_asg_desired" {
     development = 1 //stubbed env
     qa          = 1 //stubbed env
     integration = 1 //stubbed env
-    preprod     = 0 // Run ad-hoc when needed
+    preprod     = 1 // Run ad-hoc when needed
     production  = 1
   }
 }
@@ -156,7 +156,7 @@ variable "k2hb_audit_london_asg_desired" {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
     integration = 1  //stubbed env
-    preprod     = 0  // Run ad-hoc when needed
+    preprod     = 20  // Run ad-hoc when needed
     production  = 20
   }
 }
