@@ -536,6 +536,7 @@ locals {
   ingest_k2hb_cert_arn                      = data.terraform_remote_state.ingest.outputs.k2hb_cert.arn
   ingest_no_proxy_list                      = data.terraform_remote_state.ingest.outputs.vpc.vpc.no_proxy_list
   ingest_manifest_write_locations           = data.terraform_remote_state.ingest.outputs.k2hb_manifest_write_locations
+  ingest_storage_write_locations            = data.terraform_remote_state.ingest.outputs.corporate_data_loader
   ingest_subnets                            = data.terraform_remote_state.ingest.outputs.ingestion_subnets
   ingest_log_groups                         = data.terraform_remote_state.ingest.outputs.log_groups
   ingest_vpc_interface_vpce_sg_id           = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
@@ -684,7 +685,7 @@ locals {
     production  = true
   }
 
-  k2hb_alarm_on_running_tasks_less_than_desired_main  = {
+  k2hb_alarm_on_running_tasks_less_than_desired_main = {
     development = false
     qa          = false
     integration = false
@@ -692,7 +693,7 @@ locals {
     production  = true
   }
 
-  k2hb_alarm_on_running_tasks_less_than_desired_main_dedicated  = {
+  k2hb_alarm_on_running_tasks_less_than_desired_main_dedicated = {
     development = false
     qa          = false
     integration = false
@@ -892,7 +893,7 @@ locals {
     production  = "gp3"
   }
 
-   k2hb_asg_enabled_metrics = [
+  k2hb_asg_enabled_metrics = [
     "GroupMinSize",
     "GroupMaxSize",
     "GroupDesiredCapacity",
@@ -913,5 +914,15 @@ locals {
     integration = 100
     preprod     = 100
     production  = 650
+  }
+
+  batch_coalescer_retry_count = 3
+
+  batch_coalescer_scheduled_executions = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
   }
 }
