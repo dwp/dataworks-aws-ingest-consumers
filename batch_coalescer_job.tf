@@ -138,6 +138,14 @@ resource "aws_batch_job_queue" "batch_corporate_storage_coalescer" {
   state                = "ENABLED"
 }
 
+resource "aws_batch_job_queue" "batch_corporate_storage_coalescer_long_running" {
+  //  TODO: Move compute environment to fargate once Terraform supports it.
+  compute_environments = [aws_batch_compute_environment.corporate_storage_coalescer.arn]
+  name                 = "batch_corporate_storage_coalescer_long_running"
+  priority             = 5
+  state                = "ENABLED"
+}
+
 resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_storage" {
   name = "batch_corporate_storage_coalescer_job_storage"
   type = "container"
@@ -151,6 +159,7 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_storage" 
             "-t", "Ref::threads",
             "-f", "Ref::max-files",
             "-s", "Ref::max-size",
+            "-d", "Ref::date-to-add",
             "-m"
           ],
       "image": "${local.batch_corporate_storage_coalescer_image}",
@@ -188,6 +197,7 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_manifests
             "-t", "Ref::threads",
             "-f", "Ref::max-files",
             "-s", "Ref::max-size",
+            "-d", "Ref::date-to-add",
             "-m",
             "-a"
           ],
@@ -226,6 +236,7 @@ resource "aws_batch_job_definition" "batch_corporate_storage_coalescer_manifests
             "-t", "Ref::threads",
             "-f", "Ref::max-files",
             "-s", "Ref::max-size",
+            "-d", "Ref::date-to-add",
             "-m",
             "-a"
           ],
