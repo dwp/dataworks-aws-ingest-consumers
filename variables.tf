@@ -26,31 +26,31 @@ variable "al2_hardened_ami_id" {
 
 variable "k2hb_main_ec2_size" {
   default = {
-    development = "t3.medium"
-    qa          = "t3.medium"
-    integration = "t3.medium"
-    preprod     = "c5.large"
-    production  = "c5.xlarge"
+    development = "t3.small"
+    qa          = "t3.small"
+    integration = "t3.small"
+    preprod     = "m5.large"
+    production  = "m5.large"
   }
 }
 
 variable "k2hb_equality_ec2_size" {
   default = {
-    development = "t3.medium"
-    qa          = "t3.medium"
-    integration = "t3.medium"
-    preprod     = "c5.large"
-    production  = "c5.large"
+    development = "t3.small"
+    qa          = "t3.small"
+    integration = "t3.small"
+    preprod     = "m5.large"
+    production  = "m5.large"
   }
 }
 
 variable "k2hb_audit_ec2_size" {
   default = {
-    development = "t3.medium"
-    qa          = "t3.medium"
-    integration = "t3.medium"
-    preprod     = "c5.large"
-    production  = "c5.xlarge"
+    development = "t3.small"
+    qa          = "t3.small"
+    integration = "t3.small"
+    preprod     = "m5.large"
+    production  = "m5.large"
   }
 }
 
@@ -59,8 +59,8 @@ variable "k2hb_main_max_memory_allocation" {
     development = "-Xmx1g"
     qa          = "-Xmx1g"
     integration = "-Xmx1g"
-    preprod     = "-Xmx4g"
-    production  = "-Xmx4g"
+    preprod     = "-Xmx6g"
+    production  = "-Xmx6g"
   }
 }
 
@@ -69,8 +69,8 @@ variable "k2hb_equality_max_memory_allocation" {
     development = "-Xmx1g"
     qa          = "-Xmx1g"
     integration = "-Xmx1g"
-    preprod     = "-Xmx2g"
-    production  = "-Xmx2g"
+    preprod     = "-Xmx6g"
+    production  = "-Xmx6g"
   }
 }
 
@@ -79,8 +79,8 @@ variable "k2hb_audit_max_memory_allocation" {
     development = "-Xmx1g"
     qa          = "-Xmx1g"
     integration = "-Xmx1g"
-    preprod     = "-Xmx4g"
-    production  = "-Xmx4g"
+    preprod     = "-Xmx6g"
+    production  = "-Xmx6g"
   }
 }
 
@@ -90,7 +90,7 @@ variable "k2hb_main_london_asg_desired" {
     development = 2  //stubbed env
     qa          = 2  //stubbed env
     integration = 2  //stubbed env
-    preprod     = 20 // Run ad-hoc when needed
+    preprod     = 10
     production  = 20
   }
 }
@@ -101,7 +101,7 @@ variable "k2hb_main_london_asg_max" {
     development = 2 //stubbed env
     qa          = 2 //stubbed env
     integration = 2 //stubbed env
-    preprod     = 20
+    preprod     = 10
     production  = 20
   }
 }
@@ -112,7 +112,7 @@ variable "k2hb_main_dedicated_london_asg_desired" {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
     integration = 1  //stubbed env
-    preprod     = 20 // Run ad-hoc when needed
+    preprod     = 10 // Run ad-hoc when needed
     production  = 20
   }
 }
@@ -123,7 +123,7 @@ variable "k2hb_main_dedicated_london_asg_max" {
     development = 1 //stubbed env
     qa          = 1 //stubbed env
     integration = 1 //stubbed env
-    preprod     = 20
+    preprod     = 10
     production  = 20
   }
 }
@@ -156,7 +156,7 @@ variable "k2hb_audit_london_asg_desired" {
     development = 1  //stubbed env
     qa          = 1  //stubbed env
     integration = 1  //stubbed env
-    preprod     = 20 // Run ad-hoc when needed
+    preprod     = 10
     production  = 20
   }
 }
@@ -167,7 +167,7 @@ variable "k2hb_audit_london_asg_max" {
     development = 1 //stubbed env
     qa          = 1 //stubbed env
     integration = 1 //stubbed env
-    preprod     = 20
+    preprod     = 10
     production  = 20
   }
 }
