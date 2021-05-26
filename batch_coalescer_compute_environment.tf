@@ -143,12 +143,3 @@ resource "aws_batch_compute_environment" "corporate_storage_coalescer" {
     create_before_destroy = true
   }
 }
-
-# TO BE REMOVED IN NEXT PR
-resource "aws_security_group" "corporate_storage_coalescer_batch" {
-  name                   = "corporate_storage_coalescer_batch_security_group"
-  description            = "Corporate Storage Coalescer AWS Batch"
-  revoke_rules_on_delete = true
-  vpc_id                 = local.ingest_vpc_id
-  tags                   = local.common_tags
-}
