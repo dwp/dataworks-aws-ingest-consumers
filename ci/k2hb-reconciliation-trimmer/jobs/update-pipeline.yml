@@ -1,8 +1,8 @@
 jobs:
   - name: update-pipeline
     plan:
-      - get: aws-internal-compute
-        resource: aws-internal-compute-k2hb-reconciliation-trimmer
+      - get: dataworks-aws-ingest-consumers
+        resource: dataworks-aws-ingest-consumers-k2hb-reconciliation-trimmer
         trigger: true
       - task: aviator
         config:
@@ -20,9 +20,9 @@ jobs:
                 sed -i 's/fly/nofly/' aviator-k2hb-reconciliation-trimmer.yml
                 /usr/bin/aviator -f aviator-k2hb-reconciliation-trimmer.yml
                 mv aviator_pipeline_k2hb_reconciliation_trimmer.yml ../pipeline
-            dir: aws-internal-compute
+            dir: dataworks-aws-ingest-consumers
           inputs:
-            - name: aws-internal-compute
+            - name: dataworks-aws-ingest-consumers
           outputs:
             - name: pipeline
       - set_pipeline: k2hb-reconciliation-trimmer
