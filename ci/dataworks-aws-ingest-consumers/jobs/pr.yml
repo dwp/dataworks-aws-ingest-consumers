@@ -11,6 +11,10 @@ jobs:
               tag: ((k2hb_version))
             passed:
               - mirror-k2hb
+          - get: k2hb-reconciliation-image
+            version:
+              digest: ((k2hb_reconciliation_container_version))
+            trigger: true
           - get: dataworks-aws-ingest-consumers-pr
             trigger: true
             version: every

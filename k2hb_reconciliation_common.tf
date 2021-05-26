@@ -2,12 +2,6 @@ locals {
   k2hb_reconciliation_container_url = "${local.account.management}.${module.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
 }
 
-variable "k2hb_reconciliation_container_version" {
-  default     = "undefined"
-  description = "Digest of Kafka-to-hbase Reconciliation container image in ECR"
-}
-
-
 # IAM
 data "aws_iam_policy_document" "k2hb_reconciliation" {
 

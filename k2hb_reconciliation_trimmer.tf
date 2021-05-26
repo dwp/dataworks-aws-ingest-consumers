@@ -1,8 +1,6 @@
 locals {
-  k2hb_reconciliation_trimmer_image_url = "${local.account.management}.${module.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
+  k2hb_reconciliation_trimmer_image_url = "${local.account.management}.${data.terraform_remote_state.ingest.outputs.vpc.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
 }
-
-# AWS Batch Instance IAM role & profile
 
 resource "aws_iam_role" "ecs_instance_role_k2hb_reconciliation_trimmer_batch" {
   name = "ecs_instance_role_k2hb_reconciliation_trimmer_batch"
@@ -211,8 +209,8 @@ resource "aws_batch_compute_environment" "k2hb_reconciliation_trimmer_batch" {
     desired_vcpus = 0
     max_vcpus     = 8
 
-    security_group_ids = [aws_security_group.k2hb_reconciliation_trimmer_batch.id]
-    subnets            = aws_subnet.business_data.*.id
+    security_group_ids = [data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id]
+    subnets            = data.terraform_remote_state.ingest.outputs.ingestion_subnets.id
     type               = "EC2"
 
     tags = merge(

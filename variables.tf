@@ -203,3 +203,8 @@ variable "k2hb_reconciliation_memory_reconciler" {
   description = "Fargate instance memory to provision (in MiB)"
   default     = "16384"
 }
+
+variable "k2hb_reconciliation_container_version" {
+  default     = "undefined"
+  description = "Digest of Kafka-to-hbase Reconciliation container image in ECR"
+}
