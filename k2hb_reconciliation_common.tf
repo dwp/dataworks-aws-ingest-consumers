@@ -1,5 +1,5 @@
 locals {
-  k2hb_reconciliation_container_url = "${local.account.management}.${data.terraform_remote_state.ingest.outputs.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
+  k2hb_reconciliation_container_url = "${local.account.management}.${local.ingest_vpc_ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
 }
 
 # IAM
@@ -66,7 +66,7 @@ resource "aws_cloudwatch_log_group" "k2hb_reconciliation_k2hb" {
 resource "aws_security_group_rule" "k2hb_reconciliation_to_s3" {
   description       = "Allow k2hb reconciliation ECS to reach S3 (for Docker pull from ECR)"
   type              = "egress"
-  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [local.ingest_vpc_prefix_list_ids_s3]
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
