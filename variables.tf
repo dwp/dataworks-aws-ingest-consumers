@@ -183,3 +183,8 @@ variable "image_version" {
     corporate-storage-coalescer = "0.0.40"
   }
 }
+
+variable "k2hb_reconciliation_container_version" {
+  default     = "undefined"
+  description = "Digest of Kafka-to-hbase Reconciliation container image in ECR"
+}
