@@ -1,5 +1,5 @@
 locals {
-  k2hb_reconciliation_container_url = "${local.account.management}.${data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
+  k2hb_reconciliation_container_url = "${local.account.management}.${data.terraform_remote_state.ingest.outputs.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
 }
 
 # IAM
@@ -66,7 +66,7 @@ resource "aws_cloudwatch_log_group" "k2hb_reconciliation_k2hb" {
 resource "aws_security_group_rule" "k2hb_reconciliation_to_s3" {
   description       = "Allow k2hb reconciliation ECS to reach S3 (for Docker pull from ECR)"
   type              = "egress"
-  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
@@ -111,7 +111,7 @@ resource "aws_security_group_rule" "k2hb_reconciliation_to_metadata_store" {
   from_port                = 3306
   to_port                  = 3306
   protocol                 = "tcp"
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.sg_id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.rds.sg_id
   security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id
 }
 
@@ -155,5 +155,5 @@ resource "aws_security_group_rule" "metadata_store_from_k2hb_reconciliation" {
   to_port                  = 3306
   protocol                 = "tcp"
   source_security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id
-  security_group_id        = data.terraform_remote_state.ingest.outputs.metadata_store.sg_id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.metadata_store.rds.sg_id
 }

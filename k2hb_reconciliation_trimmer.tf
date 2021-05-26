@@ -128,7 +128,7 @@ resource "aws_iam_role_policy_attachment" "hbase_table_provisioner_job_ecs" {
 resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_to_s3" {
   description       = "Allow k2hb reconciliation trimmer ECS to reach S3 (for Docker pull from ECR)"
   type              = "egress"
-  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
@@ -164,7 +164,7 @@ resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_egress_rds" {
   to_port                  = 3306
   protocol                 = "tcp"
   security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.sg_id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.rds.sg_id
 }
 
 resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_ingress_rds" {
@@ -174,7 +174,7 @@ resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_ingress_rds" {
   to_port                  = 3306
   protocol                 = "tcp"
   security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id
-  source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.sg_id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.rds.sg_id
 }
 
 resource "aws_batch_compute_environment" "k2hb_reconciliation_trimmer_batch" {
