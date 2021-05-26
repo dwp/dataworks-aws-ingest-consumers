@@ -1,5 +1,5 @@
 locals {
-  k2hb_reconciliation_trimmer_image_url = "${local.account.management}.${module.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
+  k2hb_reconciliation_trimmer_image_url = "${local.account.management}.${data.terraform_remote_state.ingest.outputs.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
 }
 
 resource "aws_iam_role" "ecs_instance_role_k2hb_reconciliation_trimmer_batch" {
