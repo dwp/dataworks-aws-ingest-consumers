@@ -63,6 +63,31 @@ meta-dataworks-aws-ingest-consumers:
       params:
         DETAILED_EXITCODE: -detailed-exitcode
 
+    terraform-output-ingest-consumers:
+      task: terraform-output-ingest-consumers
+      .: (( inject meta.plan.terraform-common-config ))
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.terraform_repository))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
+        run:
+          path: sh
+          dir: dataworks-aws-ingest-consumers
+          args:
+            - -exc
+            - |
+              terraform init
+              terraform workspace show
+              terraform output --json > ../terraform-output-ingest-consumers/outputs.json
+        inputs:
+          - name: dataworks-aws-ingest-consumers
+        outputs:
+          - name: terraform-output-ingest-consumers
+
     terraform-output-management:
       task: terraform-output-management
       .: (( inject meta.plan.terraform-common-config ))
@@ -180,3 +205,61 @@ meta-dataworks-aws-ingest-consumers:
               aws dynamodb delete-item --table-name StubUcfsJobStatus --key file://key.json
         inputs:
           - name: meta
+
+    provision-metadata-table:
+      task: provision-metadata-table
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.docker_awscli_repository))
+            version: ((dataworks.docker_awscli_version))
+            tag: ((dataworks.docker_awscli_version))
+        params:
+          AWS_REGION: ((dataworks.aws_region))
+          AWS_DEFAULT_REGION: ((dataworks.aws_region))
+          TABLE_NAME: placeholder
+          PARTITION_NAME: placeholder
+        inputs:
+          - name: terraform-output-ingest-consumers
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              source /assume-role
+              partition_count=$(jq -r .k2hb_reconciliation.value.partition_counts.${PARTITION_NAME}_reconciliation < terraform-output-ingest-consumers/outputs.json)
+              echo partition_count: \'$partition_count\'.
+              set +x
+              jq -n --arg Tablename "$TABLE_NAME" --arg PartitionCount $partition_count '{"table-name": $Tablename, "partition-count": $PartitionCount }' > manifest.json
+              echo "Manifest is:"
+              cat manifest.json
+              aws lambda invoke --function-name ingestion-metadata-provisioner --invocation-type RequestResponse --payload file://manifest.json --cli-connect-timeout 600 --cli-read-timeout 600 output.json
+              echo "Invocation result is:"
+              cat output.json
+              cat output.json | jq -eC "if .errorMessage? then error(.errorMessage) else true end"
+
+    provision-metadata-table-ucfs:
+      .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table ))
+      task: provision-metadata-table-ucfs
+      config:
+        params:
+          TABLE_NAME: UCFS
+          PARTITION_NAME: ucfs
+
+    provision-metadata-table-equalities:
+      .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table ))
+      task: provision-metadata-table-equalities
+      config:
+        params:
+          TABLE_NAME: EQUALITIES
+          PARTITION_NAME: equality
+
+    provision-metadata-table-audit:
+      .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table ))
+      task: provision-metadata-table-audit
+      config:
+        params:
+          TABLE_NAME: AUDIT
+          PARTITION_NAME: audit

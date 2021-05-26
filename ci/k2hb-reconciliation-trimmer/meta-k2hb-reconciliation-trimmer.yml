@@ -1,0 +1,71 @@
+meta-k2hb-reconciliation-trimmer:
+  plan:
+    k2hb-reconciliation-trimmer:
+      task: k2hb-reconciliation-trimmer
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.docker_awscli_repository))
+            version: ((dataworks.docker_awscli_version))
+        inputs:
+          - name: meta
+        params:
+          AWS_REGION: ((dataworks.aws_region))
+          AWS_DEFAULT_REGION: ((dataworks.aws_region))
+          TIMEOUT: 900   # Time (in minutes) to wait for job to complete
+          ASSUME_DURATION: 14400
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              source /assume-role
+              pipeline_name=`cat "meta/build_pipeline_name"`
+              job_name=`cat "meta/build_job_name"`
+              build_number=`cat "meta/build_name"`
+              build_number_safe=`echo ${build_number/./-}`
+              job_id=$(aws batch submit-job --job-queue k2hb_reconciliation_trimmer --job-definition k2hb_reconciliation_trimmer_job --job-name ${pipeline_name}_${job_name}_${build_number_safe} --parameters metadatastore_table="\"${METADATASTORE_TABLE_VALUE}\"" | jq -e --raw-output .jobId)
+              set +x
+              if [[ -z $job_id ]]; then
+                echo "Error submitting job, empty job_id received"
+                exit 1
+              fi
+              i=0
+              while [[ ${i} -le ${TIMEOUT} ]]
+              do
+                status=$(aws batch describe-jobs --jobs ${job_id} | jq -e --raw-output '.jobs[0].status')
+                case $status in
+                  FAILED)
+                    echo "job failed"
+                    exit 1
+                    ;;
+                  SUCCEEDED)
+                    echo "job succeeded"
+                    exit 0
+                    ;;
+                  SUBMITTED)
+                    echo "job is currently ${status}"
+                    ;;
+                  PENDING)
+                    echo "job is currently ${status}"
+                    ;;
+                  RUNNABLE)
+                    echo "job is currently ${status}"
+                    ;;
+                  STARTING)
+                    echo "job is currently ${status}"
+                    ;;
+                  RUNNING)
+                    echo "job is currently ${status}"
+                    ;;
+                  *)
+                    echo "unkwnown status $status"
+                    exit 1
+                    ;;
+                esac
+                i=$((i+1))
+                sleep 60
+              done
+              exit 1

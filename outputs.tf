@@ -36,3 +36,41 @@ output "k2hb_corporate_storage_coalesce_values" {
     }
   }
 }
+
+output "k2hb_reconciliation" {
+  value = {
+    task_configs = local.k2hb_reconciliation_task_configs
+    task_counts = {
+      ucfs_reconciliation     = local.k2hb_reconciliation_task_configs.ucfs_reconciliation.task_count[local.environment]
+      equality_reconciliation = local.k2hb_reconciliation_task_configs.equality_reconciliation.task_count[local.environment]
+      audit_reconciliation    = local.k2hb_reconciliation_task_configs.audit_reconciliation.task_count[local.environment]
+    }
+    cluster_names = {
+      ucfs_reconciliation     = data.terraform_remote_state.common.outputs.ecs_cluster_main.id
+      equality_reconciliation = data.terraform_remote_state.common.outputs.ecs_cluster_main.id
+      audit_reconciliation    = data.terraform_remote_state.common.outputs.ecs_cluster_main.id
+    }
+    service_names = {
+      ucfs_reconciliation     = local.k2hb_reconciliation_names.ucfs_reconciliation
+      equality_reconciliation = local.k2hb_reconciliation_names.equality_reconciliation
+      audit_reconciliation    = local.k2hb_reconciliation_names.audit_reconciliation
+    }
+    partition_counts = {
+      ucfs_reconciliation     = local.k2hb_reconciliation_task_configs.ucfs_reconciliation.table_partitions[local.environment]
+      equality_reconciliation = local.k2hb_reconciliation_task_configs.equality_reconciliation.table_partitions[local.environment]
+      audit_reconciliation    = local.k2hb_reconciliation_task_configs.audit_reconciliation.table_partitions[local.environment]
+    }
+  }
+}
+
+output "locals" {
+  value = {
+    k2hb_reconciliation_metric_name_number_of_successfully_reconciled_records         = local.k2hb_reconciliation_metric_name_number_of_successfully_reconciled_records
+    k2hb_reconciliation_metric_name_number_of_records_which_failed_reconciliation     = local.k2hb_reconciliation_metric_name_number_of_records_which_failed_reconciliation
+    k2hb_reconciliation_trimmer_metric_name_number_of_records_which_have_been_trimmed = local.k2hb_reconciliation_trimmer_metric_name_number_of_records_which_have_been_trimmed
+    cw_k2hb_reconciliation_ucfs_namespace                                             = local.cw_k2hb_reconciliation_ucfs_namespace
+    cw_k2hb_reconciliation_equality_namespace                                         = local.cw_k2hb_reconciliation_equality_namespace
+    cw_k2hb_reconciliation_audit_namespace                                            = local.cw_k2hb_reconciliation_audit_namespace
+    cw_k2hb_reconciliation_trimmer_namespace                                          = local.cw_k2hb_reconciliation_trimmer_namespace
+  }
+}

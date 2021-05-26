@@ -541,7 +541,9 @@ locals {
   ingest_log_groups                         = data.terraform_remote_state.ingest.outputs.log_groups
   ingest_vpc_interface_vpce_sg_id           = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
   ingest_vpc_prefix_list_ids_s3             = data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3
+  ingest_vpc_ecr_dkr_domain_name            = data.terraform_remote_state.ingest.outputs.vpc.vpc.ecr_dkr_domain_name
   ingest_input_bucket_cmk_arn               = data.terraform_remote_state.ingest.outputs.input_bucket_cmk.arn
+  ingest_input_bucket_arn                   = data.terraform_remote_state.ingest.outputs.s3_input_bucket_arn.input_bucket
   ingest_vpc_id                             = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
 
   ingest_hbase_fqdn             = data.terraform_remote_state.internal_compute.outputs.aws_emr_cluster.fqdn
@@ -925,4 +927,639 @@ locals {
     preprod     = false
     production  = true
   }
+
+  k2hb_reconciliation_names = {
+    ucfs_reconciliation     = "ucfs-reconciliation"
+    equality_reconciliation = "equality-reconciliation"
+    audit_reconciliation    = "audit-reconciliation"
+  }
+
+  k2hb_reconciliation_task_configs = {
+    ucfs_reconciliation = {
+      table                         = local.ingest_metadata_store_table_names.ucfs
+      table_pattern                 = replace(local.k2hb_main_data_qualified_table_pattern, "\\", "\\\\")
+      reconciler_fixed_delay_millis = 1
+      task_count = {
+        development = "1"
+        qa          = "1"
+        integration = "0" # Not needed in this environment
+        preprod     = "0" # Not needed in this environment
+        production  = "0" # Will run ad-hoc as and when needed
+      }
+
+      table_partitions = {
+        development = "8"
+        qa          = "8"
+        integration = "4"
+        preprod     = "4"
+        production  = "256"
+      }
+
+      partition_lists = {
+        development = {
+          "p0-p1" = { first = "0", last = "1" },
+          "p2-p3" = { first = "2", last = "3" },
+          "p4-p5" = { first = "4", last = "5" },
+          "p6-p7" = { first = "6", last = "7" }
+        }
+
+        qa = {
+          "p0-p1" = { first = "0", last = "1" },
+          "p2-p3" = { first = "2", last = "3" },
+          "p4-p5" = { first = "4", last = "5" },
+          "p6-p7" = { first = "6", last = "7" }
+        }
+
+        integration = { "p0-p1" = { first = "0", last = "1" }, "p2-p3" = { first = "2", last = "3" } }
+        preprod     = { "p0-p1" = { first = "0", last = "1" }, "p2-p3" = { first = "2", last = "3" } }
+        production = { "p0-p7" = { "first" = "0", "last" = "7" },
+          "p8-p15"    = { "first" = "8", "last" = "15" },
+          "p16-p23"   = { "first" = "16", "last" = "23" },
+          "p24-p31"   = { "first" = "24", "last" = "31" },
+          "p32-p39"   = { "first" = "32", "last" = "39" },
+          "p40-p47"   = { "first" = "40", "last" = "47" },
+          "p48-p55"   = { "first" = "48", "last" = "55" },
+          "p56-p63"   = { "first" = "56", "last" = "63" },
+          "p64-p71"   = { "first" = "64", "last" = "71" },
+          "p72-p79"   = { "first" = "72", "last" = "79" },
+          "p80-p87"   = { "first" = "80", "last" = "87" },
+          "p88-p95"   = { "first" = "88", "last" = "95" },
+          "p96-p103"  = { "first" = "96", "last" = "103" },
+          "p104-p111" = { "first" = "104", "last" = "111" },
+          "p112-p119" = { "first" = "112", "last" = "119" },
+          "p120-p127" = { "first" = "120", "last" = "127" },
+          "p128-p135" = { "first" = "128", "last" = "135" },
+          "p136-p143" = { "first" = "136", "last" = "143" },
+          "p144-p151" = { "first" = "144", "last" = "151" },
+          "p152-p159" = { "first" = "152", "last" = "159" },
+          "p160-p167" = { "first" = "160", "last" = "167" },
+          "p168-p175" = { "first" = "168", "last" = "175" },
+          "p176-p183" = { "first" = "176", "last" = "183" },
+          "p184-p191" = { "first" = "184", "last" = "191" },
+          "p192-p199" = { "first" = "192", "last" = "199" },
+          "p200-p207" = { "first" = "200", "last" = "207" },
+          "p208-p215" = { "first" = "208", "last" = "215" },
+          "p216-p223" = { "first" = "216", "last" = "223" },
+          "p224-p231" = { "first" = "224", "last" = "231" },
+          "p232-p239" = { "first" = "232", "last" = "239" },
+          "p240-p247" = { "first" = "240", "last" = "247" },
+          "p248-p255" = { "first" = "248", "last" = "255" }
+        }
+      }
+
+      minimum_age_scale = {
+        development = "10"
+        qa          = "10"
+        integration = "10"
+        preprod     = "1"
+        production  = "1"
+      }
+
+      minimum_age_unit = {
+        development = "SECOND"
+        qa          = "SECOND"
+        integration = "SECOND"
+        preprod     = "MINUTE"
+        production  = "MINUTE"
+      }
+
+      last_checked_scale = {
+        development = "2"
+        qa          = "2"
+        integration = "2"
+        preprod     = "30"
+        production  = "30"
+      }
+
+      last_checked_unit = {
+        development = "SECOND"
+        qa          = "SECOND"
+        integration = "SECOND"
+        preprod     = "MINUTE"
+        production  = "MINUTE"
+      }
+
+      log_level = {
+        development = "INFO"
+        qa          = "INFO"
+        integration = "INFO"
+        preprod     = "INFO"
+        production  = "INFO"
+      }
+      hbase_client_operation_timeout_ms = {
+        development = "900000"
+        qa          = "900000"
+        integration = "900000"
+        preprod     = "900000"
+        production  = "900000"
+      }
+      hbase_client_meta_operation_timeout_ms = {
+        development = "900000"
+        qa          = "900000"
+        integration = "900000"
+        preprod     = "900000"
+        production  = "900000"
+      }
+      hbase_client_scanner_timeout_ms = {
+        development = "600000"
+        qa          = "600000"
+        integration = "600000"
+        preprod     = "600000"
+        production  = "600000"
+      }
+      hbase_client_rpc_timeout_ms = {
+        development = "600000"
+        qa          = "600000"
+        integration = "600000"
+        preprod     = "600000"
+        production  = "600000"
+      }
+      hbase_client_rpc_read_timeout_ms = {
+        development = "600000"
+        qa          = "600000"
+        integration = "600000"
+        preprod     = "600000"
+        production  = "600000"
+      }
+      hbase_client_retries = {
+        development = "50"
+        qa          = "50"
+        integration = "50"
+        preprod     = "50"
+        production  = "50"
+      }
+      hbase_client_pause_ms = {
+        development = "100"
+        qa          = "100"
+        integration = "100"
+        preprod     = "100"
+        production  = "100"
+      }
+      hbase_replication_factor = {
+        development = "3"
+        qa          = "3"
+        integration = "3"
+        preprod     = "3"
+        production  = "3"
+      }
+      number_of_parallel_updates = {
+        development = "30"
+        qa          = "30"
+        integration = "30"
+        preprod     = "30"
+        production  = "30"
+      }
+      batch_size = {
+        development = "100000"
+        qa          = "100000"
+        integration = "100000"
+        preprod     = "100000"
+        production  = "100000"
+      }
+      auto_commit_statements = {
+        development = false
+        qa          = false
+        integration = false
+        preprod     = false
+        production  = false
+      }
+    }
+
+    equality_reconciliation = {
+      table                         = local.ingest_metadata_store_table_names.equality
+      table_pattern                 = replace(local.k2hb_data_equality_qualified_table_pattern, "\\", "\\\\")
+      reconciler_fixed_delay_millis = 10000
+      task_count = {
+        development = "1"
+        qa          = "1"
+        integration = "1"
+        preprod     = "0" # Not needed in this environment
+        production  = "1"
+      }
+
+      table_partitions = {
+        development = "4"
+        qa          = "4"
+        integration = "4"
+        preprod     = "4"
+        production  = "4"
+      }
+
+      partition_lists = {
+        development = { "p0-p3" = { first = "0", last = "3" } }
+        qa          = { "p0-p3" = { first = "0", last = "3" } }
+        integration = { "p0-p3" = { first = "0", last = "3" } }
+        preprod     = { "p0-p3" = { first = "0", last = "3" } }
+        production  = { "p0-p3" = { first = "0", last = "3" } }
+      }
+
+      minimum_age_scale = {
+        development = "10"
+        qa          = "10"
+        integration = "10"
+        preprod     = "1"
+        production  = "1"
+      }
+      minimum_age_unit = {
+        development = "SECOND"
+        qa          = "SECOND"
+        integration = "SECOND"
+        preprod     = "MINUTE"
+        production  = "MINUTE"
+      }
+      last_checked_scale = {
+        development = "2"
+        qa          = "2"
+        integration = "2"
+        preprod     = "30"
+        production  = "30"
+      }
+
+      last_checked_unit = {
+        development = "SECOND"
+        qa          = "SECOND"
+        integration = "SECOND"
+        preprod     = "MINUTE"
+        production  = "MINUTE"
+      }
+      log_level = {
+        development = "INFO"
+        qa          = "INFO"
+        integration = "INFO"
+        preprod     = "INFO"
+        production  = "INFO"
+      }
+      hbase_client_operation_timeout_ms = {
+        development = "900000"
+        qa          = "900000"
+        integration = "900000"
+        preprod     = "900000"
+        production  = "900000"
+      }
+      hbase_client_meta_operation_timeout_ms = {
+        development = "900000"
+        qa          = "900000"
+        integration = "900000"
+        preprod     = "900000"
+        production  = "900000"
+      }
+      hbase_client_scanner_timeout_ms = {
+        development = "600000"
+        qa          = "600000"
+        integration = "600000"
+        preprod     = "600000"
+        production  = "600000"
+      }
+      hbase_client_rpc_timeout_ms = {
+        development = "600000"
+        qa          = "600000"
+        integration = "600000"
+        preprod     = "600000"
+        production  = "600000"
+      }
+      hbase_client_rpc_read_timeout_ms = {
+        development = "600000"
+        qa          = "600000"
+        integration = "600000"
+        preprod     = "600000"
+        production  = "600000"
+      }
+      hbase_client_retries = {
+        development = "50"
+        qa          = "50"
+        integration = "50"
+        preprod     = "50"
+        production  = "50"
+      }
+      hbase_client_pause_ms = {
+        development = "100"
+        qa          = "100"
+        integration = "100"
+        preprod     = "100"
+        production  = "100"
+      }
+      hbase_replication_factor = {
+        development = "3"
+        qa          = "3"
+        integration = "3"
+        preprod     = "3"
+        production  = "3"
+      }
+      number_of_parallel_updates = {
+        development = "10"
+        qa          = "10"
+        integration = "10"
+        preprod     = "10"
+        production  = "10"
+      }
+      batch_size = {
+        development = "10000"
+        qa          = "10000"
+        integration = "10000"
+        preprod     = "10000"
+        production  = "10000"
+      }
+      auto_commit_statements = {
+        development = false
+        qa          = false
+        integration = false
+        preprod     = false
+        production  = false
+      }
+    }
+
+    audit_reconciliation = {
+      table                         = local.ingest_metadata_store_table_names.audit
+      table_pattern                 = replace(local.k2hb_data_audit_qualified_table_pattern, "\\", "\\\\")
+      reconciler_fixed_delay_millis = 10000
+      task_count = {
+        development = "1"
+        qa          = "1"
+        integration = "1"
+        preprod     = "0" # Not needed in this environment
+        production  = "0" # Will run ad-hoc as and when needed
+      }
+
+      table_partitions = {
+        development = "4"
+        qa          = "4"
+        integration = "4"
+        preprod     = "4"
+        production  = "256"
+      }
+
+      partition_lists = {
+        development = { "p0-p1" = { first = "0", last = "1" }, "p2-p3" = { first = "2", last = "3" } }
+        qa          = { "p0-p1" = { first = "0", last = "1" }, "p2-p3" = { first = "2", last = "3" } }
+        integration = { "p0-p1" = { first = "0", last = "1" }, "p2-p3" = { first = "2", last = "3" } }
+        preprod     = { "p0-p1" = { first = "0", last = "1" }, "p2-p3" = { first = "2", last = "3" } }
+        production = {
+          "p0-p7"     = { "first" = "0", "last" = "7" },
+          "p8-p15"    = { "first" = "8", "last" = "15" },
+          "p16-p23"   = { "first" = "16", "last" = "23" },
+          "p24-p31"   = { "first" = "24", "last" = "31" },
+          "p32-p39"   = { "first" = "32", "last" = "39" },
+          "p40-p47"   = { "first" = "40", "last" = "47" },
+          "p48-p55"   = { "first" = "48", "last" = "55" },
+          "p56-p63"   = { "first" = "56", "last" = "63" },
+          "p64-p71"   = { "first" = "64", "last" = "71" },
+          "p72-p79"   = { "first" = "72", "last" = "79" },
+          "p80-p87"   = { "first" = "80", "last" = "87" },
+          "p88-p95"   = { "first" = "88", "last" = "95" },
+          "p96-p103"  = { "first" = "96", "last" = "103" },
+          "p104-p111" = { "first" = "104", "last" = "111" },
+          "p112-p119" = { "first" = "112", "last" = "119" },
+          "p120-p127" = { "first" = "120", "last" = "127" },
+          "p128-p135" = { "first" = "128", "last" = "135" },
+          "p136-p143" = { "first" = "136", "last" = "143" },
+          "p144-p151" = { "first" = "144", "last" = "151" },
+          "p152-p159" = { "first" = "152", "last" = "159" },
+          "p160-p167" = { "first" = "160", "last" = "167" },
+          "p168-p175" = { "first" = "168", "last" = "175" },
+          "p176-p183" = { "first" = "176", "last" = "183" },
+          "p184-p191" = { "first" = "184", "last" = "191" },
+          "p192-p199" = { "first" = "192", "last" = "199" },
+          "p200-p207" = { "first" = "200", "last" = "207" },
+          "p208-p215" = { "first" = "208", "last" = "215" },
+          "p216-p223" = { "first" = "216", "last" = "223" },
+          "p224-p231" = { "first" = "224", "last" = "231" },
+          "p232-p239" = { "first" = "232", "last" = "239" },
+          "p240-p247" = { "first" = "240", "last" = "247" },
+          "p248-p255" = { "first" = "248", "last" = "255" }
+        }
+      }
+
+      minimum_age_scale = {
+        development = "10"
+        qa          = "10"
+        integration = "10"
+        preprod     = "1"
+        production  = "1"
+      }
+      minimum_age_unit = {
+        development = "SECOND"
+        qa          = "SECOND"
+        integration = "SECOND"
+        preprod     = "MINUTE"
+        production  = "MINUTE"
+      }
+      last_checked_scale = {
+        development = "2"
+        qa          = "2"
+        integration = "2"
+        preprod     = "30"
+        production  = "30"
+      }
+
+      last_checked_unit = {
+        development = "SECOND"
+        qa          = "SECOND"
+        integration = "SECOND"
+        preprod     = "MINUTE"
+        production  = "MINUTE"
+      }
+      log_level = {
+        development = "INFO"
+        qa          = "INFO"
+        integration = "INFO"
+        preprod     = "INFO"
+        production  = "INFO"
+      }
+      hbase_client_operation_timeout_ms = {
+        development = "900000"
+        qa          = "900000"
+        integration = "900000"
+        preprod     = "900000"
+        production  = "900000"
+      }
+      hbase_client_meta_operation_timeout_ms = {
+        development = "900000"
+        qa          = "900000"
+        integration = "900000"
+        preprod     = "900000"
+        production  = "900000"
+      }
+      hbase_client_scanner_timeout_ms = {
+        development = "600000"
+        qa          = "600000"
+        integration = "600000"
+        preprod     = "600000"
+        production  = "600000"
+      }
+      hbase_client_rpc_timeout_ms = {
+        development = "600000"
+        qa          = "600000"
+        integration = "600000"
+        preprod     = "600000"
+        production  = "600000"
+      }
+      hbase_client_rpc_read_timeout_ms = {
+        development = "600000"
+        qa          = "600000"
+        integration = "600000"
+        preprod     = "600000"
+        production  = "600000"
+      }
+      hbase_client_retries = {
+        development = "50"
+        qa          = "50"
+        integration = "50"
+        preprod     = "50"
+        production  = "50"
+      }
+      hbase_client_pause_ms = {
+        development = "100"
+        qa          = "100"
+        integration = "100"
+        preprod     = "100"
+        production  = "100"
+      }
+      hbase_replication_factor = {
+        development = "3"
+        qa          = "3"
+        integration = "3"
+        preprod     = "3"
+        production  = "3"
+      }
+      number_of_parallel_updates = {
+        development = "10"
+        qa          = "10"
+        integration = "10"
+        preprod     = "10"
+        production  = "10"
+      }
+      batch_size = {
+        development = "10000"
+        qa          = "10000"
+        integration = "10000"
+        preprod     = "10000"
+        production  = "10000"
+      }
+      auto_commit_statements = {
+        development = false
+        qa          = false
+        integration = false
+        preprod     = false
+        production  = false
+      }
+    }
+  }
+
+  k2hb_trim_reconciled_records_names = {
+    ucfs_trim_reconciled_records     = "ucfs-trim-reconciled-records"
+    equality_trim_reconciled_records = "equality-trim-reconciled-records"
+    audit_trim_reconciled_records    = "audit-trim-reconciled-records"
+  }
+
+  k2hb_trimmer_common_config = {
+    log_level = {
+      development = "INFO"
+      qa          = "INFO"
+      integration = "INFO"
+      preprod     = "INFO"
+      production  = "INFO"
+    }
+    number_of_parallel_updates = 0 // not used by trimmer but required
+    batch_size                 = 0 // not used by trimmer but required
+    optimize_after_delete = {
+      development = true
+      qa          = true
+      integration = true
+      preprod     = true
+      production  = true
+    }
+    spring_profiles_active = {
+      development = "TRIM_RECONCILED_RECORDS"
+      qa          = "TRIM_RECONCILED_RECORDS"
+      integration = "TRIM_RECONCILED_RECORDS"
+      preprod     = "TRIM_RECONCILED_RECORDS"
+      production  = "TRIM_RECONCILED_RECORDS"
+    }
+    audit_trim_reconciled_records = {
+      table = local.ingest_metadata_store_table_names.audit
+      reconciler_trim_reconciled_fixed_delay_millis = {
+        development = "10000"
+        qa          = "10000"
+        integration = "10000"
+        preprod     = "3600000" // Run hourly to reduce contention as this is a locking delete call
+        production  = "3600000" // Run hourly to reduce contention as this is a locking delete call
+      }
+      task_count = {
+        development = "1"
+        qa          = "1"
+        integration = "1"
+        preprod     = "1"
+        production  = "1"
+      }
+      trim_reconciled_scale = {
+        development = "1"
+        qa          = "1"
+        integration = "1"
+        preprod     = "1"
+        production  = "1"
+      }
+      trim_reconciled_unit = {
+        development = "DAY"
+        qa          = "DAY"
+        integration = "DAY"
+        preprod     = "DAY"
+        production  = "DAY"
+      }
+      log_level = {
+        development = "INFO"
+        qa          = "INFO"
+        integration = "INFO"
+        preprod     = "INFO"
+        production  = "INFO"
+      }
+      number_of_parallel_updates = 0 // not used by trimmer but required
+      batch_size                 = 0 // not used by trimmer but required
+      optimize_after_delete = {
+        development = true
+        qa          = true
+        integration = true
+        preprod     = true
+        production  = true
+      }
+      spring_profiles_active = {
+        development = "TRIM_RECONCILED_RECORDS"
+        qa          = "TRIM_RECONCILED_RECORDS"
+        integration = "TRIM_RECONCILED_RECORDS"
+        preprod     = "TRIM_RECONCILED_RECORDS"
+        production  = "TRIM_RECONCILED_RECORDS"
+      }
+    }
+  }
+
+  cw_k2hb_reconciliation_trimmer_namespace = {
+    ucfs_reconciliation     = "/aws/ecs/main/ucfs-reconciliation-trimmer"
+    equality_reconciliation = "/aws/ecs/main/equality-reconciliation-trimmer"
+    audit_reconciliation    = "/aws/ecs/main/audit-reconciliation-trimmer"
+  }
+
+  cw_k2hb_reconciliation_ucfs_namespace     = "/aws/ecs/main/ucfs-reconciliation"
+  cw_k2hb_reconciliation_equality_namespace = "/aws/ecs/main/equality-reconciliation"
+  cw_k2hb_reconciliation_audit_namespace    = "/aws/ecs/main/audit-reconciliation"
+
+  k2hb_reconciliation_metric_name_number_of_successfully_reconciled_records = {
+    ucfs_reconciliation     = "The number of UCFS records successfully reconciled"
+    equality_reconciliation = "The number of Equality records successfully reconciled"
+    audit_reconciliation    = "The number of Audit records successfully reconciled"
+  }
+
+  k2hb_reconciliation_metric_name_number_of_records_which_failed_reconciliation = {
+    ucfs_reconciliation     = "The number of UCFS records which failed to be reconciled"
+    equality_reconciliation = "The number of Equality records which failed to be reconciled"
+    audit_reconciliation    = "The number of Audit records which failed to be reconciled"
+  }
+
+  k2hb_reconciliation_trimmer_metric_name_number_of_records_which_have_been_trimmed = {
+    ucfs_reconciliation     = "The number of UCFS records which have been trimmed"
+    equality_reconciliation = "The number of Equality records which have been trimmed"
+    audit_reconciliation    = "The number of Audit records which have been trimmed"
+  }
+
+  k2hb_reconciliation_trimmer_log_group_name = "/aws/batch/job"
+
+  ucfs_historic_data_prefix = "${data.terraform_remote_state.internal_compute.outputs.ingest_emr_s3_prefixes.base_root_prefix}/mongo"
 }

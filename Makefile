@@ -41,6 +41,10 @@ update-pipeline: ## Update the main pipeline
 update-corporate-storage-coalescence-pipeline: ## Update the corporate-storage-coalescence pipeline
 	aviator -f aviator-corporate-storage-coalescence.yml
 
+.PHONY: update-k2hb-reconciliation-trimmer-pipeline
+update-k2hb-reconciliation-trimmer-pipeline: ## Update the k2hb-reconciliation-trimmer pipeline
+	aviator -f aviator-k2hb-reconciliation-trimmer.yml
+
 .PHONY: terraform-init
 terraform-init: ## Run `terraform init` from repo root
 	terraform init

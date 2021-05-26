@@ -87,9 +87,9 @@ variable "k2hb_audit_max_memory_allocation" {
 variable "k2hb_main_london_asg_desired" {
   description = "Desired k2hb ha consumer asg size. UC Prod HA Cluster has 20 partitions, and we need spares. We can have at most 30 to fit in the subnets, as changes with create-before-destroy mean we need double headroom"
   default = {
-    development = 2  //stubbed env
-    qa          = 2  //stubbed env
-    integration = 2  //stubbed env
+    development = 2 //stubbed env
+    qa          = 2 //stubbed env
+    integration = 2 //stubbed env
     preprod     = 10
     production  = 20
   }
@@ -153,9 +153,9 @@ variable "k2hb_equality_london_asg_max" {
 variable "k2hb_audit_london_asg_desired" {
   description = "Desired k2hb equality asg size. Connects to ha cluster."
   default = {
-    development = 1  //stubbed env
-    qa          = 1  //stubbed env
-    integration = 1  //stubbed env
+    development = 1 //stubbed env
+    qa          = 1 //stubbed env
+    integration = 1 //stubbed env
     preprod     = 10
     production  = 20
   }
@@ -184,7 +184,37 @@ variable "image_version" {
   }
 }
 
+variable "k2hb_reconciliation_cpu_trimming" {
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
+  default     = "1024"
+}
+
+variable "k2hb_reconciliation_memory_trimming" {
+  description = "Fargate instance memory to provision (in MiB)"
+  default     = "4096"
+}
+
+variable "k2hb_reconciliation_cpu_reconciler" {
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
+  default     = "4096"
+}
+
+variable "k2hb_reconciliation_memory_reconciler" {
+  description = "Fargate instance memory to provision (in MiB)"
+  default     = "16384"
+}
+
 variable "k2hb_reconciliation_container_version" {
   default     = "undefined"
   description = "Digest of Kafka-to-hbase Reconciliation container image in ECR"
+}
+
+variable "metadata_store_reconciler_username" {
+  description = "Username for metadata store reconciler RDS user"
+  default     = "reconciler"
+}
+
+variable "hbase_emr_ports" {
+  description = "Ports open on Hbase EMR master and slave instances"
+  default     = [16000, 16020, 16030]
 }

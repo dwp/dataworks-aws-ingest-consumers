@@ -1,26 +1,9 @@
 locals {
-  batch_corporate_storage_coalescer_image            = "${local.account.management}.${data.terraform_remote_state.ingest.outputs.vpc.vpc.ecr_dkr_domain_name}/dataworks-corporate-storage-coalescence:${var.image_version.corporate-storage-coalescer}"
+  batch_corporate_storage_coalescer_image            = "${local.account.management}.${local.ingest_vpc_ecr_dkr_domain_name}/dataworks-corporate-storage-coalescence:${var.image_version.corporate-storage-coalescer}"
   batch_corporate_storage_coalescer_application_name = "corporate-storage-coalescer"
   config_prefix                                      = "component/rbac"
   config_filename                                    = "data_classification.csv"
   data_s3_prefix                                     = "data/uc/uc.db"
-}
-
-data "aws_iam_policy_document" "batch_assume_policy" {
-  statement {
-    sid    = "BatchAssumeRolePolicy"
-    effect = "Allow"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    principals {
-      identifiers = ["ecs-tasks.amazonaws.com"]
-
-      type = "Service"
-    }
-  }
 }
 
 resource "aws_iam_role" "batch_corporate_storage_coalescer" {

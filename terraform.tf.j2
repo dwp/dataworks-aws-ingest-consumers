@@ -132,6 +132,9 @@ provider "aws" {
   }
 }
 
+data "aws_region" "current" {
+}
+
 locals {
   name        = "dataworks-aws-ingest-consumers"
   environment = terraform.workspace == "default" ? "development" : terraform.workspace

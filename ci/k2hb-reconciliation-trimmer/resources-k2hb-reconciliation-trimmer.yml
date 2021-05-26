@@ -1,0 +1,27 @@
+resources:
+  - name: dataworks-aws-ingest-consumers-k2hb-reconciliation-trimmer
+    type: git
+    source:
+      branch: master
+      uri: https://github.com/dwp/dataworks-aws-ingest-consumers.git
+      access_token: ((dataworks-secrets.concourse_github_pat))
+      paths:
+        - ci/k2hb-reconciliation-trimmer/*
+        - aviator-k2hb-reconciliation-trimmer.yml
+    webhook_token: ((dataworks.concourse_github_webhook_token))
+    check_every: 5m
+
+  - name: meta-development
+    type: meta
+
+  - name: meta-qa
+    type: meta
+
+  - name: meta-preprod
+    type: meta
+
+  - name: meta-production
+    type: meta
+
+  - name: meta-integration
+    type: meta
