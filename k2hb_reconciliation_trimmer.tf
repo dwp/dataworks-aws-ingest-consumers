@@ -2,11 +2,6 @@ locals {
   k2hb_reconciliation_trimmer_image_url = "${local.account.management}.${module.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
 }
 
-# AWS Batch Service IAM role
-data "aws_iam_role" "aws_batch_service_role" {
-  name = "aws_batch_service_role"
-}
-
 resource "aws_batch_compute_environment" "k2hb_reconciliation_trimmer_batch" {
   compute_environment_name = "k2hb_reconciliation_trimmer"
   service_role             = data.aws_iam_role.aws_batch_service_role.arn
