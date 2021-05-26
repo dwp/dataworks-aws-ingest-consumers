@@ -235,7 +235,7 @@ resource "aws_ecs_service" "k2hb_reconciliation_equality" {
       aws_security_group.k2hb_reconciliation.id,
     ]
 
-    subnets = aws_subnet.business_data.*.id
+    subnets = data.terraform_remote_state.ingest.outputs.ingestion_subnets.id
   }
 
   lifecycle {
