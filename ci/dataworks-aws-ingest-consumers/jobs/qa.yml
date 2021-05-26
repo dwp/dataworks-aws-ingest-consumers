@@ -13,6 +13,10 @@ jobs:
             trigger: true
           - get: dw-al2-ecs-ami
             trigger: true
+          - get: k2hb-reconciliation-image
+            version:
+              digest: ((k2hb_reconciliation_container_version))
+            trigger: true
           - get: k2hb-release
             version:
               tag: ((k2hb_version))
