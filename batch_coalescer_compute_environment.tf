@@ -68,14 +68,6 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_csc_batch_ecr" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
-resource "aws_security_group" "corporate_storage_coalescer_batch" {
-  name                   = "corporate_storage_coalescer_batch_security_group"
-  description            = "Corporate Storage Coalescer AWS Batch"
-  revoke_rules_on_delete = true
-  vpc_id                 = local.ingest_vpc_id
-  tags                   = local.common_tags
-}
-
 resource "aws_security_group_rule" "corporate_storage_coalescer_batch_to_s3" {
   description       = "Corporate Storage Coalescer Batch to S3"
   type              = "egress"
@@ -83,7 +75,7 @@ resource "aws_security_group_rule" "corporate_storage_coalescer_batch_to_s3" {
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
-  security_group_id = aws_security_group.corporate_storage_coalescer_batch.id
+  security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.corporate_storage_coalescer_batch.id
 }
 
 resource "aws_security_group_rule" "corporate_storage_coalescer_batch_to_s3_http" {
@@ -93,7 +85,7 @@ resource "aws_security_group_rule" "corporate_storage_coalescer_batch_to_s3_http
   protocol          = "tcp"
   from_port         = 80
   to_port           = 80
-  security_group_id = aws_security_group.corporate_storage_coalescer_batch.id
+  security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.corporate_storage_coalescer_batch.id
 }
 
 
@@ -104,7 +96,7 @@ resource "aws_security_group_rule" "csc_egress_internet_proxy" {
   protocol                 = "tcp"
   from_port                = 3128
   to_port                  = 3128
-  security_group_id        = aws_security_group.corporate_storage_coalescer_batch.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.corporate_storage_coalescer_batch.id
 }
 
 resource "aws_security_group_rule" "csc_ingress_internet_proxy" {
@@ -113,7 +105,7 @@ resource "aws_security_group_rule" "csc_ingress_internet_proxy" {
   from_port                = 3128
   to_port                  = 3128
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.corporate_storage_coalescer_batch.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.corporate_storage_coalescer_batch.id
   security_group_id        = data.terraform_remote_state.ingest.outputs.internet_proxy.sg
 }
 
@@ -132,7 +124,7 @@ resource "aws_batch_compute_environment" "corporate_storage_coalescer" {
     desired_vcpus = 0
     max_vcpus     = local.batch_coalescer_compute_environment_max_cpus[local.environment]
 
-    security_group_ids = [aws_security_group.corporate_storage_coalescer_batch.id]
+    security_group_ids = [data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.corporate_storage_coalescer_batch.id]
     subnets            = local.ingest_subnets.id
     type               = "EC2"
 
