@@ -831,6 +831,14 @@ locals {
     production  = true
   }
 
+  deploy_stub_broker = {
+    development = true
+    qa          = true
+    integration = true
+    preprod     = false
+    production  = false
+  }
+
   k2hb_main_ebs_size = {
     development = 50
     qa          = 50
@@ -1562,4 +1570,12 @@ locals {
   k2hb_reconciliation_trimmer_log_group_name = "/aws/batch/job"
 
   ucfs_historic_data_prefix = "${data.terraform_remote_state.internal_compute.outputs.ingest_emr_s3_prefixes.base_root_prefix}/mongo"
+
+  manifest_comparison_import_csv_table_name                    = "import_csv"
+  manifest_comparison_export_csv_table_name                    = "export_csv"
+  manifest_comparison_combined_parquet_table_name              = "manifest_combined_parquet"
+  manifest_comparison_missing_imports_parquet_table_name       = "manifest_missing_imports_parquet"
+  manifest_comparison_missing_exports_parquet_table_name       = "manifest_missing_exports_parquet"
+  manifest_comparison_counts_parquet_table_name                = "manifest_counts_parquet"
+  manifest_comparison_mismatched_timestamps_parquet_table_name = "manifest_mismatched_timestamps_parquet"
 }
