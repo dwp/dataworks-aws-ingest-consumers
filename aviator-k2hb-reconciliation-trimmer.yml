@@ -1,0 +1,18 @@
+spruce:
+  - base: ci/k2hb-reconciliation-trimmer/meta-k2hb-reconciliation-trimmer.yml
+    prune:
+      - meta-k2hb-reconciliation-trimmer
+    merge:
+      - with_in: ci/k2hb-reconciliation-trimmer/
+        regexp: ".*yml"
+      - with_in: ci/k2hb-reconciliation-trimmer/jobs/
+        regexp: ".*yml"
+    to: aviator_pipeline_k2hb_reconciliation_trimmer.yml
+fly:
+  name: k2hb-reconciliation-trimmer
+  target: utility
+  config: aviator_pipeline_k2hb_reconciliation_trimmer.yml
+  expose: true
+  check_creds: true
+  load_vars_from:
+    - ci/vars.yml

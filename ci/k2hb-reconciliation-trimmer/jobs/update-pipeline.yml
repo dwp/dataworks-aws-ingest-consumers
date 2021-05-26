@@ -1,0 +1,29 @@
+jobs:
+  - name: update-pipeline
+    plan:
+      - get: aws-internal-compute
+        resource: aws-internal-compute-k2hb-reconciliation-trimmer
+        trigger: true
+      - task: aviator
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: ((dataworks.docker_aviator_repository))
+              version: ((dataworks.docker_aviator_version))
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                sed -i 's/fly/nofly/' aviator-k2hb-reconciliation-trimmer.yml
+                /usr/bin/aviator -f aviator-k2hb-reconciliation-trimmer.yml
+                mv aviator_pipeline_k2hb_reconciliation_trimmer.yml ../pipeline
+            dir: aws-internal-compute
+          inputs:
+            - name: aws-internal-compute
+          outputs:
+            - name: pipeline
+      - set_pipeline: k2hb-reconciliation-trimmer
+        file: pipeline/aviator_pipeline_k2hb_reconciliation_trimmer.yml

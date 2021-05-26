@@ -183,3 +183,23 @@ variable "image_version" {
     corporate-storage-coalescer = "0.0.40"
   }
 }
+
+variable "k2hb_reconciliation_cpu_trimming" {
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
+  default     = "1024"
+}
+
+variable "k2hb_reconciliation_memory_trimming" {
+  description = "Fargate instance memory to provision (in MiB)"
+  default     = "4096"
+}
+
+variable "k2hb_reconciliation_cpu_reconciler" {
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
+  default     = "4096"
+}
+
+variable "k2hb_reconciliation_memory_reconciler" {
+  description = "Fargate instance memory to provision (in MiB)"
+  default     = "16384"
+}

@@ -1,0 +1,28 @@
+groups:
+  - name: ucfs
+    jobs:
+      - start-ucfs-reconciliation-trimmer-development
+      - start-ucfs-reconciliation-trimmer-qa
+      - start-ucfs-reconciliation-trimmer-integration
+      - start-ucfs-reconciliation-trimmer-preprod
+      - start-ucfs-reconciliation-trimmer-production
+
+  - name: equalities
+    jobs:
+      - start-equalities-reconciliation-trimmer-development
+      - start-equalities-reconciliation-trimmer-qa
+      - start-equalities-reconciliation-trimmer-integration
+      - start-equalities-reconciliation-trimmer-preprod
+      - start-equalities-reconciliation-trimmer-production
+
+  - name: audit
+    jobs:
+      - start-audit-reconciliation-trimmer-development
+      - start-audit-reconciliation-trimmer-qa
+      - start-audit-reconciliation-trimmer-integration
+      - start-audit-reconciliation-trimmer-preprod
+      - start-audit-reconciliation-trimmer-production
+
+  - name: update-pipeline
+    jobs:
+      - update-pipeline

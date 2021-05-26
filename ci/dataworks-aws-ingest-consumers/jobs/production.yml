@@ -21,6 +21,12 @@ jobs:
             trigger: true
             passed:
               - preprod
+          - get: k2hb-reconciliation-image
+            version:
+              digest: ((k2hb_reconciliation_container_version))
+            trigger: true
+            passed:
+              - preprod
 
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-apply ))

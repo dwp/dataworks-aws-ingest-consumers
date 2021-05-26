@@ -1,0 +1,29 @@
+resources:
+  - name: aws-internal-compute-k2hb-reconciliation-trimmer
+    type: git
+    source:
+      branch: master
+      api_endpoint: https://((dataworks.enterprise_github_url))/api/v3/
+      username: ((dataworks.enterprise_github_username))
+      password: ((dataworks-secrets.enterprise_github_pat))
+      uri: https://((dataworks.enterprise_github_url))/dip/aws-internal-compute.git
+      paths:
+        - ci/k2hb-reconciliation-trimmer/*
+        - aviator-k2hb-reconciliation-trimmer.yml
+    check_every: 5m
+    webhook_token: ((dataworks.concourse_github_webhook_token))
+
+  - name: meta-development
+    type: meta
+
+  - name: meta-qa
+    type: meta
+
+  - name: meta-preprod
+    type: meta
+
+  - name: meta-production
+    type: meta
+
+  - name: meta-integration
+    type: meta

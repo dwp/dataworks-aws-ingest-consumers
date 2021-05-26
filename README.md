@@ -3,8 +3,11 @@
 This repository contains the Terraform required to stand up the DataWorks Kafka Consumers from the upstream UC brokers.
 Currently they run in managed AWS ASGs.
 
-The code for the applications can be found in
+The code for the applications can be found in:
 * [Kafka-to-HBase consumer code](https://github.com/dwp/kafka-to-hbase)
+
+Details for the following components can be found in their own READMEs:
+* [K2HB Reconciliation Trimmer](docs/k2hb-reconciliation-trimmer.md)
 
 The core AWS Ingest infrastructure that these consumers run in is held within DWP private github.
 

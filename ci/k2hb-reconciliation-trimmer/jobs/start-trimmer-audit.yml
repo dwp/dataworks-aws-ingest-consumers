@@ -1,0 +1,55 @@
+jobs:
+  - name: start-audit-reconciliation-trimmer-development
+    max_in_flight: 1
+    plan:
+      - put: meta
+        resource: meta-development
+      - .: (( inject meta-k2hb-reconciliation-trimmer.plan.k2hb-reconciliation-trimmer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
+            METADATASTORE_TABLE_VALUE: "audit"
+
+  - name: start-audit-reconciliation-trimmer-qa
+    max_in_flight: 1
+    plan:
+      - put: meta
+        resource: meta-qa
+      - .: (( inject meta-k2hb-reconciliation-trimmer.plan.k2hb-reconciliation-trimmer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
+            METADATASTORE_TABLE_VALUE: "audit"
+
+  - name: start-audit-reconciliation-trimmer-integration
+    max_in_flight: 1
+    plan:
+      - put: meta
+        resource: meta-integration
+      - .: (( inject meta-k2hb-reconciliation-trimmer.plan.k2hb-reconciliation-trimmer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.integration)):role/ci
+            METADATASTORE_TABLE_VALUE: "audit"
+
+  - name: start-audit-reconciliation-trimmer-preprod
+    max_in_flight: 1
+    plan:
+      - put: meta
+        resource: meta-preprod
+      - .: (( inject meta-k2hb-reconciliation-trimmer.plan.k2hb-reconciliation-trimmer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.preprod)):role/ci
+            METADATASTORE_TABLE_VALUE: "audit"
+
+  - name: start-audit-reconciliation-trimmer-production
+    max_in_flight: 1
+    plan:
+      - put: meta
+        resource: meta-production
+      - .: (( inject meta-k2hb-reconciliation-trimmer.plan.k2hb-reconciliation-trimmer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
+            METADATASTORE_TABLE_VALUE: "audit"
