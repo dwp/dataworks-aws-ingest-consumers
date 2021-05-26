@@ -35,7 +35,7 @@ jobs:
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
         params:
           TF_WORKSPACE: 'preprod'
-      - .: (( inject meta.plan.terraform-output-ingest-consumers ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-ingest-consumers ))
         params:
           TF_WORKSPACE: 'preprod'
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table-ucfs ))

@@ -49,7 +49,7 @@ jobs:
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
             E2E_FEATURE_TAG_FILTER: "end-to-end"
       
-      - .: (( inject meta.plan.terraform-output-ingest-consumers ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-ingest-consumers ))
         params:
           TF_WORKSPACE: 'qa'
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table-ucfs ))

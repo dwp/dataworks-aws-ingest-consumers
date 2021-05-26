@@ -60,11 +60,6 @@ resources:
     webhook_token: ((dataworks.concourse_github_webhook_token))
     check_every: 5m
 
-  - name: k2hb-reconciliation-image
-    .: (( inject meta-dataworks-aws-ingest-consumers.resources.ecr-resource ))
-    source:
-      repository: kafka-to-hbase-reconciliation
-
   - name: dw-al2-ecs-ami
     type: ami
     check_every: 1h

@@ -27,12 +27,6 @@ jobs:
             trigger: true
             passed:
               - qa
-          - get: k2hb-reconciliation-image
-            version:
-              digest: ((k2hb_reconciliation_container_version))
-            trigger: true
-            passed:
-              - qa
 
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-apply ))
@@ -41,7 +35,7 @@ jobs:
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
         params:
           TF_WORKSPACE: 'integration'
-      - .: (( inject meta.plan.terraform-output-ingest-consumers ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-ingest-consumers ))
         params:
           TF_WORKSPACE: 'integration'
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table-ucfs ))

@@ -18,9 +18,6 @@ jobs:
           - get: dataworks-aws-ingest-consumers-pr
             trigger: true
             version: every
-          - get: k2hb-reconciliation-image
-            version:
-              digest: ((k2hb_reconciliation_container_version))
 
       - put: dataworks-aws-ingest-consumers-pr
         params:
