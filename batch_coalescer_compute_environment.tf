@@ -1,8 +1,4 @@
 
-data "aws_iam_role" "aws_batch_service_role" {
-  name = "aws_batch_service_role"
-}
-
 # AWS Batch Instance IAM role & profile
 
 resource "aws_iam_role" "ecs_instance_role_csc_batch" {

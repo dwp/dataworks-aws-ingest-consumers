@@ -2,6 +2,11 @@ locals {
   k2hb_reconciliation_trimmer_image_url = "${local.account.management}.${data.terraform_remote_state.ingest.outputs.vpc.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
 }
 
+
+data "aws_secretsmanager_secret" "metadata_store_reconciler" {
+  name = "metadata-store-${var.metadata_store_reconciler_username}"
+}
+
 resource "aws_iam_role" "ecs_instance_role_k2hb_reconciliation_trimmer_batch" {
   name = "ecs_instance_role_k2hb_reconciliation_trimmer_batch"
 
@@ -70,29 +75,6 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_k2hb_reconciliation
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
-# AWS Batch Service IAM role
-data "aws_iam_role" "aws_batch_service_role" {
-  name = "aws_batch_service_role"
-}
-
-# AWS Batch Job IAM role
-data "aws_iam_policy_document" "batch_assume_policy" {
-  statement {
-    sid    = "BatchAssumeRolePolicy"
-    effect = "Allow"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    principals {
-      identifiers = ["ecs-tasks.amazonaws.com", ]
-
-      type = "Service"
-    }
-  }
-}
-
 resource "aws_iam_role" "k2hb_reconciliation_trimmer_job" {
   name               = "k2hb_reconciliation_trimmer_job"
   assume_role_policy = data.aws_iam_policy_document.batch_assume_policy.json
@@ -109,8 +91,8 @@ data "aws_iam_policy_document" "k2hb_reconciliation_trimmer_job" {
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.input.arn}", # aws_s3_bucket.input.id
-      "arn:aws:s3:::${aws_s3_bucket.input.arn}/${local.ucfs_historic_data_prefix}/*",
+      "arn:aws:s3:::${local.ingest_input_bucket_arn}", # aws_s3_bucket.input.id
+      "arn:aws:s3:::${local.ingest_input_bucket_arn}/${local.ucfs_historic_data_prefix}/*",
     ]
   }
   statement {
@@ -122,7 +104,7 @@ data "aws_iam_policy_document" "k2hb_reconciliation_trimmer_job" {
     ]
 
     resources = [
-      aws_secretsmanager_secret.metadata_store_reconciler.arn,
+      data.aws_secretsmanager_secret.metadata_store_reconciler.arn,
     ]
   }
 }
@@ -146,11 +128,11 @@ resource "aws_iam_role_policy_attachment" "hbase_table_provisioner_job_ecs" {
 resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_to_s3" {
   description       = "Allow k2hb reconciliation trimmer ECS to reach S3 (for Docker pull from ECR)"
   type              = "egress"
-  prefix_list_ids   = [module.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
-  security_group_id = aws_security_group.k2hb_reconciliation_trimmer_batch.id
+  security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id
 }
 
 resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_egress_hbase" {
@@ -160,7 +142,7 @@ resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_egress_hbase" {
   from_port                = each.value.port
   to_port                  = each.value.port
   protocol                 = "tcp"
-  security_group_id        = aws_security_group.k2hb_reconciliation_trimmer_batch.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id
   source_security_group_id = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.common_sg_id
 }
 
@@ -171,7 +153,7 @@ resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_ingress_hbase" {
   from_port                = each.value.port
   to_port                  = each.value.port
   protocol                 = "tcp"
-  security_group_id        = aws_security_group.k2hb_reconciliation_trimmer_batch.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id
   source_security_group_id = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.common_sg_id
 }
 
@@ -181,8 +163,8 @@ resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_egress_rds" {
   from_port                = 3306
   to_port                  = 3306
   protocol                 = "tcp"
-  security_group_id        = aws_security_group.k2hb_reconciliation_trimmer_batch.id
-  source_security_group_id = aws_security_group.metadata_store.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.sg_id
 }
 
 resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_ingress_rds" {
@@ -191,8 +173,8 @@ resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_ingress_rds" {
   from_port                = 3306
   to_port                  = 3306
   protocol                 = "tcp"
-  security_group_id        = aws_security_group.k2hb_reconciliation_trimmer_batch.id
-  source_security_group_id = aws_security_group.metadata_store.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.sg_id
 }
 
 resource "aws_batch_compute_environment" "k2hb_reconciliation_trimmer_batch" {
@@ -257,12 +239,12 @@ resource "aws_batch_job_definition" "k2hb_reconciliation_trimmer_job" {
       {"name": "LOG_LEVEL","value": "${local.k2hb_trimmer_common_config.log_level[local.environment]}"},
       {"name": "HBASE_TABLE_PATTERN","value": "NOT_SET"},
       {"name": "SECRETS_REGION","value": "${var.region}"},
-      {"name": "SECRETS_METADATA_STORE_PASSWORD_SECRET","value": "${aws_secretsmanager_secret.metadata_store_reconciler.name}"},
+      {"name": "SECRETS_METADATA_STORE_PASSWORD_SECRET","value": "${data.aws_secretsmanager_secret.metadata_store_reconciler.name}"},
       {"name": "METADATASTORE_USER","value": "${var.metadata_store_reconciler_username}"},
-      {"name": "METADATASTORE_PASSWORD_SECRET_NAME","value": "${aws_secretsmanager_secret.metadata_store_reconciler.name}"},
-      {"name": "METADATASTORE_DATABASE_NAME","value": "${aws_rds_cluster.metadata_store.database_name}"},
-      {"name": "METADATASTORE_ENDPOINT","value": "${aws_rds_cluster.metadata_store.endpoint}"},
-      {"name": "METADATASTORE_PORT","value": "${aws_rds_cluster.metadata_store.port}"},
+      {"name": "METADATASTORE_PASSWORD_SECRET_NAME","value": "${data.aws_secretsmanager_secret.metadata_store_reconciler.name}"},
+      {"name": "METADATASTORE_DATABASE_NAME","value": "${data.terraform_remote_state.ingest.outputs.metadata_store.rds.database_name}"},
+      {"name": "METADATASTORE_ENDPOINT","value": "${data.terraform_remote_state.ingest.outputs.metadata_store.rds.endpoint}"},
+      {"name": "METADATASTORE_PORT","value": "${data.terraform_remote_state.ingest.outputs.metadata_store.rds.port}"},
       {"name": "METADATASTORE_CA_CERT_PATH","value": "/certs/AmazonRootCA1.pem"},
       {"name": "METADATASTORE_USE_AWS_SECRETS","value": "true"},
       {"name": "METADATASTORE_NUMBER_OF_PARALLEL_UPDATES","value": "${local.k2hb_trimmer_common_config.number_of_parallel_updates}"},

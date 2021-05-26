@@ -208,3 +208,13 @@ variable "k2hb_reconciliation_container_version" {
   default     = "undefined"
   description = "Digest of Kafka-to-hbase Reconciliation container image in ECR"
 }
+
+variable "metadata_store_reconciler_username" {
+  description = "Username for metadata store reconciler RDS user"
+  default     = "reconciler"
+}
+
+variable "hbase_emr_ports" {
+  description = "Ports open on Hbase EMR master and slave instances"
+  default     = [16000, 16020, 16030]
+}

@@ -542,6 +542,7 @@ locals {
   ingest_vpc_interface_vpce_sg_id           = data.terraform_remote_state.ingest.outputs.vpc.vpc.interface_vpce_sg_id
   ingest_vpc_prefix_list_ids_s3             = data.terraform_remote_state.ingest.outputs.vpc.vpc.prefix_list_ids.s3
   ingest_input_bucket_cmk_arn               = data.terraform_remote_state.ingest.outputs.input_bucket_cmk.arn
+  ingest_input_bucket_arn                   = data.terraform_remote_state.ingest.outputs.s3_input_bucket_arn.input_bucket
   ingest_vpc_id                             = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
 
   ingest_hbase_fqdn             = data.terraform_remote_state.internal_compute.outputs.aws_emr_cluster.fqdn
@@ -934,7 +935,7 @@ locals {
 
   k2hb_reconciliation_task_configs = {
     ucfs_reconciliation = {
-      table                         = local.metadata_store_table_names.ucfs
+      table                         = local.ingest_metadata_store_table_names.ucfs
       table_pattern                 = replace(local.k2hb_main_data_qualified_table_pattern, "\\", "\\\\")
       reconciler_fixed_delay_millis = 1
       task_count = {
@@ -1124,7 +1125,7 @@ locals {
     }
 
     equality_reconciliation = {
-      table                         = local.metadata_store_table_names.equality
+      table                         = local.ingest_metadata_store_table_names.equality
       table_pattern                 = replace(local.k2hb_data_equality_qualified_table_pattern, "\\", "\\\\")
       reconciler_fixed_delay_millis = 10000
       task_count = {
@@ -1267,7 +1268,7 @@ locals {
     }
 
     audit_reconciliation = {
-      table                         = local.metadata_store_table_names.audit
+      table                         = local.ingest_metadata_store_table_names.audit
       table_pattern                 = replace(local.k2hb_data_audit_qualified_table_pattern, "\\", "\\\\")
       reconciler_fixed_delay_millis = 10000
       task_count = {
@@ -1474,7 +1475,7 @@ locals {
       production  = "TRIM_RECONCILED_RECORDS"
     }
     audit_trim_reconciled_records = {
-      table = local.metadata_store_table_names.audit
+      table = local.ingest_metadata_store_table_names.audit
       reconciler_trim_reconciled_fixed_delay_millis = {
         development = "10000"
         qa          = "10000"
@@ -1528,4 +1529,36 @@ locals {
       }
     }
   }
+
+  cw_k2hb_reconciliation_trimmer_namespace = {
+    ucfs_reconciliation     = "/aws/ecs/main/ucfs-reconciliation-trimmer"
+    equality_reconciliation = "/aws/ecs/main/equality-reconciliation-trimmer"
+    audit_reconciliation    = "/aws/ecs/main/audit-reconciliation-trimmer"
+  }
+
+  cw_k2hb_reconciliation_ucfs_namespace     = "/aws/ecs/main/ucfs-reconciliation"
+  cw_k2hb_reconciliation_equality_namespace = "/aws/ecs/main/equality-reconciliation"
+  cw_k2hb_reconciliation_audit_namespace    = "/aws/ecs/main/audit-reconciliation"
+
+  k2hb_reconciliation_metric_name_number_of_successfully_reconciled_records = {
+    ucfs_reconciliation     = "The number of UCFS records successfully reconciled"
+    equality_reconciliation = "The number of Equality records successfully reconciled"
+    audit_reconciliation    = "The number of Audit records successfully reconciled"
+  }
+
+  k2hb_reconciliation_metric_name_number_of_records_which_failed_reconciliation = {
+    ucfs_reconciliation     = "The number of UCFS records which failed to be reconciled"
+    equality_reconciliation = "The number of Equality records which failed to be reconciled"
+    audit_reconciliation    = "The number of Audit records which failed to be reconciled"
+  }
+
+  k2hb_reconciliation_trimmer_metric_name_number_of_records_which_have_been_trimmed = {
+    ucfs_reconciliation     = "The number of UCFS records which have been trimmed"
+    equality_reconciliation = "The number of Equality records which have been trimmed"
+    audit_reconciliation    = "The number of Audit records which have been trimmed"
+  }
+
+  k2hb_reconciliation_trimmer_log_group_name = "/aws/batch/job"
+
+  ucfs_historic_data_prefix = "${data.terraform_remote_state.internal_compute.outputs.ingest_emr_s3_prefixes.base_root_prefix}/mongo"
 }

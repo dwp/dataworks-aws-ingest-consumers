@@ -36,11 +36,11 @@ locals {
     }
   }
 
-  cron_17_20_every_day                  = "20 17 * * ? *"
-  cron_09_30_every_day_except_saturdays = "30 09 ? * 1-5,7 *"
-  cron_14_50_every_day                  = "50 14 * * ? *"
-  cron_00_45_every_day                  = "45 00 * * ? *"
-  cron_03_00_saturdays                  = "00 03 ? * 6 *"
+  app_cron_17_20_every_day                  = "20 17 * * ? *"
+  app_cron_09_30_every_day_except_saturdays = "30 09 ? * 1-5,7 *"
+  app_cron_14_50_every_day                  = "50 14 * * ? *"
+  app_cron_00_45_every_day                  = "45 00 * * ? *"
+  app_cron_03_00_saturdays                  = "00 03 ? * 6 *"
 }
 
 resource "aws_appautoscaling_target" "k2hb_reconciler_desired_count" {
@@ -60,7 +60,7 @@ resource "aws_appautoscaling_scheduled_action" "k2hb_reconciler_scale_down_befor
   service_namespace  = each.value.service_namespace
   resource_id        = each.value.resource_id
   scalable_dimension = each.value.scalable_dimension
-  schedule           = "cron(${local.cron_03_00_saturdays})"
+  schedule           = "cron(${local.app_cron_03_00_saturdays})"
 
   scalable_target_action {
     min_capacity = 0
@@ -74,7 +74,7 @@ resource "aws_appautoscaling_scheduled_action" "k2hb_reconciler_scale_down_befor
   service_namespace  = each.value.service_namespace
   resource_id        = each.value.resource_id
   scalable_dimension = each.value.scalable_dimension
-  schedule           = "cron(${local.cron_00_45_every_day})"
+  schedule           = "cron(${local.app_cron_00_45_every_day})"
 
   scalable_target_action {
     min_capacity = 0
@@ -88,7 +88,7 @@ resource "aws_appautoscaling_scheduled_action" "k2hb_reconciler_scale_down_befor
   service_namespace  = each.value.service_namespace
   resource_id        = each.value.resource_id
   scalable_dimension = each.value.scalable_dimension
-  schedule           = "cron(${local.cron_14_50_every_day})"
+  schedule           = "cron(${local.app_cron_14_50_every_day})"
 
   scalable_target_action {
     min_capacity = 0
@@ -102,7 +102,7 @@ resource "aws_appautoscaling_scheduled_action" "k2hb_reconciler_scale_up_after_d
   service_namespace  = each.value.service_namespace
   resource_id        = each.value.resource_id
   scalable_dimension = each.value.scalable_dimension
-  schedule           = "cron(${local.cron_09_30_every_day_except_saturdays})"
+  schedule           = "cron(${local.app_cron_09_30_every_day_except_saturdays})"
 
   scalable_target_action {
     min_capacity = each.value.max_capacity
@@ -116,7 +116,7 @@ resource "aws_appautoscaling_scheduled_action" "k2hb_reconciler_scale_up_after_d
   service_namespace  = each.value.service_namespace
   resource_id        = each.value.resource_id
   scalable_dimension = each.value.scalable_dimension
-  schedule           = "cron(${local.cron_17_20_every_day})"
+  schedule           = "cron(${local.app_cron_17_20_every_day})"
 
   scalable_target_action {
     min_capacity = each.value.max_capacity

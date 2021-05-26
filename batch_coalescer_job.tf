@@ -6,23 +6,6 @@ locals {
   data_s3_prefix                                     = "data/uc/uc.db"
 }
 
-data "aws_iam_policy_document" "batch_assume_policy" {
-  statement {
-    sid    = "BatchAssumeRolePolicy"
-    effect = "Allow"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    principals {
-      identifiers = ["ecs-tasks.amazonaws.com"]
-
-      type = "Service"
-    }
-  }
-}
-
 resource "aws_iam_role" "batch_corporate_storage_coalescer" {
   name               = "batch_corporate_storage_coalescer"
   assume_role_policy = data.aws_iam_policy_document.batch_assume_policy.json

@@ -1,5 +1,5 @@
 locals {
-  k2hb_reconciliation_container_url = "${local.account.management}.${module.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
+  k2hb_reconciliation_container_url = "${local.account.management}.${data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpc.ecr_dkr_domain_name}/kafka-to-hbase-reconciliation${var.k2hb_reconciliation_container_version}"
 }
 
 # IAM
@@ -14,7 +14,7 @@ data "aws_iam_policy_document" "k2hb_reconciliation" {
     ]
 
     resources = [
-      aws_secretsmanager_secret.metadata_store_reconciler.arn,
+      data.aws_secretsmanager_secret.metadata_store_reconciler.arn,
     ]
   }
 
@@ -66,11 +66,11 @@ resource "aws_cloudwatch_log_group" "k2hb_reconciliation_k2hb" {
 resource "aws_security_group_rule" "k2hb_reconciliation_to_s3" {
   description       = "Allow k2hb reconciliation ECS to reach S3 (for Docker pull from ECR)"
   type              = "egress"
-  prefix_list_ids   = [module.vpc.prefix_list_ids.s3]
+  prefix_list_ids   = [data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpc.prefix_list_ids.s3]
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
-  security_group_id = aws_security_group.k2hb_reconciliation.id
+  security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id
 }
 
 resource "aws_security_group_rule" "k2hb_reconciliation_to_emr_master_zookeeper" {
@@ -80,7 +80,7 @@ resource "aws_security_group_rule" "k2hb_reconciliation_to_emr_master_zookeeper"
   to_port                  = 2181
   protocol                 = "tcp"
   source_security_group_id = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.master_sg_id
-  security_group_id        = aws_security_group.k2hb_reconciliation.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id
 }
 
 resource "aws_security_group_rule" "k2hb_reconciliation_to_emr_master" {
@@ -91,7 +91,7 @@ resource "aws_security_group_rule" "k2hb_reconciliation_to_emr_master" {
   to_port                  = var.hbase_emr_ports[count.index]
   protocol                 = "tcp"
   source_security_group_id = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.master_sg_id
-  security_group_id        = aws_security_group.k2hb_reconciliation.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id
 }
 
 resource "aws_security_group_rule" "k2hb_reconciliation_to_emr_servers" {
@@ -102,7 +102,7 @@ resource "aws_security_group_rule" "k2hb_reconciliation_to_emr_servers" {
   to_port                  = var.hbase_emr_ports[count.index]
   protocol                 = "tcp"
   source_security_group_id = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.slave_sg_id
-  security_group_id        = aws_security_group.k2hb_reconciliation.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id
 }
 
 resource "aws_security_group_rule" "k2hb_reconciliation_to_metadata_store" {
@@ -111,8 +111,8 @@ resource "aws_security_group_rule" "k2hb_reconciliation_to_metadata_store" {
   from_port                = 3306
   to_port                  = 3306
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.metadata_store.id
-  security_group_id        = aws_security_group.k2hb_reconciliation.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.sg_id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id
 }
 
 # Security group rules - remote
@@ -122,7 +122,7 @@ resource "aws_security_group_rule" "emr_master_zookeeper_from_k2hb_reconciliatio
   from_port                = 2181
   to_port                  = 2181
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.k2hb_reconciliation.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id
   security_group_id        = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.master_sg_id
 }
 
@@ -133,7 +133,7 @@ resource "aws_security_group_rule" "emr_master_from_k2hb_reconciliation" {
   from_port                = var.hbase_emr_ports[count.index]
   to_port                  = var.hbase_emr_ports[count.index]
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.k2hb_reconciliation.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id
   security_group_id        = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.master_sg_id
 }
 
@@ -144,7 +144,7 @@ resource "aws_security_group_rule" "emr_servers_from_k2hb_reconciliation" {
   from_port                = var.hbase_emr_ports[count.index]
   to_port                  = var.hbase_emr_ports[count.index]
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.k2hb_reconciliation.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id
   security_group_id        = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.slave_sg_id
 }
 
@@ -154,6 +154,6 @@ resource "aws_security_group_rule" "metadata_store_from_k2hb_reconciliation" {
   from_port                = 3306
   to_port                  = 3306
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.k2hb_reconciliation.id
-  security_group_id        = aws_security_group.metadata_store.id
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id
+  security_group_id        = data.terraform_remote_state.ingest.outputs.metadata_store.sg_id
 }

@@ -85,7 +85,7 @@ resource "aws_ecs_task_definition" "k2hb_reconciliation_audit" {
       },
       {
         "name": "SECRETS_METADATA_STORE_PASSWORD_SECRET",
-        "value": "${aws_secretsmanager_secret.metadata_store_reconciler.name}"
+        "value": "${data.aws_secretsmanager_secret.metadata_store_reconciler.name}"
       },
       {
         "name": "HBASE_TABLE_PATTERN",
@@ -141,19 +141,19 @@ resource "aws_ecs_task_definition" "k2hb_reconciliation_audit" {
       },
       {
         "name": "METADATASTORE_PASSWORD_SECRET_NAME",
-        "value": "${aws_secretsmanager_secret.metadata_store_reconciler.name}"
+        "value": "${data.aws_secretsmanager_secret.metadata_store_reconciler.name}"
       },
       {
         "name": "METADATASTORE_DATABASE_NAME",
-        "value": "${aws_rds_cluster.metadata_store.database_name}"
+        "value": "${data.terraform_remote_state.ingest.outputs.metadata_store.rds.database_name}"
       },
       {
         "name": "METADATASTORE_ENDPOINT",
-        "value": "${aws_rds_cluster.metadata_store.endpoint}"
+        "value": "${data.terraform_remote_state.ingest.outputs.metadata_store.rds.endpoint}"
       },
       {
         "name": "METADATASTORE_PORT",
-        "value": "${aws_rds_cluster.metadata_store.port}"
+        "value": "${data.terraform_remote_state.ingest.outputs.metadata_store.rds.port}"
       },
       {
         "name": "METADATASTORE_TABLE",
@@ -232,7 +232,7 @@ resource "aws_ecs_service" "k2hb_reconciliation_audit" {
 
   network_configuration {
     security_groups = [
-      aws_security_group.k2hb_reconciliation.id,
+      data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation.id,
     ]
 
     subnets = data.terraform_remote_state.ingest.outputs.ingestion_subnets.id
