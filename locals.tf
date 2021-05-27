@@ -551,7 +551,6 @@ locals {
 
   internal_compute_manifest_bucket      = data.terraform_remote_state.internal_compute.outputs.manifest_bucket
   internal_compute_manifest_bucket_cmk  = data.terraform_remote_state.internal_compute.outputs.manifest_bucket_cmk
-  internal_compute_manifest_s3_prefixes = data.terraform_remote_state.internal_compute.outputs.manifest_s3_prefixes
 
   common_config_bucket         = data.terraform_remote_state.common.outputs.config_bucket
   common_config_bucket_cmk_arn = data.terraform_remote_state.common.outputs.config_bucket_cmk.arn

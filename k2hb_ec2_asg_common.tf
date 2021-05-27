@@ -227,7 +227,7 @@ data "aws_iam_policy_document" "k2hb_common" {
     ]
 
     resources = [
-      "${local.internal_compute_manifest_bucket.arn}/${local.internal_compute_manifest_s3_prefixes.base}/*",
+      "${local.internal_compute_manifest_bucket.arn}/${data.terraform_remote_state.ingest.outputs.ingest_emr_s3_prefixes.base_root_prefix}/*",
     ]
   }
 
