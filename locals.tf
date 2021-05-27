@@ -1569,7 +1569,7 @@ locals {
 
   k2hb_reconciliation_trimmer_log_group_name = "/aws/batch/job"
 
-  ucfs_historic_data_prefix = "${data.terraform_remote_state.internal_compute.outputs.ingest_emr_s3_prefixes.base_root_prefix}/mongo"
+  ucfs_historic_data_prefix = "${data.terraform_remote_state.ingest.outputs.ingest_emr_s3_prefixes.base_root_prefix}/mongo"
 
   manifest_comparison_import_csv_table_name                    = "import_csv"
   manifest_comparison_export_csv_table_name                    = "export_csv"
