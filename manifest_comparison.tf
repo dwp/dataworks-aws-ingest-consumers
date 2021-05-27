@@ -133,8 +133,8 @@ data "aws_iam_policy_document" "manifest_etl_s3" {
     ]
 
     resources = [
-      "${data.terraform_remote_state.internal_compute.outputs.manifest_bucket.arn}/${data.terraform_remote_state.internal_compute.outputs.ingest_emr_s3_prefixes.base_root_prefix}/manifest/*",
-      "${data.terraform_remote_state.internal_compute.outputs.manifest_bucket.arn}/${data.terraform_remote_state.internal_compute.outputs.ingest_emr_s3_prefixes.base_root_prefix}/manifest/",
+      "${data.terraform_remote_state.internal_compute.outputs.manifest_bucket.arn}/${data.terraform_remote_state.ingest.outputs.ingest_emr_s3_prefixes.base_root_prefix}/manifest/*",
+      "${data.terraform_remote_state.internal_compute.outputs.manifest_bucket.arn}/${data.terraform_remote_state.ingest.outputs.ingest_emr_s3_prefixes.base_root_prefix}/manifest/",
       "${data.terraform_remote_state.common.outputs.config_bucket.arn}/glue/scripts/*",
     ]
   }
