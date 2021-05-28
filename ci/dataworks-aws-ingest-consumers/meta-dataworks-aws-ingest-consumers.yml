@@ -80,11 +80,21 @@ meta-dataworks-aws-ingest-consumers:
           args:
             - -exc
             - |
+              cp ../terraform-bootstrap/terraform.tf .
+              export TF_VAR_al2_hardened_ami_id=$(cat ../dw-al2-hardened-ami/id)
+              export TF_VAR_k2hb_version=$(cat ../k2hb-release/version)
+              export TF_VAR_ecs_hardened_ami_id=$(cat ../dw-al2-ecs-ami/id)
+              export TF_VAR_k2hb_reconciliation_container_version="@$(cat ../k2hb-reconciliation-image/digest)"
               terraform init
               terraform workspace show
               terraform output --json > ../terraform-output-ingest-consumers/outputs.json
         inputs:
           - name: dataworks-aws-ingest-consumers
+          - name: k2hb-release
+          - name: dw-al2-hardened-ami
+          - name: terraform-bootstrap
+          - name: dw-al2-ecs-ami
+          - name: k2hb-reconciliation-image
         outputs:
           - name: terraform-output-ingest-consumers
 
@@ -237,7 +247,6 @@ meta-dataworks-aws-ingest-consumers:
               cat manifest.json
               aws lambda invoke --function-name ingestion-metadata-provisioner --invocation-type RequestResponse --payload file://manifest.json --cli-connect-timeout 600 --cli-read-timeout 600 output.json
               echo "Invocation result is:"
-              cat output.json
               cat output.json | jq -eC "if .errorMessage? then error(.errorMessage) else true end"
 
     provision-metadata-table-ucfs:
