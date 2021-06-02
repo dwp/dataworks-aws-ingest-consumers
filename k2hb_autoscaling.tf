@@ -96,4 +96,4 @@ resource "aws_autoscaling_schedule" "scale_down_before_weekly_maintenance_on_sat
   desired_capacity       = 0
   recurrence             = local.cron_03_00_saturdays
   autoscaling_group_name = each.value.asg_name
-} 
+}
