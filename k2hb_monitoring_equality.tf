@@ -233,7 +233,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_equalities.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
-  alarm_name          = "K2HB equalities - Processed batches under 20 in 10 of last 24 hours"
+  alarm_name          = "K2HB equalities - Processed batches under 20 in 9 of last 10 hours"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 10
@@ -248,8 +248,8 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
     local.common_tags,
     {
       Name                = "processed-k2hb-batches-under-threshold-equalities",
-      notification_type   = "Error",
-      severity            = "High",
+      notification_type   = "Warning",
+      severity            = "Critical",
       active_days         = "Monday+Tuesday+Wednesday+Thursday+Friday+Sunday",
       do_not_alert_before = "11:00",
       do_not_alert_after  = "23:59",
@@ -262,7 +262,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_equalities.name
 
   namespace           = local.cw_k2hb_main_agent_namespace
-  alarm_name          = "K2HB equalities - Processed batches under 20 in 10 of last 24 hours (Saturday)"
+  alarm_name          = "K2HB equalities - Processed batches under 20 in 9 of last 10 hours (Saturday)"
   alarm_description   = "Managed by ${local.common_tags.Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 10
@@ -277,8 +277,8 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
     local.common_tags,
     {
       Name                = "processed-k2hb-batches-under-threshold-equalities-saturday",
-      notification_type   = "Error",
-      severity            = "High",
+      notification_type   = "Warning",
+      severity            = "Critical",
       active_days         = "Saturday",
       do_not_alert_before = "17:00",
       do_not_alert_after  = "23:59",
