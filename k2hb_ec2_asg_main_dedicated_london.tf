@@ -112,7 +112,7 @@ resource "aws_launch_template" "k2hb_main_dedicated_london" {
     k2hb_auto_commit_metadata_store_inserts          = local.k2hb_main_auto_commit_metadata_store_inserts[local.environment]
     k2hb_kafka_max_fetch_bytes                       = local.k2hb_main_kafka_max_fetch_bytes[local.environment]
     k2hb_kafka_max_partition_fetch_bytes             = local.k2hb_main_kafka_max_partition_fetch_bytes[local.environment]
-    k2hb_pushgateway_hostname                        = data.terraform_remote_state.metrics_infrastructure.outputs.ingest_pushgateway_hostname
+    k2hb_pushgateway_hostname                        = local.ingest_pushgateway_hostname
   }))
 
   instance_initiated_shutdown_behavior = "terminate"

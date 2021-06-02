@@ -546,6 +546,8 @@ locals {
   ingest_input_bucket_arn                   = data.terraform_remote_state.ingest.outputs.s3_input_bucket_arn.input_bucket
   ingest_vpc_id                             = data.terraform_remote_state.ingest.outputs.vpc.vpc.vpc.id
 
+  ingest_pushgateway_hostname = "${data.terraform_remote_state.ingest.outputs.private_dns.ingest_service_discovery.name}.${data.terraform_remote_state.ingest.outputs.private_dns.ingest_service_discovery_dns.name}"
+
   ingest_hbase_fqdn             = data.terraform_remote_state.internal_compute.outputs.aws_emr_cluster.fqdn
   ingest_hbase_emr_common_sg_id = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.common_sg_id
 
