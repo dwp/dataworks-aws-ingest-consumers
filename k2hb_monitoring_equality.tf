@@ -248,8 +248,8 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
     local.common_tags,
     {
       Name                = "processed-k2hb-batches-under-threshold-equalities",
-      notification_type   = "Error",
-      severity            = "High",
+      notification_type   = "Warning",
+      severity            = "Critical",
       active_days         = "Monday+Tuesday+Wednesday+Thursday+Friday+Sunday",
       do_not_alert_before = "11:00",
       do_not_alert_after  = "23:59",
@@ -277,8 +277,8 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
     local.common_tags,
     {
       Name                = "processed-k2hb-batches-under-threshold-equalities-saturday",
-      notification_type   = "Error",
-      severity            = "High",
+      notification_type   = "Warning",
+      severity            = "Critical",
       active_days         = "Saturday",
       do_not_alert_before = "17:00",
       do_not_alert_after  = "23:59",
