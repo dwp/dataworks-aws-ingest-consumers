@@ -551,8 +551,8 @@ locals {
   ingest_hbase_fqdn             = data.terraform_remote_state.internal_compute.outputs.aws_emr_cluster.fqdn
   ingest_hbase_emr_common_sg_id = data.terraform_remote_state.internal_compute.outputs.hbase_emr_security_groups.common_sg_id
 
-  internal_compute_manifest_bucket      = data.terraform_remote_state.internal_compute.outputs.manifest_bucket
-  internal_compute_manifest_bucket_cmk  = data.terraform_remote_state.internal_compute.outputs.manifest_bucket_cmk
+  internal_compute_manifest_bucket     = data.terraform_remote_state.internal_compute.outputs.manifest_bucket
+  internal_compute_manifest_bucket_cmk = data.terraform_remote_state.internal_compute.outputs.manifest_bucket_cmk
 
   common_config_bucket         = data.terraform_remote_state.common.outputs.config_bucket
   common_config_bucket_cmk_arn = data.terraform_remote_state.common.outputs.config_bucket_cmk.arn
