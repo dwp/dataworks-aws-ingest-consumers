@@ -41,21 +41,20 @@ locals {
     }
   }
 
-  cron_17_20_every_day                  = "20 17 * * *"
-  cron_09_30_every_day_except_saturdays = "30 09 * * 1-5,7"
-  cron_14_50_every_day                  = "50 14 * * *"
   cron_00_10_every_day                  = "10 00 * * *"
-  cron_03_00_saturdays                  = "00 03 * * 6"
-  cron_20_00_saturdays                  = "00 20 * * 6"
+  cron_11_30_every_day_except_saturdays = "30 11 * * 1-5,7"
+  cron_14_50_every_day_except_saturdays = "50 14 * * 1-5,7"
+  cron_17_20_every_day_except_saturdays = "20 17 * * 1-5,7"
+  cron_19_00_saturdays                  = "00 19 * * 6"
 }
 
-resource "aws_autoscaling_schedule" "scale_up_after_daily_maintenance" {
+resource "aws_autoscaling_schedule" "scale_up_after_daily_maintenance_except_saturday" {
   for_each               = local.k2hb_asgs_to_scale[local.environment]
   scheduled_action_name  = "scale_up_after_daily_maintenance_${each.key}"
   min_size               = local.k2hb_asg_min[local.environment]
   max_size               = each.value.max_size
   desired_capacity       = each.value.max_size
-  recurrence             = local.cron_17_20_every_day
+  recurrence             = local.cron_17_20_every_day_except_saturdays
   autoscaling_group_name = each.value.asg_name
 }
 
@@ -65,7 +64,7 @@ resource "aws_autoscaling_schedule" "scale_up_after_daily_export_except_saturday
   min_size               = local.k2hb_asg_min[local.environment]
   max_size               = each.value.max_size
   desired_capacity       = each.value.max_size
-  recurrence             = local.cron_09_30_every_day_except_saturdays
+  recurrence             = local.cron_11_30_every_day_except_saturdays
   autoscaling_group_name = each.value.asg_name
 }
 
@@ -75,17 +74,17 @@ resource "aws_autoscaling_schedule" "scale_up_after_weekly_maintenance_on_saturd
   min_size               = local.k2hb_asg_min[local.environment]
   max_size               = each.value.max_size
   desired_capacity       = each.value.max_size
-  recurrence             = local.cron_20_00_saturdays
+  recurrence             = local.cron_19_00_saturdays
   autoscaling_group_name = each.value.asg_name
 }
 
-resource "aws_autoscaling_schedule" "scale_down_before_daily_maintenance" {
+resource "aws_autoscaling_schedule" "scale_down_before_daily_maintenance_except_saturday" {
   for_each               = local.k2hb_asgs_to_scale[local.environment]
   scheduled_action_name  = "scale_down_before_daily_maintenance_${each.key}"
   min_size               = local.k2hb_asg_min[local.environment]
   max_size               = each.value.max_size
   desired_capacity       = 0
-  recurrence             = local.cron_14_50_every_day
+  recurrence             = local.cron_14_50_every_day_except_saturdays
   autoscaling_group_name = each.value.asg_name
 }
 
@@ -96,15 +95,5 @@ resource "aws_autoscaling_schedule" "scale_down_before_daily_export" {
   max_size               = each.value.max_size
   desired_capacity       = 0
   recurrence             = local.cron_00_10_every_day
-  autoscaling_group_name = each.value.asg_name
-}
-
-resource "aws_autoscaling_schedule" "scale_down_before_weekly_maintenance_on_saturday" {
-  for_each               = local.k2hb_asgs_to_scale[local.environment]
-  scheduled_action_name  = "scale_down_before_weekly_maintenance_on_saturday_${each.key}"
-  min_size               = local.k2hb_asg_min[local.environment]
-  max_size               = each.value.max_size
-  desired_capacity       = 0
-  recurrence             = local.cron_03_00_saturdays
   autoscaling_group_name = each.value.asg_name
 }
