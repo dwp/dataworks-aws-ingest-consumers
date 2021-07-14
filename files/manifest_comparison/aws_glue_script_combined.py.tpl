@@ -158,13 +158,18 @@ dynamicFrameSpecificFieldsMismatched = SelectFields.apply(frame = dynamicFrameWi
                     "import_timestamp", "import_source", "import_component", "import_type", "export_timestamp", 
                     "export_source", "export_component", "export_type", "earliest_timestamp", "latest_timestamp", "earliest_manifest"])
 
-fullTableOutputMissingImport = glueContext.write_dynamic_frame.from_catalog(frame = dynamicFrameSpecificFieldsMissingImport, 
+dynamicFrameSpecificFieldsMissingImportCoalesced = dynamicFrameSpecificFieldsMissingImport.coalesce(3500)
+dynamicFrameSpecificFieldsMissingExportCoalesced = dynamicFrameSpecificFieldsMissingExport.coalesce(3500)
+dynamicFrameSpecificFieldsMismatchedCoalesced = dynamicFrameSpecificFieldsMismatched.coalesce(3500)
+dynamicFrameCountsCoalesced = dynamicFrameCounts.coalesce(3500)
+
+fullTableOutputMissingImport = glueContext.write_dynamic_frame.from_catalog(frame = dynamicFrameSpecificFieldsMissingImportCoalesced, 
                     database = database_name, table_name = missing_imports_table_name)
-fullTableOutputMissingExport = glueContext.write_dynamic_frame.from_catalog(frame = dynamicFrameSpecificFieldsMissingExport, 
+fullTableOutputMissingExport = glueContext.write_dynamic_frame.from_catalog(frame = dynamicFrameSpecificFieldsMissingExportCoalesced, 
                     database = database_name, table_name = missing_exports_table_name)
-fullTableOutputMismatched = glueContext.write_dynamic_frame.from_catalog(frame = dynamicFrameSpecificFieldsMismatched, 
+fullTableOutputMismatched = glueContext.write_dynamic_frame.from_catalog(frame = dynamicFrameSpecificFieldsMismatchedCoalesced, 
                     database = database_name, table_name = mismatched_table_name)
-fullTableOutputCounts = glueContext.write_dynamic_frame.from_catalog(frame = dynamicFrameCounts, 
+fullTableOutputCounts = glueContext.write_dynamic_frame.from_catalog(frame = dynamicFrameCountsCoalesced, 
                     database = database_name, table_name = counts_table_name)
 
 job.commit()
