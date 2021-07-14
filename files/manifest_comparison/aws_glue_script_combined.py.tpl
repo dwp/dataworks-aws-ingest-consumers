@@ -158,10 +158,10 @@ dynamicFrameSpecificFieldsMismatched = SelectFields.apply(frame = dynamicFrameWi
                     "import_timestamp", "import_source", "import_component", "import_type", "export_timestamp", 
                     "export_source", "export_component", "export_type", "earliest_timestamp", "latest_timestamp", "earliest_manifest"])
 
-dynamicFrameSpecificFieldsMissingImportCoalesced = dynamicFrameSpecificFieldsMissingImport.coalesce(3500)
-dynamicFrameSpecificFieldsMissingExportCoalesced = dynamicFrameSpecificFieldsMissingExport.coalesce(3500)
-dynamicFrameSpecificFieldsMismatchedCoalesced = dynamicFrameSpecificFieldsMismatched.coalesce(3500)
-dynamicFrameCountsCoalesced = dynamicFrameCounts.coalesce(3500)
+dynamicFrameSpecificFieldsMissingImportCoalesced = dynamicFrameSpecificFieldsMissingImport.coalesce(100)
+dynamicFrameSpecificFieldsMissingExportCoalesced = dynamicFrameSpecificFieldsMissingExport.coalesce(100)
+dynamicFrameSpecificFieldsMismatchedCoalesced = dynamicFrameSpecificFieldsMismatched.coalesce(100)
+dynamicFrameCountsCoalesced = dynamicFrameCounts.coalesce(100)
 
 fullTableOutputMissingImport = glueContext.write_dynamic_frame.from_catalog(frame = dynamicFrameSpecificFieldsMissingImportCoalesced, 
                     database = database_name, table_name = missing_imports_table_name)
