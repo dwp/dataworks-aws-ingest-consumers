@@ -294,7 +294,7 @@ meta-dataworks-aws-ingest-consumers:
             - |
               set +x
 
-              AMI_ID=$(cat emr-al2-ami/id)
+              AMI_ID=$(cat dw-al2-hardened-ami/id)
               DATE=$(date -u)
               PIPELINE="$(cat meta/build_pipeline_name)"
 

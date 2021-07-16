@@ -6,18 +6,18 @@ jobs:
       - in_parallel:
           - put: meta
             resource: meta-qa
-          - get: aws-internal-compute
-            trigger: false
-          - get: aws-ingestion
-            trigger: false
-          - get: aws-dataworks-e2e-framework
-            trigger: false
-          - get: aws-snapshot-sender
+          - get: dataworks-behavioural-framework
             trigger: false
           - get: dw-al2-hardened-ami
             resource: untested-dw-al2-jvm-ami
             trigger: true
           - get: dataworks-aws-ingest-consumers
+            trigger: true
+          - get: dw-al2-ecs-ami
+            trigger: true
+          - get: k2hb-reconciliation-image
+            version:
+              digest: ((k2hb_reconciliation_container_version))
             trigger: true
           - get: k2hb-release
             version:
@@ -33,24 +33,6 @@ jobs:
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
         params:
           TF_WORKSPACE: 'qa'
-
-      - in_parallel:
-          - .: (( inject meta.plan.terraform-output-ingest ))
-            config:
-              params:
-                TF_WORKSPACE: qa
-          - .: (( inject meta.plan.terraform-output-internal-compute ))
-            config:
-              params:
-                TF_WORKSPACE: qa
-          - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-snapshot-sender ))
-            config:
-              params:
-                TF_WORKSPACE: qa
-          - .: (( inject meta.plan.terraform-output-ingest-consumers ))
-            config:
-              params:
-                TF_WORKSPACE: qa
 
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.run-behave-job ))
         task: data-streaming-tests
@@ -69,6 +51,22 @@ jobs:
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
             E2E_FEATURE_TAG_FILTER: "end-to-end"
 
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-ingest-consumers ))
+        params:
+          TF_WORKSPACE: 'qa'
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table-ucfs ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table-equalities ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table-audit ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
+
     ensure:
       do:
         - .: (( inject meta-dataworks-aws-ingest-consumers.plan.tear-down ))
@@ -76,7 +74,6 @@ jobs:
             params:
               AWS_ACC: ((aws_account.qa))
               AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
-                
     on_failure:
       do:
         - .: (( inject meta-dataworks-aws-ingest-consumers.plan.ami-test-results ))
