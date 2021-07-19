@@ -12,17 +12,17 @@ jobs:
             resource: untested-dw-al2-jvm-ami
             trigger: true
           - get: dataworks-aws-ingest-consumers
-            trigger: true
+            trigger: false
           - get: dw-al2-ecs-ami
-            trigger: true
+            trigger: false
           - get: k2hb-reconciliation-image
             version:
               digest: ((k2hb_reconciliation_container_version))
-            trigger: true
+            trigger: false
           - get: k2hb-release
             version:
               tag: ((k2hb_version))
-            trigger: true
+            trigger: false
             passed:
               - mirror-k2hb
 
