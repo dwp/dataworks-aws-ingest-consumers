@@ -12,31 +12,44 @@ jobs:
             resource: untested-dw-al2-jvm-ami
             trigger: true
           - get: dataworks-aws-ingest-consumers
-            trigger: false
+            trigger: true
           - get: dw-al2-ecs-ami
-            trigger: false
+            trigger: true
           - get: k2hb-reconciliation-image
             version:
               digest: ((k2hb_reconciliation_container_version))
-            trigger: false
+            trigger: true
           - get: k2hb-release
             version:
               tag: ((k2hb_version))
-            trigger: false
+            trigger: true
             passed:
               - mirror-k2hb
-
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.check-ami-test-results ))
+        input_mapping:
+          untested_ami: dw-al2-hardened-ami
       - .: (( inject meta.plan.terraform-bootstrap ))
+        config:
+          inputs:
+            - name: previous_success
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-apply ))
+        config:
+          inputs:
+            - name: previous_success
         params:
           TF_WORKSPACE: 'qa'
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
+        config:
+          inputs:
+            - name: previous_success
         params:
           TF_WORKSPACE: 'qa'
 
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.run-behave-job ))
         task: data-streaming-tests
         config:
+          inputs:
+            - name: previous_success
           params:
             AWS_ACC: ((aws_account.qa))
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
@@ -46,24 +59,35 @@ jobs:
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.run-behave-job))
         task: end-to-end-tests
         config:
+          inputs:
+            - name: previous_success
           params:
             AWS_ACC: ((aws_account.qa))
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
             E2E_FEATURE_TAG_FILTER: "end-to-end"
 
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-ingest-consumers ))
+        config:
+          inputs:
+            - name: previous_success
         params:
           TF_WORKSPACE: 'qa'
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table-ucfs ))
         config:
+          inputs:
+            - name: previous_success
           params:
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table-equalities ))
         config:
+          inputs:
+            - name: previous_success
           params:
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.provision-metadata-table-audit ))
         config:
+          inputs:
+            - name: previous_success
           params:
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
 
@@ -71,6 +95,8 @@ jobs:
       do:
         - .: (( inject meta-dataworks-aws-ingest-consumers.plan.tear-down ))
           config:
+            inputs:
+              - name: previous_success
             params:
               AWS_ACC: ((aws_account.qa))
               AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
