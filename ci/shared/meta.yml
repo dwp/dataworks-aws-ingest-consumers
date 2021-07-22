@@ -32,6 +32,9 @@ meta:
           args:
             - -exc
             - |
+              if [ -f ../previous_success/exit-if-succeeded.sh ]; then
+                source ../previous_success/exit-if-succeeded.sh
+              fi
               python bootstrap_terraform.py
               cp terraform.tf ../terraform-bootstrap
           dir: dataworks-aws-ingest-consumers
