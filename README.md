@@ -34,7 +34,20 @@ make concourse-login
 make update-pipeline
 ```
 
-### K2HB insight stats
+## Batch coalescer
+
+This repo also deploys the AWS batch infrastructure for the S3 file coalescer. This process runs daily over the files in S3 that are output as a result of K2HB. There are two types of files is runs over:
+
+* The K2HB files that are created as backups of the files sent to HBase
+* The manifests that K2HB produces
+
+The purpose of this process is to coalesce the files in to larger files to make it easier for downstream systems to process them. K2HB produces millions of small files and this can cause problems for both the manifest comparison and the data loaders that use these processes.
+
+Therefore this process attempts to produce files that are as close to 128Mb as possible.
+
+The coalescer can be found at https://github.com/dwp/dataworks-corporate-storage-coalescence and details on the manifest comparison can be found at https://github.com/dwp/dataworks-behavioural-framework/blob/master/docs/aws_dataworks_manifest_comparison.md.
+
+## K2HB insight stats
 
 See also 
 * [Kafka-to-HBase consumer code](https://github.com/dwp/kafka-to-hbase)
