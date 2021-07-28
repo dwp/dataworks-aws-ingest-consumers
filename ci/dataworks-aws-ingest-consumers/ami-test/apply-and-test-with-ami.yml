@@ -14,6 +14,7 @@ jobs:
           - get: dataworks-aws-ingest-consumers
             trigger: true
           - get: dw-al2-ecs-ami
+            resource: untested-dw-al2-ecs-ami
             trigger: true
           - get: k2hb-reconciliation-image
             version:
