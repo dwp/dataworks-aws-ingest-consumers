@@ -80,6 +80,8 @@ output "batch_job_queues" {
     batch_corporate_storage_coalescer = {
         name = aws_batch_job_queue.batch_corporate_storage_coalescer.name
     }
-    batch_corporate_storage_coalescer_long_running = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.name
+    batch_corporate_storage_coalescer_long_running = {
+        name = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.name
+    }
   }
 }
