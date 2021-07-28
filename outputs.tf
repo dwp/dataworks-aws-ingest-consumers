@@ -74,3 +74,14 @@ output "locals" {
     cw_k2hb_reconciliation_trimmer_namespace                                          = local.cw_k2hb_reconciliation_trimmer_namespace
   }
 }
+
+output "batch_job_queues" {
+  value = {
+    batch_corporate_storage_coalescer = {
+        name = aws_batch_job_queue.batch_corporate_storage_coalescer.name
+    }
+    batch_corporate_storage_coalescer_long_running = {
+        name = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.name
+    }
+  }
+}
