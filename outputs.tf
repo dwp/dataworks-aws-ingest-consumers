@@ -78,10 +78,12 @@ output "locals" {
 output "batch_job_queues" {
   value = {
     batch_corporate_storage_coalescer = {
-        name = aws_batch_job_queue.batch_corporate_storage_coalescer.name
+      name = aws_batch_job_queue.batch_corporate_storage_coalescer.name
+      arn  = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
     }
     batch_corporate_storage_coalescer_long_running = {
-        name = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.name
+      name = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.name
+      arn  = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.arn
     }
   }
 }
