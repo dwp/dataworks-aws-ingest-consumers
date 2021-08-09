@@ -64,8 +64,8 @@ applymappingExport = ApplyMapping.apply(frame = datasourceExport, mappings = [("
 importDynamicFrame = applymappingImport.toDF()
 exportDynamicFrame = applymappingExport.toDF()
 
-filteredWithinMarginOfErrorImport = importDynamicFrame.filter(importDynamicFrame["import_timestamp"] <= marginOfError)
-filteredWithinMarginOfErrorExport = exportDynamicFrame.filter(exportDynamicFrame["export_timestamp"] <= marginOfError)
+filteredWithinMarginOfErrorImport = importDynamicFrame.filter(importDynamicFrame["import_timestamp"] < marginOfError)
+filteredWithinMarginOfErrorExport = exportDynamicFrame.filter(exportDynamicFrame["export_timestamp"] < marginOfError)
 
 filteredBeforeStartTimeCutOffImport = filteredWithinMarginOfErrorImport.filter((startTime == 0) | (filteredWithinMarginOfErrorImport["import_timestamp"] >= startTime))
 filteredBeforeStartTimeCutOffExport = filteredWithinMarginOfErrorExport.filter((startTime == 0) | (filteredWithinMarginOfErrorExport["export_timestamp"] >= startTime))
