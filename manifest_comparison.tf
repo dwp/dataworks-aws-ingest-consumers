@@ -237,7 +237,7 @@ resource "aws_glue_job" "manifest_etl_combined" {
   worker_type       = "G.2X"
   glue_version      = "2.0"
   number_of_workers = "149"
-  notification_property = {
+  notification_property {
     notify_delay_after = 1
   }
   tags = merge(
