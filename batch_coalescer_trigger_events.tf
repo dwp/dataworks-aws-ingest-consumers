@@ -1,64 +1,64 @@
-resource "aws_cloudwatch_event_rule" "utc_00_30_daily" {
+resource "aws_cloudwatch_event_rule" "utc_02_30_daily" {
   count               = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
-  name                = "utc_00_30_Daily"
+  name                = "utc_02_30_Daily"
   description         = "30 minutes past midnight every day"
-  schedule_expression = "cron(30 0 * * ? *)"
+  schedule_expression = "cron(30 2 * * ? *)"
 }
 
-resource "aws_cloudwatch_event_rule" "utc_00_31_daily" {
+resource "aws_cloudwatch_event_rule" "utc_02_31_daily" {
   count               = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
-  name                = "utc_00_31_daily"
+  name                = "utc_02_31_daily"
   description         = "31 minutes past midnight every day"
-  schedule_expression = "cron(31 0 * * ? *)"
+  schedule_expression = "cron(31 2 * * ? *)"
 }
 
-resource "aws_cloudwatch_event_rule" "utc_00_32_daily" {
+resource "aws_cloudwatch_event_rule" "utc_02_32_daily" {
   count               = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
-  name                = "utc_00_32_daily"
+  name                = "utc_02_32_daily"
   description         = "32 minutes past midnight every day"
-  schedule_expression = "cron(32 0 * * ? *)"
+  schedule_expression = "cron(32 2 * * ? *)"
 }
 
-resource "aws_cloudwatch_event_rule" "utc_00_33_daily" {
+resource "aws_cloudwatch_event_rule" "utc_02_33_daily" {
   count               = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
-  name                = "utc_00_33_daily"
+  name                = "utc_02_33_daily"
   description         = "33 minutes past midnight every day"
-  schedule_expression = "cron(33 0 * * ? *)"
+  schedule_expression = "cron(33 2 * * ? *)"
 }
 
-resource "aws_cloudwatch_event_rule" "utc_00_34_daily" {
+resource "aws_cloudwatch_event_rule" "utc_02_34_daily" {
   count               = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
-  name                = "utc_00_34_daily"
+  name                = "utc_02_34_daily"
   description         = "34 minutes past midnight every day"
-  schedule_expression = "cron(34 0 * * ? *)"
+  schedule_expression = "cron(34 2 * * ? *)"
 }
 
-resource "aws_cloudwatch_event_rule" "utc_00_35_daily" {
+resource "aws_cloudwatch_event_rule" "utc_02_35_daily" {
   count               = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
-  name                = "utc_00_35_daily"
+  name                = "utc_02_35_daily"
   description         = "35 minutes past midnight every day"
-  schedule_expression = "cron(35 0 * * ? *)"
+  schedule_expression = "cron(35 2 * * ? *)"
 }
 
-resource "aws_cloudwatch_event_rule" "utc_00_36_daily" {
+resource "aws_cloudwatch_event_rule" "utc_02_36_daily" {
   count               = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
-  name                = "utc_00_36_daily"
+  name                = "utc_02_36_daily"
   description         = "36 minutes past midnight every day"
-  schedule_expression = "cron(36 0 * * ? *)"
+  schedule_expression = "cron(36 2 * * ? *)"
 }
 
-resource "aws_cloudwatch_event_rule" "utc_00_37_daily" {
+resource "aws_cloudwatch_event_rule" "utc_02_37_daily" {
   count               = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
-  name                = "utc_00_37_daily"
+  name                = "utc_02_37_daily"
   description         = "37 minutes past midnight every day"
-  schedule_expression = "cron(37 0 * * ? *)"
+  schedule_expression = "cron(37 2 * * ? *)"
 }
 
-resource "aws_cloudwatch_event_rule" "utc_00_38_daily" {
+resource "aws_cloudwatch_event_rule" "utc_02_38_daily" {
   count               = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
-  name                = "utc_00_38_daily"
+  name                = "utc_02_38_daily"
   description         = "38 minutes past midnight every day"
-  schedule_expression = "cron(38 0 * * ? *)"
+  schedule_expression = "cron(38 2 * * ? *)"
 }
 
 resource "aws_iam_role" "cloudwatch_events" {
@@ -112,7 +112,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_storage_equalities" 
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
   target_id = "RunCoalescerBatchStorageEqualities"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_30_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_30_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
@@ -140,7 +140,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_storage_audit" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
   target_id = "RunCoalescerBatchStorageAudit"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_30_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_30_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
@@ -168,7 +168,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_storage_main" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
   target_id = "RunCoalescerBatchStorageMain"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_30_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_30_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
@@ -196,7 +196,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_equalities"
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
   target_id = "RunCoalescerBatchManifestEqualities"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_30_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_30_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
@@ -228,7 +228,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_audit_per_p
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchManifestAuditPartition${count.index}"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_31_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_31_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
@@ -256,7 +256,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_audit_per_p
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchManifestAuditPartition${count.index + 5}"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_32_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_32_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
@@ -284,7 +284,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_audit_per_p
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchManifestAuditPartition${count.index + 10}"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_33_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_33_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
@@ -312,7 +312,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_audit_per_p
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchManifestAuditPartition${count.index + 15}"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_34_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_34_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
@@ -340,7 +340,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchManifestMainPartition${count.index}"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_35_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_35_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
@@ -368,7 +368,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchManifestMainPartition${count.index + 5}"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_36_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_36_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
@@ -396,7 +396,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchManifestMainPartition${count.index + 10}"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_37_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_37_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
@@ -424,7 +424,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchManifestMainPartition${count.index + 15}"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
-  rule      = aws_cloudwatch_event_rule.utc_00_38_daily[0].name
+  rule      = aws_cloudwatch_event_rule.utc_02_38_daily[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
