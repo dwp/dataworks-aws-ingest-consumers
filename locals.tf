@@ -923,7 +923,7 @@ locals {
     development = 100
     qa          = 100
     integration = 100
-    preprod     = 100
+    preprod     = 650
     production  = 650
   }
 
