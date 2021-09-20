@@ -61,7 +61,7 @@ resource "aws_cloudwatch_event_rule" "utc_07_38_sunday" {
   schedule_expression = "cron(38 2 ? * SUN *)"
 }
 
-resource "aws_cloudwatch_event_target" "run_coalescer_batch_storage_equalities" {
+resource "aws_cloudwatch_event_target" "run_coalescer_batch_storage_equalities_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
   target_id = "RunCoalescerBatchStorageEqualitiesSunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
@@ -70,7 +70,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_storage_equalities" 
 
   batch_target {
     job_definition = aws_batch_job_definition.batch_corporate_storage_coalescer_storage.arn
-    job_name       = "run_coalescer_batch_storage_equalities"
+    job_name       = "run_coalescer_batch_storage_equalities_sunday"
     job_attempts   = local.batch_coalescer_retry_count
   }
 
