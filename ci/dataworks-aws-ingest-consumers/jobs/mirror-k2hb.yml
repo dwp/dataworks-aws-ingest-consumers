@@ -14,5 +14,5 @@ jobs:
         config:
           params:
             ARTEFACT_DIR: "kafka-to-hbase"
-            AWS_ROLE_ARN: arn:aws:iam::((dataworks.aws_management_acc)):role/ci
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.management)):role/ci
             RELEASE_EXTENSION: "tar.gz"
