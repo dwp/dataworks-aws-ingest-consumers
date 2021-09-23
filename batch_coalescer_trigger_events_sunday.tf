@@ -147,7 +147,7 @@ EOF
 
 resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_equalities_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 1 : 0
-  target_id = "RunCoalescerBatchManifestEqualities"
+  target_id = "RunCoalescerBatchManifestEqualitiesSunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
   rule      = aws_cloudwatch_event_rule.utc_07_30_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -179,7 +179,7 @@ EOF
 
 resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_audit_per_partition_0_to_4_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchManifestAuditPartition${count.index}_sunday"
+  target_id = "RunCoalescerBatchManifestAuditPartition${count.index}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.arn
   rule      = aws_cloudwatch_event_rule.utc_07_31_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -207,7 +207,7 @@ EOF
 
 resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_audit_per_partition_5_to_9_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchManifestAuditPartition${count.index + 5}_sunday"
+  target_id = "RunCoalescerBatchManifestAuditPartition${count.index + 5}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.arn
   rule      = aws_cloudwatch_event_rule.utc_07_32_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -235,7 +235,7 @@ EOF
 
 resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_audit_per_partition_10_to_14_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchManifestAuditPartition${count.index + 10}_sunday"
+  target_id = "RunCoalescerBatchManifestAuditPartition${count.index + 10}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.arn
   rule      = aws_cloudwatch_event_rule.utc_07_33_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -263,7 +263,7 @@ EOF
 
 resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_audit_per_partition_15_to_19_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchManifestAuditPartition${count.index + 15}_sunday"
+  target_id = "RunCoalescerBatchManifestAuditPartition${count.index + 15}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer_long_running.arn
   rule      = aws_cloudwatch_event_rule.utc_07_34_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -291,7 +291,7 @@ EOF
 
 resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_0_to_4_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchManifestMainPartition${count.index}_sunday"
+  target_id = "RunCoalescerBatchManifestMainPartition${count.index}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
   rule      = aws_cloudwatch_event_rule.utc_07_35_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -319,7 +319,7 @@ EOF
 
 resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_5_to_9_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchManifestMainPartition${count.index + 5}_sunday"
+  target_id = "RunCoalescerBatchManifestMainPartition${count.index + 5}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
   rule      = aws_cloudwatch_event_rule.utc_07_36_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -347,7 +347,7 @@ EOF
 
 resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_10_to_14_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchManifestMainPartition${count.index + 10}_sunday"
+  target_id = "RunCoalescerBatchManifestMainPartition${count.index + 10}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
   rule      = aws_cloudwatch_event_rule.utc_07_37_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -375,7 +375,7 @@ EOF
 
 resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_15_to_19_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchManifestMainPartition${count.index + 15}_sunday"
+  target_id = "RunCoalescerBatchManifestMainPartition${count.index + 15}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
   rule      = aws_cloudwatch_event_rule.utc_07_38_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -401,9 +401,9 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
 EOF
 }
 
-resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_0_to_4" {
+resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_0_to_4_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchStorageMainPartition${count.index}"
+  target_id = "RunCoalescerBatchStorageMainPartition${count.index}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
   rule      = aws_cloudwatch_event_rule.utc_02_39_daily_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -429,9 +429,9 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
 EOF
 }
 
-resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_5_to_9" {
+resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_5_to_9_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchStorageMainPartition${count.index + 5}"
+  target_id = "RunCoalescerBatchStorageMainPartition${count.index + 5}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
   rule      = aws_cloudwatch_event_rule.utc_02_40_daily_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -457,9 +457,9 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
 EOF
 }
 
-resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_10_to_14" {
+resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_10_to_14_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchStorageMainPartition${count.index + 10}"
+  target_id = "RunCoalescerBatchStorageMainPartition${count.index + 10}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
   rule      = aws_cloudwatch_event_rule.utc_02_41_daily_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
@@ -485,16 +485,16 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
 EOF
 }
 
-resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_15_to_19" {
+resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_15_to_19_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
-  target_id = "RunCoalescerBatchStorageMainPartition${count.index + 15}"
+  target_id = "RunCoalescerBatchStorageMainPartition${count.index + 15}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
   rule      = aws_cloudwatch_event_rule.utc_02_42_daily_sunday[0].name
   role_arn  = aws_iam_role.cloudwatch_events[0].arn
 
   batch_target {
     job_definition = aws_batch_job_definition.batch_corporate_storage_coalescer_storage.arn
-    job_name       = "run_coalescer_batch_storage_main_partition_${count.index + 15}"
+    job_name       = "run_coalescer_batch_storage_main_partition_${count.index + 15}_sunday"
     job_attempts   = local.batch_coalescer_retry_count
   }
 
