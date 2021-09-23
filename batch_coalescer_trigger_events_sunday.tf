@@ -401,7 +401,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
 EOF
 }
 
-resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_0_to_4_sunday" {
+resource "aws_cloudwatch_event_target" "run_coalescer_batch_storage_main_per_partition_0_to_4_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchStorageMainPartition${count.index}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
@@ -429,7 +429,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
 EOF
 }
 
-resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_5_to_9_sunday" {
+resource "aws_cloudwatch_event_target" "run_coalescer_batch_storage_main_per_partition_5_to_9_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchStorageMainPartition${count.index + 5}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
@@ -457,7 +457,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
 EOF
 }
 
-resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_10_to_14_sunday" {
+resource "aws_cloudwatch_event_target" "run_coalescer_batch_storage_main_per_partition_10_to_14_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchStorageMainPartition${count.index + 10}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
@@ -485,7 +485,7 @@ resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_pa
 EOF
 }
 
-resource "aws_cloudwatch_event_target" "run_coalescer_batch_manifest_main_per_partition_15_to_19_sunday" {
+resource "aws_cloudwatch_event_target" "run_coalescer_batch_storage_main_per_partition_15_to_19_sunday" {
   count     = local.batch_coalescer_scheduled_executions[local.environment] == true ? 5 : 0
   target_id = "RunCoalescerBatchStorageMainPartition${count.index + 15}Sunday"
   arn       = aws_batch_job_queue.batch_corporate_storage_coalescer.arn
