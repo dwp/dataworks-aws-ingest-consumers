@@ -78,8 +78,8 @@ meta-dataworks-aws-ingest-consumers:
           type: docker-image
           source:
             repository: ((dataworks.terraform_repository))
-            version: ((dataworks.terraform_14_version))
-            tag: ((dataworks.terraform_14_version))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
         run:
           path: sh
           dir: dataworks-aws-ingest-consumers
@@ -116,8 +116,8 @@ meta-dataworks-aws-ingest-consumers:
           type: docker-image
           source:
             repository: ((dataworks.terraform_repository))
-            version: ((dataworks.terraform_14_version))
-            tag: ((dataworks.terraform_14_version))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
         params:
           TF_WORKSPACE: management
         run:
@@ -300,7 +300,7 @@ meta-dataworks-aws-ingest-consumers:
           type: docker-image
           source:
             repository: ((dataworks.terraform_repository))
-            tag: ((dataworks.terraform_14_version))
+            tag: ((dataworks.terraform_version))
         params:
           AWS_DEFAULT_REGION: ((dataworks.aws_region))
           GIT_USERNAME: ((dataworks.concourse_github_username))
@@ -342,7 +342,7 @@ meta-dataworks-aws-ingest-consumers:
           type: docker-image
           source:
             repository: ((dataworks.terraform_repository))
-            tag: ((dataworks.terraform_14_version))
+            tag: ((dataworks.terraform_version))
         params:
           AWS_DEFAULT_REGION: ((dataworks.aws_region))
           GIT_USERNAME: ((dataworks.concourse_github_username))
