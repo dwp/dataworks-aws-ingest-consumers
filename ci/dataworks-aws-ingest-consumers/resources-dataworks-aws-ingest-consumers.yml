@@ -36,7 +36,6 @@ resources:
       owner: dwp
       repository: kafka-to-hbase
       access_token: ((dataworks-secrets.concourse_github_pat))
-      tag_filter: ((k2hb_version))
     check_every: 10m
 
   - name: dw-al2-hardened-ami

@@ -8,7 +8,7 @@ jobs:
           - get: dw-al2-ecs-ami
           - get: k2hb-release
             version:
-              tag: ((k2hb_version))
+              tag: ((k2hb_version_qa))
             passed:
               - mirror-k2hb
           - get: k2hb-reconciliation-image
