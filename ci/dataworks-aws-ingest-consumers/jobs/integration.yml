@@ -23,7 +23,7 @@ jobs:
               - qa
           - get: k2hb-release
             version:
-              tag: ((k2hb_version))
+              tag: ((k2hb_version_int))
             trigger: true
             passed:
               - qa

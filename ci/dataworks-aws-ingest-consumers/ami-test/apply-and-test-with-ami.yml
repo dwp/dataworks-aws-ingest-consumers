@@ -21,7 +21,7 @@ jobs:
             trigger: true
           - get: k2hb-release
             version:
-              tag: ((k2hb_version))
+              tag: ((k2hb_version_qa))
             trigger: true
             passed:
               - mirror-k2hb

@@ -17,7 +17,7 @@ jobs:
               - preprod
           - get: k2hb-release
             version:
-              tag: ((k2hb_version))
+              tag: ((k2hb_version_prod))
             trigger: true
             passed:
               - preprod
