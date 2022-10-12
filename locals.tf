@@ -228,7 +228,7 @@ locals {
     qa          = "false"
     integration = "true"
     preprod     = "true"
-    production  = "false"
+    production  = "true"
   }
 
   k2hb_main_hbase_bypass = {
