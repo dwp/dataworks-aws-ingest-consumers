@@ -157,7 +157,7 @@ variable "k2hb_audit_london_asg_desired" {
     qa          = 1 //stubbed env
     integration = 1 //stubbed env
     preprod     = 10
-    production  = 0
+    production  = 20
   }
 }
 
@@ -168,7 +168,7 @@ variable "k2hb_audit_london_asg_max" {
     qa          = 1 //stubbed env
     integration = 1 //stubbed env
     preprod     = 10
-    production  = 0
+    production  = 20
   }
 }
 
