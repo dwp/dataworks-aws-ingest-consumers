@@ -223,6 +223,30 @@ locals {
     production  = 20000000
   }
 
+  k2hb_audit_hbase_bypass = {
+    development = "true"
+    qa          = "true"
+    integration = "true"
+    preprod     = "true"
+    production  = "false"
+  }
+
+  k2hb_main_hbase_bypass = {
+    development = "false"
+    qa          = "false"
+    integration = "false"
+    preprod     = "false"
+    production  = "false"
+  }
+
+  k2hb_equality_hbase_bypass = {
+    development = "false"
+    qa          = "false"
+    integration = "false"
+    preprod     = "false"
+    production  = "false"
+  }
+
   k2hb_main_corporate_storage_coalesce_max_files = {
     development = 1000000
     qa          = 1000000
