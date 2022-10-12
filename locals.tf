@@ -224,8 +224,8 @@ locals {
   }
 
   k2hb_audit_hbase_bypass = {
-    development = "true"
-    qa          = "true"
+    development = "false"
+    qa          = "false"
     integration = "true"
     preprod     = "true"
     production  = "false"
