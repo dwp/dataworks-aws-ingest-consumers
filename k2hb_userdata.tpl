@@ -179,7 +179,7 @@ cat << EOF > /opt/k2hb/settings
     export K2HB_KAFKA_MAX_FETCH_BYTES="${k2hb_kafka_max_fetch_bytes}"
     export K2HB_KAFKA_MAX_PARTITION_FETCH_BYTES="${k2hb_kafka_max_partition_fetch_bytes}"
     export K2HB_METRICS_PUSHGATEWAY="${k2hb_pushgateway_hostname}"
-    export K2HB_HBASE_BYPASS="${k2hb_hbase_bypass}"
+    export K2HB_HBASE_BYPASS_TOPICS="${k2hb_hbase_bypass_topics}"
     export METADATASTORE_TRUSTSTORE="$K2HB_TRUSTSTORE_PATH"
     export METADATASTORE_TRUSTSTORE_PASSWORD="$K2HB_TRUSTSTORE_PASSWORD"
     export K2HB_INSTANCE_NAME="$HOSTNAME"
