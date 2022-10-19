@@ -223,30 +223,6 @@ locals {
     production  = 20000000
   }
 
-  k2hb_audit_hbase_bypass = {
-    development = "false"
-    qa          = "false"
-    integration = "true"
-    preprod     = "true"
-    production  = "true"
-  }
-
-  k2hb_main_hbase_bypass = {
-    development = "false"
-    qa          = "false"
-    integration = "false"
-    preprod     = "false"
-    production  = "false"
-  }
-
-  k2hb_equality_hbase_bypass = {
-    development = "false"
-    qa          = "false"
-    integration = "false"
-    preprod     = "false"
-    production  = "false"
-  }
-
   k2hb_main_corporate_storage_coalesce_max_files = {
     development = 1000000
     qa          = 1000000
@@ -465,6 +441,40 @@ locals {
     // match exactly "data.businessAudit" only, with a literal dot
     development = "^(data[.]businessAudit)$"
     qa          = "^(data[.]businessAudit)$"
+    integration = "^(data[.]businessAudit)$"
+    preprod     = "^(data[.]businessAudit)$"
+    production  = "^(data[.]businessAudit)$"
+  }
+
+  k2hb_main_hbase_bypass_topics = {
+    development = ""
+    qa          = ""
+    integration = ""
+    preprod     = ""
+    production  = ""
+  }
+
+  k2hb_main_dedicated_hbase_bypass_topics = {
+    // bypass hbase for calculationParts in integration/preprod (testing)
+    development = ""
+    qa          = ""
+    integration = "^(db[.]calculator[.]calculationParts)$"
+    preprod     = "^(db[.]calculator[.]calculationParts)$"
+    production  = ""
+  }
+
+  k2hb_equality_hbase_bypass_topics = {
+    development = ""
+    qa          = ""
+    integration = ""
+    preprod     = ""
+    production  = ""
+  }
+
+  k2hb_audit_hbase_bypass_topics = {
+    // bypass hbase for audit collection in higher environments
+    development = ""
+    qa          = ""
     integration = "^(data[.]businessAudit)$"
     preprod     = "^(data[.]businessAudit)$"
     production  = "^(data[.]businessAudit)$"
