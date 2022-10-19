@@ -455,15 +455,16 @@ locals {
   }
 
   k2hb_main_dedicated_hbase_bypass_topics = {
-    // bypass hbase for calculationParts in integration/preprod (testing)
+    // *** must match HBase table name *** //
     development = ""
     qa          = ""
-    integration = "^(db[.]calculator[.]calculationParts)$"
-    preprod     = "^(db[.]calculator[.]calculationParts)$"
+    integration = "^(calculator:calculationParts)$"
+    preprod     = "^(calculator:calculationParts)$"
     production  = ""
   }
 
   k2hb_equality_hbase_bypass_topics = {
+    // *** must match HBase table name *** //
     development = ""
     qa          = ""
     integration = ""
@@ -472,12 +473,12 @@ locals {
   }
 
   k2hb_audit_hbase_bypass_topics = {
-    // bypass hbase for audit collection in higher environments
+    // *** must match HBase table name *** //
     development = ""
     qa          = ""
-    integration = "^(data[.]businessAudit)$"
-    preprod     = "^(data[.]businessAudit)$"
-    production  = "^(data[.]businessAudit)$"
+    integration = "^(data:businessAudit)$"
+    preprod     = "^(data:businessAudit)$"
+    production  = "^(data:businessAudit)$"
   }
 
   kafka_k2hb_meta_refresh_ms = {
