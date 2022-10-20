@@ -460,7 +460,7 @@ locals {
     qa          = ""
     integration = "^(calculator:calculationParts)$"
     preprod     = "^(calculator:calculationParts)$"
-    production  = ""
+    production  = "^(calculator:calculationParts)$"
   }
 
   k2hb_equality_hbase_bypass_topics = {
