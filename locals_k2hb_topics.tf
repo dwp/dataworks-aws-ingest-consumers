@@ -13,11 +13,11 @@ locals {
   kafka_consumer_topics_dedicated = {
     // These are topics that are processed by other ASGs, and should be excluded from processing in main, above
     main_dedicated = {
-      development = ["db[.]calculator[.]calculationParts", "db[.]claimant-history[.]claimHistoryEntry", "db[.]agent-core[.]systemWorkGroupAllocation", "db[.]core[.]wizard", "db[.]data-acceptance[.]pendingAuthorisationCache", "db[.]claimant-history[.]resolvedProperties", "db[.]agent-core[.]caseLoadEvent", "db[.]deductions[.]estimatedDeductions", "db[.]team-core[.]recalculateAgentStats", "db[.]core[.]disclosureData", "db[.]core[.]contract", "db[.]agent-core[.]agentToDo", "db[.]core[.]toDo", "db[.]core[.]statement"]
-      qa          = ["db[.]calculator[.]calculationParts", "db[.]claimant-history[.]claimHistoryEntry", "db[.]agent-core[.]systemWorkGroupAllocation", "db[.]core[.]wizard", "db[.]data-acceptance[.]pendingAuthorisationCache", "db[.]claimant-history[.]resolvedProperties", "db[.]agent-core[.]caseLoadEvent", "db[.]deductions[.]estimatedDeductions", "db[.]team-core[.]recalculateAgentStats", "db[.]core[.]disclosureData", "db[.]core[.]contract", "db[.]agent-core[.]agentToDo", "db[.]core[.]toDo", "db[.]core[.]statement"]
-      integration = ["db[.]calculator[.]calculationParts", "db[.]claimant-history[.]claimHistoryEntry", "db[.]agent-core[.]systemWorkGroupAllocation", "db[.]core[.]wizard", "db[.]data-acceptance[.]pendingAuthorisationCache", "db[.]claimant-history[.]resolvedProperties", "db[.]agent-core[.]caseLoadEvent", "db[.]deductions[.]estimatedDeductions", "db[.]team-core[.]recalculateAgentStats", "db[.]core[.]disclosureData", "db[.]core[.]contract", "db[.]agent-core[.]agentToDo", "db[.]core[.]toDo", "db[.]core[.]statement"]
-      preprod     = ["db[.]calculator[.]calculationParts", "db[.]claimant-history[.]claimHistoryEntry", "db[.]agent-core[.]systemWorkGroupAllocation", "db[.]core[.]wizard", "db[.]data-acceptance[.]pendingAuthorisationCache", "db[.]claimant-history[.]resolvedProperties", "db[.]agent-core[.]caseLoadEvent", "db[.]deductions[.]estimatedDeductions", "db[.]team-core[.]recalculateAgentStats", "db[.]core[.]disclosureData", "db[.]core[.]contract", "db[.]agent-core[.]agentToDo", "db[.]core[.]toDo", "db[.]core[.]statement"]
-      production  = ["db[.]calculator[.]calculationParts", "db[.]claimant-history[.]claimHistoryEntry", "db[.]agent-core[.]systemWorkGroupAllocation", "db[.]core[.]wizard", "db[.]data-acceptance[.]pendingAuthorisationCache", "db[.]claimant-history[.]resolvedProperties", "db[.]agent-core[.]caseLoadEvent", "db[.]deductions[.]estimatedDeductions", "db[.]team-core[.]recalculateAgentStats", "db[.]core[.]disclosureData", "db[.]core[.]contract", "db[.]agent-core[.]agentToDo", "db[.]core[.]toDo", "db[.]core[.]statement"]
+      development = ["db[.]claimant-history[.]claimHistoryEntry", "db[.]agent-core[.]systemWorkGroupAllocation", "db[.]core[.]wizard", "db[.]data-acceptance[.]pendingAuthorisationCache", "db[.]claimant-history[.]resolvedProperties", "db[.]agent-core[.]caseLoadEvent", "db[.]deductions[.]estimatedDeductions", "db[.]team-core[.]recalculateAgentStats", "db[.]core[.]disclosureData", "db[.]core[.]contract", "db[.]agent-core[.]agentToDo", "db[.]core[.]toDo", "db[.]core[.]statement"]
+      qa          = ["db[.]claimant-history[.]claimHistoryEntry", "db[.]agent-core[.]systemWorkGroupAllocation", "db[.]core[.]wizard", "db[.]data-acceptance[.]pendingAuthorisationCache", "db[.]claimant-history[.]resolvedProperties", "db[.]agent-core[.]caseLoadEvent", "db[.]deductions[.]estimatedDeductions", "db[.]team-core[.]recalculateAgentStats", "db[.]core[.]disclosureData", "db[.]core[.]contract", "db[.]agent-core[.]agentToDo", "db[.]core[.]toDo", "db[.]core[.]statement"]
+      integration = ["db[.]claimant-history[.]claimHistoryEntry", "db[.]agent-core[.]systemWorkGroupAllocation", "db[.]core[.]wizard", "db[.]data-acceptance[.]pendingAuthorisationCache", "db[.]claimant-history[.]resolvedProperties", "db[.]agent-core[.]caseLoadEvent", "db[.]deductions[.]estimatedDeductions", "db[.]team-core[.]recalculateAgentStats", "db[.]core[.]disclosureData", "db[.]core[.]contract", "db[.]agent-core[.]agentToDo", "db[.]core[.]toDo", "db[.]core[.]statement"]
+      preprod     = ["db[.]claimant-history[.]claimHistoryEntry", "db[.]agent-core[.]systemWorkGroupAllocation", "db[.]core[.]wizard", "db[.]data-acceptance[.]pendingAuthorisationCache", "db[.]claimant-history[.]resolvedProperties", "db[.]agent-core[.]caseLoadEvent", "db[.]deductions[.]estimatedDeductions", "db[.]team-core[.]recalculateAgentStats", "db[.]core[.]disclosureData", "db[.]core[.]contract", "db[.]agent-core[.]agentToDo", "db[.]core[.]toDo", "db[.]core[.]statement"]
+      production  = ["db[.]claimant-history[.]claimHistoryEntry", "db[.]agent-core[.]systemWorkGroupAllocation", "db[.]core[.]wizard", "db[.]data-acceptance[.]pendingAuthorisationCache", "db[.]claimant-history[.]resolvedProperties", "db[.]agent-core[.]caseLoadEvent", "db[.]deductions[.]estimatedDeductions", "db[.]team-core[.]recalculateAgentStats", "db[.]core[.]disclosureData", "db[.]core[.]contract", "db[.]agent-core[.]agentToDo", "db[.]core[.]toDo", "db[.]core[.]statement"]
     }
 
     equality = {
@@ -38,11 +38,11 @@ locals {
     }
 
     s3only = {
-      development = [""]
-      qa          = [""]
-      integration = [""]
-      preprod     = [""]
-      production  = [""]
+      development = ["db[.]calculator[.]calculationParts"]
+      qa          = ["db[.]calculator[.]calculationParts"]
+      integration = ["db[.]calculator[.]calculationParts"]
+      preprod     = ["db[.]calculator[.]calculationParts"]
+      production  = ["db[.]calculator[.]calculationParts"]
     }
   }
 
@@ -72,17 +72,17 @@ locals {
       // calculationParts collection should bypass hbase
       development = ""
       qa          = ""
-      integration = "^(calculator:calculationParts)$"
-      preprod     = "^(calculator:calculationParts)$"
-      production  = "^(calculator:calculationParts)$"
+      integration = ""
+      preprod     = ""
+      production  = ""
     }
 
     s3only = {
       development = ""
       qa          = ""
-      integration = ""
-      preprod     = ""
-      production  = ""
+      integration = ".*"
+      preprod     = ".*"
+      production  = ".*"
     }
   }
 
