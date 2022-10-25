@@ -144,8 +144,8 @@ variable "k2hb_s3only_london_asg_desired" {
     development = 1 //stubbed env
     qa          = 1 //stubbed env
     integration = 1 //stubbed env
-    preprod     = 0 // Run ad-hoc when needed
-    production  = 0
+    preprod     = 5
+    production  = 10
   }
 }
 
@@ -155,8 +155,8 @@ variable "k2hb_s3only_london_asg_max" {
     development = 1 //stubbed env
     qa          = 1 //stubbed env
     integration = 1 //stubbed env
-    preprod     = 0
-    production  = 0
+    preprod     = 5
+    production  = 10
   }
 }
 
@@ -189,7 +189,7 @@ variable "k2hb_audit_london_asg_desired" {
     qa          = 1 //stubbed env
     integration = 1 //stubbed env
     preprod     = 10
-    production  = 20
+    production  = 10
   }
 }
 
@@ -200,7 +200,7 @@ variable "k2hb_audit_london_asg_max" {
     qa          = 1 //stubbed env
     integration = 1 //stubbed env
     preprod     = 10
-    production  = 20
+    production  = 10
   }
 }
 
