@@ -36,6 +36,14 @@ locals {
       production  = ["data[.]businessAudit"]
 
     }
+
+    s3only = {
+      development = [""]
+      qa          = [""]
+      integration = [""]
+      preprod     = [""]
+      production  = [""]
+    }
   }
 
   kafka_consumer_main_topic_exclusion_regex = {
@@ -68,6 +76,14 @@ locals {
       preprod     = "^(calculator:calculationParts)$"
       production  = "^(calculator:calculationParts)$"
     }
+
+    s3only = {
+      development = ""
+      qa          = ""
+      integration = ""
+      preprod     = ""
+      production  = ""
+    }
   }
 
   kafka_consumer_main_dedicated_topics_regex = {
@@ -83,5 +99,10 @@ locals {
   kafka_consumer_audit_topics_regex = {
     // provides full regex for topic expressions listed above
     for env, topics in local.kafka_consumer_topics_dedicated.audit : env => format("^(%s)$", join("|", topics))
+  }
+
+  kafka_consumer_s3only_topics_regex = {
+    // provides full regex for topic expressions listed above
+    for env, topics in local.kafka_consumer_topics_dedicated.s3only : env => format("^(%s)$", join("|", topics))
   }
 }

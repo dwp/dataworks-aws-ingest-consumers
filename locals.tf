@@ -11,6 +11,7 @@ locals {
   iam_role_max_session_timeout_seconds = 43200
 
   k2hb_main_consumer_name     = "k2hb-main-ha-cluster"
+  k2hb_s3only_consumer_name   = "k2hb-s3only"
   k2hb_equality_consumer_name = "k2hb-equality"
   k2hb_audit_consumer_name    = "k2hb-audit"
 
@@ -292,6 +293,7 @@ locals {
   }
 
   cw_k2hb_main_agent_namespace                          = "/app/kafka-to-hbase"
+  cw_k2hb_s3only_agent_namespace                        = "/app/kafka-to-hbase-s3only"
   cw_k2hb_equality_agent_namespace                      = "/app/kafka-to-hbase-equality"
   cw_k2hb_audit_agent_namespace                         = "/app/kafka-to-hbase-audit"
   cw_agent_metrics_collection_interval                  = 60
@@ -825,6 +827,22 @@ locals {
   }
 
   k2hb_main_dedicated_ebs_type = {
+    development = "gp3"
+    qa          = "gp3"
+    integration = "gp3"
+    preprod     = "gp3"
+    production  = "gp3"
+  }
+
+  k2hb_s3only_dedicated_ebs_size = {
+    development = 50
+    qa          = 50
+    integration = 50
+    preprod     = 150
+    production  = 150
+  }
+
+  k2hb_s3only_dedicated_ebs_type = {
     development = "gp3"
     qa          = "gp3"
     integration = "gp3"
