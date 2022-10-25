@@ -69,7 +69,6 @@ locals {
     }
 
     main_dedicated = {
-      // calculationParts collection should bypass hbase
       development = ""
       qa          = ""
       integration = ""
