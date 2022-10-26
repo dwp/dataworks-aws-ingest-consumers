@@ -293,7 +293,6 @@ locals {
   }
 
   cw_k2hb_main_agent_namespace                          = "/app/kafka-to-hbase"
-  cw_k2hb_s3only_agent_namespace                        = "/app/kafka-to-hbase-s3only"
   cw_k2hb_equality_agent_namespace                      = "/app/kafka-to-hbase-equality"
   cw_k2hb_audit_agent_namespace                         = "/app/kafka-to-hbase-audit"
   cw_agent_metrics_collection_interval                  = 60

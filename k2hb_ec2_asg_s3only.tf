@@ -44,7 +44,7 @@ resource "aws_launch_template" "k2hb_s3only_london" {
     hbase_master_url                                 = local.ingest_hbase_fqdn
     k2hb_max_memory_allocation                       = var.k2hb_main_max_memory_allocation[local.environment]
     cwa_metrics_collection_interval                  = local.cw_agent_metrics_collection_interval
-    cwa_namespace                                    = local.cw_k2hb_s3only_agent_namespace
+    cwa_namespace                                    = local.cw_k2hb_main_agent_namespace
     cwa_cpu_metrics_collection_interval              = local.cw_agent_cpu_metrics_collection_interval
     cwa_disk_measurement_metrics_collection_interval = local.cw_agent_disk_measurement_metrics_collection_interval
     cwa_disk_io_metrics_collection_interval          = local.cw_agent_disk_io_metrics_collection_interval
