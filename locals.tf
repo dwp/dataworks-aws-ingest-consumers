@@ -11,6 +11,7 @@ locals {
   iam_role_max_session_timeout_seconds = 43200
 
   k2hb_main_consumer_name     = "k2hb-main-ha-cluster"
+  k2hb_s3only_consumer_name   = "k2hb-s3only"
   k2hb_equality_consumer_name = "k2hb-equality"
   k2hb_audit_consumer_name    = "k2hb-audit"
 
@@ -404,81 +405,6 @@ locals {
     integration = "35"
     preprod     = "35"
     production  = "35"
-  }
-
-  kafka_consumer_main_topics_regex = {
-    //match any "db.*" collections i.e. db.aa.bb, with only two literal dots allowed
-    //DW-4748 & DW-4827 - Allow extra dot in last matcher group for db.crypto.encryptedData.unencrypted
-    development = "^(db[.]{1}[-\\w]+[.]{1}[-.\\w]+)$"
-    qa          = "^(db[.]{1}[-\\w]+[.]{1}[-.\\w]+)$"
-    integration = "^(db[.]{1}[-\\w]+[.]{1}[-.\\w]+)$"
-    preprod     = "^(db[.]{1}[-\\w]+[.]{1}[-.\\w]+)$"
-    production  = "^(db[.]{1}[-\\w]+[.]{1}[-.\\w]+)$"
-  }
-
-  kafka_consumer_main_dedicated_topics_regex = {
-    // Match only the "db.*" collections that have the busiest workload
-    // Use a pipe separated list.
-    development = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation|db[.]core[.]wizard|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]claimant-history[.]resolvedProperties|db[.]agent-core[.]caseLoadEvent|db[.]deductions[.]estimatedDeductions|db[.]team-core[.]recalculateAgentStats|db[.]core[.]disclosureData|db[.]core[.]contract|db[.]agent-core[.]agentToDo|db[.]core[.]toDo|db[.]core[.]statement)$"
-    qa          = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation|db[.]core[.]wizard|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]claimant-history[.]resolvedProperties|db[.]agent-core[.]caseLoadEvent|db[.]deductions[.]estimatedDeductions|db[.]team-core[.]recalculateAgentStats|db[.]core[.]disclosureData|db[.]core[.]contract|db[.]agent-core[.]agentToDo|db[.]core[.]toDo|db[.]core[.]statement)$"
-    integration = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation|db[.]core[.]wizard|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]claimant-history[.]resolvedProperties|db[.]agent-core[.]caseLoadEvent|db[.]deductions[.]estimatedDeductions|db[.]team-core[.]recalculateAgentStats|db[.]core[.]disclosureData|db[.]core[.]contract|db[.]agent-core[.]agentToDo|db[.]core[.]toDo|db[.]core[.]statement)$"
-    preprod     = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation|db[.]core[.]wizard|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]claimant-history[.]resolvedProperties|db[.]agent-core[.]caseLoadEvent|db[.]deductions[.]estimatedDeductions|db[.]team-core[.]recalculateAgentStats|db[.]core[.]disclosureData|db[.]core[.]contract|db[.]agent-core[.]agentToDo|db[.]core[.]toDo|db[.]core[.]statement)$"
-    production  = "^(db[.]calculator[.]calculationParts|db[.]claimant-history[.]claimHistoryEntry|db[.]agent-core[.]systemWorkGroupAllocation|db[.]core[.]wizard|db[.]data-acceptance[.]pendingAuthorisationCache|db[.]claimant-history[.]resolvedProperties|db[.]agent-core[.]caseLoadEvent|db[.]deductions[.]estimatedDeductions|db[.]team-core[.]recalculateAgentStats|db[.]core[.]disclosureData|db[.]core[.]contract|db[.]agent-core[.]agentToDo|db[.]core[.]toDo|db[.]core[.]statement)$"
-  }
-
-  // Use in DW-4508
-  kafka_consumer_equality_topics_regex = {
-    //match exactly "data.equality" or "data.equality-ni" only, with a literal dot
-    development = "^(data[.]equality|data[.]equality-ni)$"
-    qa          = "^(data[.]equality|data[.]equality-ni)$"
-    integration = "^(data[.]equality|data[.]equality-ni)$"
-    preprod     = "^(data[.]equality|data[.]equality-ni)$"
-    production  = "^(data[.]equality)$"
-  }
-
-  // For future use when we do audit data
-  kafka_consumer_audit_topics_regex = {
-    // match exactly "data.businessAudit" only, with a literal dot
-    development = "^(data[.]businessAudit)$"
-    qa          = "^(data[.]businessAudit)$"
-    integration = "^(data[.]businessAudit)$"
-    preprod     = "^(data[.]businessAudit)$"
-    production  = "^(data[.]businessAudit)$"
-  }
-
-  k2hb_main_hbase_bypass_topics = {
-    development = ""
-    qa          = ""
-    integration = ""
-    preprod     = ""
-    production  = ""
-  }
-
-  k2hb_main_dedicated_hbase_bypass_topics = {
-    // *** must match HBase table name *** //
-    development = ""
-    qa          = ""
-    integration = "^(calculator:calculationParts)$"
-    preprod     = "^(calculator:calculationParts)$"
-    production  = "^(calculator:calculationParts)$"
-  }
-
-  k2hb_equality_hbase_bypass_topics = {
-    // *** must match HBase table name *** //
-    development = ""
-    qa          = ""
-    integration = ""
-    preprod     = ""
-    production  = ""
-  }
-
-  k2hb_audit_hbase_bypass_topics = {
-    // *** must match HBase table name *** //
-    development = ""
-    qa          = ""
-    integration = "^(data:businessAudit)$"
-    preprod     = "^(data:businessAudit)$"
-    production  = "^(data:businessAudit)$"
   }
 
   kafka_k2hb_meta_refresh_ms = {
@@ -900,6 +826,22 @@ locals {
   }
 
   k2hb_main_dedicated_ebs_type = {
+    development = "gp3"
+    qa          = "gp3"
+    integration = "gp3"
+    preprod     = "gp3"
+    production  = "gp3"
+  }
+
+  k2hb_s3only_dedicated_ebs_size = {
+    development = 50
+    qa          = 50
+    integration = 50
+    preprod     = 150
+    production  = 150
+  }
+
+  k2hb_s3only_dedicated_ebs_type = {
     development = "gp3"
     qa          = "gp3"
     integration = "gp3"
