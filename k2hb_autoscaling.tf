@@ -20,6 +20,10 @@ locals {
         max_size = var.k2hb_equality_london_asg_max[local.environment]
         asg_name = aws_autoscaling_group.k2hb_equality_london.name
       }
+      k2hb_s3only = {
+        max_size = var.k2hb_s3only_london_asg_max[local.environment]
+        asg_name = aws_autoscaling_group.k2hb_s3only_london.name
+      }
     }
     production = {
       k2hb_main = {
@@ -37,6 +41,10 @@ locals {
       k2hb_equalities = {
         max_size = var.k2hb_equality_london_asg_max[local.environment]
         asg_name = aws_autoscaling_group.k2hb_equality_london.name
+      }
+      k2hb_s3only = {
+        max_size = var.k2hb_s3only_london_asg_max[local.environment]
+        asg_name = aws_autoscaling_group.k2hb_s3only_london.name
       }
     }
   }
