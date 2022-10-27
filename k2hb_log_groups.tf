@@ -6,3 +6,9 @@ resource "aws_cloudwatch_log_group" "k2hb_ec2_audit_logs" {
   retention_in_days = 180
   tags              = local.common_tags
 }
+
+resource "aws_cloudwatch_log_group" "k2hb_ec2_s3only_logs" {
+  name              = local.k2hb_ec2_s3only_logs_name
+  retention_in_days = 180
+  tags              = local.common_tags
+}

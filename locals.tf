@@ -295,6 +295,7 @@ locals {
   cw_k2hb_main_agent_namespace                          = "/app/kafka-to-hbase"
   cw_k2hb_equality_agent_namespace                      = "/app/kafka-to-hbase-equality"
   cw_k2hb_audit_agent_namespace                         = "/app/kafka-to-hbase-audit"
+  cw_k2hb_s3only_agent_namespace                         = "/app/kafka-to-hbase-s3only"
   cw_agent_metrics_collection_interval                  = 60
   cw_agent_cpu_metrics_collection_interval              = 60
   cw_agent_disk_measurement_metrics_collection_interval = 60
@@ -555,6 +556,7 @@ locals {
   k2hb_ec2_business_logs_name = local.ingest_log_groups.k2hb_ec2_logs.name
   k2hb_ec2_equality_logs_name = local.ingest_log_groups.k2hb_ec2_equality_logs.name
   k2hb_ec2_audit_logs_name    = "/aws/ec2/main/k2hb_audit"
+  k2hb_ec2_s3only_logs_name    = "/aws/ec2/main/k2hb_s3only"
 
   ## Calculate all the things based on the imports from aws-ingest ##
 
@@ -609,6 +611,14 @@ locals {
     production  = true
   }
 
+  k2hb_alarm_on_consumer_lag_s3only = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
   k2hb_alarm_on_consumer_lag_equalities = {
     development = false
     qa          = false
@@ -634,6 +644,15 @@ locals {
   }
 
   k2hb_alarm_on_number_of_batches_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+
+  k2hb_alarm_on_number_of_batches_s3only = {
     development = false
     qa          = false
     integration = false
@@ -673,6 +692,14 @@ locals {
     production  = true
   }
 
+  k2hb_alarm_on_running_tasks_less_than_desired_s3only = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
   k2hb_alarm_on_running_tasks_less_than_desired_equalities = {
     development = false
     qa          = false
@@ -682,6 +709,14 @@ locals {
   }
 
   k2hb_alarm_on_failed_batches_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_failed_batches_s3only = {
     development = false
     qa          = false
     integration = false
@@ -713,6 +748,14 @@ locals {
     production  = true
   }
 
+  k2hb_alarm_on_dlq_s3only = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
   k2hb_alarm_on_dlq_equalities = {
     development = false
     qa          = false
@@ -730,6 +773,14 @@ locals {
   }
 
   k2hb_alarm_on_kafka_read_timeouts_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_kafka_read_timeouts_s3only = {
     development = false
     qa          = false
     integration = false
@@ -778,6 +829,14 @@ locals {
   }
 
   k2hb_alarm_on_hbase_connection_timeouts_audit = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+
+  k2hb_alarm_on_hbase_connection_timeouts_s3only = {
     development = false
     qa          = false
     integration = false
