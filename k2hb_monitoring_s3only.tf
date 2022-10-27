@@ -8,6 +8,8 @@ resource "aws_cloudwatch_log_metric_filter" "number_of_batches_written_filter_k2
     namespace = local.cw_k2hb_s3only_agent_namespace
     value     = 1
   }
+
+  depends_on     = [aws_cloudwatch_log_group.k2hb_ec2_s3only_logs]
 }
 
 resource "aws_cloudwatch_log_metric_filter" "rate_of_records_written_filter_k2hb_s3only" {
@@ -20,6 +22,8 @@ resource "aws_cloudwatch_log_metric_filter" "rate_of_records_written_filter_k2hb
     namespace = local.cw_k2hb_s3only_agent_namespace
     value     = "$.size"
   }
+
+  depends_on = [aws_cloudwatch_log_group.k2hb_ec2_s3only_logs]
 }
 
 resource "aws_cloudwatch_log_metric_filter" "time_to_process_batch_filter_k2hb_s3only" {
@@ -32,6 +36,8 @@ resource "aws_cloudwatch_log_metric_filter" "time_to_process_batch_filter_k2hb_s
     namespace = local.cw_k2hb_s3only_agent_namespace
     value     = "$.time_taken"
   }
+
+  depends_on = [aws_cloudwatch_log_group.k2hb_ec2_s3only_logs]
 }
 
 resource "aws_cloudwatch_log_metric_filter" "rate_of_dlq_messages_written_s3only" {
@@ -44,6 +50,8 @@ resource "aws_cloudwatch_log_metric_filter" "rate_of_dlq_messages_written_s3only
     namespace = local.cw_k2hb_s3only_agent_namespace
     value     = 1
   }
+
+  depends_on     = [aws_cloudwatch_log_group.k2hb_ec2_s3only_logs]
 }
 
 resource "aws_cloudwatch_metric_alarm" "rate_of_dlq_messages_written_s3only" {
@@ -80,6 +88,8 @@ resource "aws_cloudwatch_log_metric_filter" "kafka_read_timeout_s3only" {
     namespace = local.cw_k2hb_s3only_agent_namespace
     value     = 1
   }
+
+  depends_on     = [aws_cloudwatch_log_group.k2hb_ec2_s3only_logs]
 }
 
 resource "aws_cloudwatch_metric_alarm" "kafka_read_timeout_s3only" {
@@ -116,6 +126,8 @@ resource "aws_cloudwatch_log_metric_filter" "kafka_write_timeout_s3only" {
     namespace = local.cw_k2hb_s3only_agent_namespace
     value     = 1
   }
+
+  depends_on     = [aws_cloudwatch_log_group.k2hb_ec2_s3only_logs]
 }
 
 resource "aws_cloudwatch_log_metric_filter" "kafka_connection_timeout_s3only" {
@@ -128,6 +140,8 @@ resource "aws_cloudwatch_log_metric_filter" "kafka_connection_timeout_s3only" {
     namespace = local.cw_k2hb_s3only_agent_namespace
     value     = 1
   }
+
+  depends_on     = [aws_cloudwatch_log_group.k2hb_ec2_s3only_logs]
 }
 
 resource "aws_cloudwatch_metric_alarm" "kafka_connection_timeout_s3only" {
@@ -164,6 +178,8 @@ resource "aws_cloudwatch_log_metric_filter" "consumer_lag_k2hb_s3only" {
     namespace = local.cw_k2hb_s3only_agent_namespace
     value     = "$.time_since_last_modified"
   }
+
+  depends_on     = [aws_cloudwatch_log_group.k2hb_ec2_s3only_logs]
 }
 
 resource "aws_cloudwatch_metric_alarm" "consumer_lag_k2hb_alarm_s3only" {
@@ -201,6 +217,8 @@ resource "aws_cloudwatch_log_metric_filter" "failed_k2hb_batches_s3only" {
     namespace = local.cw_k2hb_s3only_agent_namespace
     value     = "1"
   }
+
+  depends_on     = [aws_cloudwatch_log_group.k2hb_ec2_s3only_logs]
 }
 
 resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_s3only" {

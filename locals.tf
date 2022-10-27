@@ -295,7 +295,7 @@ locals {
   cw_k2hb_main_agent_namespace                          = "/app/kafka-to-hbase"
   cw_k2hb_equality_agent_namespace                      = "/app/kafka-to-hbase-equality"
   cw_k2hb_audit_agent_namespace                         = "/app/kafka-to-hbase-audit"
-  cw_k2hb_s3only_agent_namespace                         = "/app/kafka-to-hbase-s3only"
+  cw_k2hb_s3only_agent_namespace                        = "/app/kafka-to-hbase-s3only"
   cw_agent_metrics_collection_interval                  = 60
   cw_agent_cpu_metrics_collection_interval              = 60
   cw_agent_disk_measurement_metrics_collection_interval = 60
@@ -556,7 +556,7 @@ locals {
   k2hb_ec2_business_logs_name = local.ingest_log_groups.k2hb_ec2_logs.name
   k2hb_ec2_equality_logs_name = local.ingest_log_groups.k2hb_ec2_equality_logs.name
   k2hb_ec2_audit_logs_name    = "/aws/ec2/main/k2hb_audit"
-  k2hb_ec2_s3only_logs_name    = "/aws/ec2/main/k2hb_s3only"
+  k2hb_ec2_s3only_logs_name   = "/aws/ec2/main/k2hb_s3only"
 
   ## Calculate all the things based on the imports from aws-ingest ##
 
