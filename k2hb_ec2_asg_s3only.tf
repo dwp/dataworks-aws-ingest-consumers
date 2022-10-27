@@ -44,13 +44,13 @@ resource "aws_launch_template" "k2hb_s3only_london" {
     hbase_master_url                                 = local.ingest_hbase_fqdn
     k2hb_max_memory_allocation                       = var.k2hb_main_max_memory_allocation[local.environment]
     cwa_metrics_collection_interval                  = local.cw_agent_metrics_collection_interval
-    cwa_namespace                                    = local.cw_k2hb_main_agent_namespace
+    cwa_namespace                                    = local.cw_k2hb_s3only_agent_namespace
     cwa_cpu_metrics_collection_interval              = local.cw_agent_cpu_metrics_collection_interval
     cwa_disk_measurement_metrics_collection_interval = local.cw_agent_disk_measurement_metrics_collection_interval
     cwa_disk_io_metrics_collection_interval          = local.cw_agent_disk_io_metrics_collection_interval
     cwa_mem_metrics_collection_interval              = local.cw_agent_mem_metrics_collection_interval
     cwa_netstat_metrics_collection_interval          = local.cw_agent_netstat_metrics_collection_interval
-    cwa_log_group_name                               = local.ingest_log_groups.k2hb_ec2_logs.name
+    cwa_log_group_name                               = aws_cloudwatch_log_group.k2hb_ec2_s3only_logs.name
     s3_scripts_bucket                                = local.common_config_bucket.id
     s3_script_key_k2hb_sh                            = aws_s3_bucket_object.k2hb_shell_script.id
     s3_script_key_k2hb_init                          = aws_s3_bucket_object.k2hb_init_script.id
