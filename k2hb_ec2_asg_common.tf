@@ -317,7 +317,7 @@ resource "aws_iam_role_policy_attachment" "k2hb_common_cwasp" {
 
 resource "aws_iam_role_policy_attachment" "k2hb_common_ssm" {
   role       = aws_iam_role.k2hb_common.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 # This updates the broker security group to let us in
