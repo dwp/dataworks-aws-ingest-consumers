@@ -19,9 +19,29 @@ variable "k2hb_version" {
   type        = string
 }
 
+#variable "al2_hardened_ami_id" {
+#  description = "The AMI ID of the latest/pinned Hardened AMI AL2 Image"
+#  type        = string
+#}
+
 variable "al2_hardened_ami_id" {
-  description = "The AMI ID of the latest/pinned Hardened AMI AL2 Image"
-  type        = string
+  default = {
+    development = "ami-0acc76b7cfeb54499"
+    qa          = "ami-0acc76b7cfeb54499"
+    integration = "ami-07f0879b525d97930"
+    preprod     = "ami-07f0879b525d97930"
+    production  = "ami-07f0879b525d97930"
+  }
+}
+
+variable "ecs_hardened_ami_id" {
+  default = {
+    development = "ami-09cd7b44d61b44d92"
+    qa          = "ami-09cd7b44d61b44d92"
+    integration = "ami-05b51253aa83ef988"
+    preprod     = "ami-05b51253aa83ef988"
+    production  = "ami-05b51253aa83ef988"
+  }
 }
 
 variable "k2hb_main_ec2_size" {
@@ -204,10 +224,10 @@ variable "k2hb_audit_london_asg_max" {
   }
 }
 
-variable "ecs_hardened_ami_id" {
-  description = "The AMI ID of the latest/pinned Hardened AMI AL2 Image"
-  type        = string
-}
+#variable "ecs_hardened_ami_id" {
+#  description = "The AMI ID of the latest/pinned Hardened AMI AL2 Image"
+#  type        = string
+#}
 
 variable "image_version" {
   description = "Container tag values."

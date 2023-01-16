@@ -111,7 +111,7 @@ resource "aws_batch_compute_environment" "corporate_storage_coalescer" {
   type                            = "MANAGED"
 
   compute_resources {
-    image_id            = var.ecs_hardened_ami_id
+    image_id            = var.ecs_hardened_ami_id[local.environment]
     instance_role       = aws_iam_instance_profile.ecs_instance_role_csc_batch.arn
     instance_type       = ["optimal"]
     allocation_strategy = "BEST_FIT_PROGRESSIVE"

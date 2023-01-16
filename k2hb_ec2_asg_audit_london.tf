@@ -12,7 +12,7 @@ locals {
 
 resource "aws_launch_template" "k2hb_audit_london" {
   name                   = "k2hb_london_audit"
-  image_id               = var.al2_hardened_ami_id
+  image_id               = var.al2_hardened_ami_id[local.environment]
   instance_type          = var.k2hb_audit_ec2_size[local.environment]
   vpc_security_group_ids = [aws_security_group.k2hb_common.id]
 
