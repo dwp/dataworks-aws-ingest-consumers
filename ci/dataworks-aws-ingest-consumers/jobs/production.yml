@@ -3,7 +3,7 @@ jobs:
     max_in_flight: 1
     plan:
       - in_parallel:
-          - get: dw-al2-hardened-ami
+          - get: dw-al2-jvm-ami
             trigger: true
             passed:
               - preprod
