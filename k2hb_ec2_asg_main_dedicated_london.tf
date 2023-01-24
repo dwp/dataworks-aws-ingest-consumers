@@ -123,7 +123,7 @@ resource "aws_launch_template" "k2hb_main_dedicated_london" {
   }
 
   block_device_mappings {
-    device_name = "/dev/xvda"
+    device_name = "/dev/sda1"
 
     ebs {
       volume_size           = local.k2hb_main_dedicated_ebs_size[local.environment]
