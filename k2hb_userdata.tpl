@@ -28,7 +28,7 @@ iptables -P FORWARD ACCEPT
 iptables -F
 
 #Precautionary extension of log folder based on htme config
-lvextend -L50G /dev/rootvg/varlogvol
+lvextend -L10G /dev/rootvg/varlogvol
 xfs_growfs /dev/mapper/rootvg-varlogvol
 
 echo "Configure AWS Inspector"
