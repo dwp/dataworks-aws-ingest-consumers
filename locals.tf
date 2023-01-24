@@ -861,9 +861,9 @@ locals {
   }
 
   k2hb_main_ebs_size = {
-    development = 50
-    qa          = 50
-    integration = 50
+    development = 150
+    qa          = 150
+    integration = 150
     preprod     = 150
     production  = 150
   }
@@ -877,9 +877,9 @@ locals {
   }
 
   k2hb_main_dedicated_ebs_size = {
-    development = 50
-    qa          = 50
-    integration = 50
+    development = 150
+    qa          = 150
+    integration = 150
     preprod     = 150
     production  = 150
   }
@@ -893,9 +893,9 @@ locals {
   }
 
   k2hb_s3only_dedicated_ebs_size = {
-    development = 50
-    qa          = 50
-    integration = 50
+    development = 150
+    qa          = 150
+    integration = 150
     preprod     = 150
     production  = 150
   }
@@ -909,9 +909,9 @@ locals {
   }
 
   k2hb_audit_ebs_size = {
-    development = 50
-    qa          = 50
-    integration = 50
+    development = 150
+    qa          = 150
+    integration = 150
     preprod     = 150
     production  = 150
   }
@@ -925,9 +925,9 @@ locals {
   }
 
   k2hb_equalities_ebs_size = {
-    development = 50
-    qa          = 50
-    integration = 50
+    development = 150
+    qa          = 150
+    integration = 150
     preprod     = 150
     production  = 150
   }

@@ -28,8 +28,11 @@ iptables -P FORWARD ACCEPT
 iptables -F
 
 #Precautionary extension of log folder based on htme config
-lvextend -L10G /dev/rootvg/varlogvol
+lvextend -L50G /dev/rootvg/varlogvol
 xfs_growfs /dev/mapper/rootvg-varlogvol
+
+lvextend -l 100%FREE /dev/rootvg/rootvol
+xfs_growfs /dev/mapper/rootvg-rootvol
 
 echo "Configure AWS Inspector"
 cat > /etc/init.d/awsagent.env << AWSAGENTPROXYCONFIG
