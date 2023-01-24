@@ -8,7 +8,7 @@ jobs:
             resource: meta-qa
           - get: dataworks-behavioural-framework
             trigger: false
-          - get: dw-al2-hardened-ami
+          - get: dw-al2-jvm-ami
             resource: untested-dw-al2-jvm-ami
             trigger: true
           - get: dataworks-aws-ingest-consumers
@@ -27,7 +27,7 @@ jobs:
               - mirror-k2hb
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.check-ami-test-results ))
         input_mapping:
-          untested_ami: dw-al2-hardened-ami
+          untested_ami: dw-al2-jvm-ami
       - .: (( inject meta.plan.terraform-bootstrap ))
         config:
           inputs:
