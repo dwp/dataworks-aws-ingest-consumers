@@ -178,9 +178,9 @@ resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_ingress_rds" {
 }
 
 resource "aws_batch_compute_environment" "k2hb_reconciliation_trimmer_batch" {
-  compute_environment_name = "k2hb_reconciliation_trimmer"
-  service_role             = data.aws_iam_role.aws_batch_service_role.arn
-  type                     = "MANAGED"
+  compute_environment_name_prefix = "k2hb_reconciliation_trimmer_"
+  service_role                    = data.aws_iam_role.aws_batch_service_role.arn
+  type                            = "MANAGED"
 
   compute_resources {
     image_id      = var.ecs_hardened_ami_id
