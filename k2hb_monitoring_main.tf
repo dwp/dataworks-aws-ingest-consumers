@@ -52,7 +52,7 @@ resource "aws_cloudwatch_metric_alarm" "rate_of_dlq_messages_written_ucfs" {
 
   namespace           = local.cw_k2hb_main_agent_namespace
   alarm_name          = "K2HB UCFS - Messages written to DLQ in last half an hour"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 1800
@@ -88,7 +88,7 @@ resource "aws_cloudwatch_metric_alarm" "kafka_read_timeout_ucfs" {
 
   namespace           = local.cw_k2hb_main_agent_namespace
   alarm_name          = "K2HB UCFS - Kafka read timeout occurrences exceeds 5 in last hour"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 3600
@@ -136,7 +136,7 @@ resource "aws_cloudwatch_metric_alarm" "kafka_connection_timeout_ucfs" {
 
   namespace           = local.cw_k2hb_main_agent_namespace
   alarm_name          = "K2HB UCFS - Kafka connection failures exceeds 5 in last hour"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 3600
@@ -172,7 +172,7 @@ resource "aws_cloudwatch_metric_alarm" "consumer_lag_k2hb_alarm_ucfs" {
 
   namespace           = local.cw_k2hb_main_agent_namespace
   alarm_name          = "K2HB UCFS - Average consumer lag (per partition) over 100 thousand for 3 of the last 4 hours"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 120
   period              = 120
@@ -209,7 +209,7 @@ resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_uc
 
   namespace           = local.cw_k2hb_main_agent_namespace
   alarm_name          = "K2HB UCFS - Failed batches exceeds 50 in last 30 minutes"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 1800
@@ -234,7 +234,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_u
 
   namespace           = local.cw_k2hb_main_agent_namespace
   alarm_name          = "K2HB UCFS - Processed batches under 1000 in 11 of last 12 hours"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 12
   period              = 3600
@@ -263,7 +263,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_u
 
   namespace           = local.cw_k2hb_main_agent_namespace
   alarm_name          = "K2HB UCFS - Processed batches under 1000 in 20 of last 21 hours (Saturday)"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 21
   period              = 3600
@@ -289,7 +289,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_u
 resource "aws_cloudwatch_metric_alarm" "k2hb_running_tasks_less_than_desired_main" {
   count               = local.k2hb_alarm_on_running_tasks_less_than_desired_main[local.environment] ? 1 : 0
   alarm_name          = "K2HB main - Running tasks less than desired tasks for 15 minutes"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   treat_missing_data  = "breaching"
   evaluation_periods  = 15
@@ -348,7 +348,7 @@ resource "aws_cloudwatch_metric_alarm" "k2hb_running_tasks_less_than_desired_mai
 resource "aws_cloudwatch_metric_alarm" "k2hb_running_tasks_less_than_desired_main_dedicated" {
   count               = local.k2hb_alarm_on_running_tasks_less_than_desired_main_dedicated[local.environment] ? 1 : 0
   alarm_name          = "K2HB main dedicated - Running tasks less than desired tasks for 15 minutes"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   treat_missing_data  = "breaching"
   evaluation_periods  = 15
