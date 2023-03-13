@@ -144,15 +144,11 @@ locals {
   }
 
   common_tags = {
-    {%- for key, value in common_tags.items() %}
-      {{key}} = "{{value}}"
-    {%- endfor %}
     Name         = local.name
     DWX_Environment  = local.environment
     DWX_Application  = local.name
     Persistence  = "True"
     AutoShutdown = "False"
-    Costcode     = var.costcode
     Team         = "DataWorks"
   }
 
