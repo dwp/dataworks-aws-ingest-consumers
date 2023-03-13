@@ -60,7 +60,7 @@ resource "aws_cloudwatch_metric_alarm" "rate_of_dlq_messages_written_s3only" {
 
   namespace           = local.cw_k2hb_s3only_agent_namespace
   alarm_name          = "K2HB s3only - Messages written to DLQ in last half an hour"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 1800
@@ -98,7 +98,7 @@ resource "aws_cloudwatch_metric_alarm" "kafka_read_timeout_s3only" {
 
   namespace           = local.cw_k2hb_s3only_agent_namespace
   alarm_name          = "K2HB s3only - Kafka read timeout occurrences exceeds 5 in last hour"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 3600
@@ -150,7 +150,7 @@ resource "aws_cloudwatch_metric_alarm" "kafka_connection_timeout_s3only" {
 
   namespace           = local.cw_k2hb_s3only_agent_namespace
   alarm_name          = "K2HB s3only - Kafka connection failures exceeds 5 in last hour"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 3600
@@ -188,7 +188,7 @@ resource "aws_cloudwatch_metric_alarm" "consumer_lag_k2hb_alarm_s3only" {
 
   namespace           = local.cw_k2hb_s3only_agent_namespace
   alarm_name          = "K2HB s3only - Average consumer lag (per partition) over 100 thousand for 3 of the last 4 hours"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 120
   period              = 120
@@ -227,7 +227,7 @@ resource "aws_cloudwatch_metric_alarm" "failed_k2hb_batches_exceeds_threshold_s3
 
   namespace           = local.cw_k2hb_s3only_agent_namespace
   alarm_name          = "K2HB s3only - Failed batches exceeds 50 in last 30 minutes"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 1
   period              = 1800
@@ -252,7 +252,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_s
 
   namespace           = local.cw_k2hb_main_agent_namespace
   alarm_name          = "K2HB s3only - Processed batches under 1000 in 11 of last 12 hours"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 12
   period              = 3600
@@ -281,7 +281,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_s
 
   namespace           = local.cw_k2hb_main_agent_namespace
   alarm_name          = "K2HB s3only - Processed batches under 1000 in 20 of last 21 hours (Saturday)"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 21
   period              = 3600
@@ -307,7 +307,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_s
 resource "aws_cloudwatch_metric_alarm" "k2hb_running_tasks_less_than_desired_s3only" {
   count               = local.k2hb_alarm_on_running_tasks_less_than_desired_s3only[local.environment] ? 1 : 0
   alarm_name          = "K2HB s3only - Running tasks less than desired tasks for 15 minutes"
-  alarm_description   = "Managed by ${local.common_tags.Application} repository"
+  alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   treat_missing_data  = "breaching"
   evaluation_periods  = 15
