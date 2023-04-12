@@ -200,6 +200,14 @@ locals {
     production  = 20000000
   }
 
+  k2hb_kafka_fetch_min_bytes = {
+    development = 10000000
+    qa          = 10000000
+    integration = 10000000
+    preprod     = 10000000
+    production  = 10000000
+  }
+
   k2hb_main_kafka_max_partition_fetch_bytes = {
     development = 20000000
     qa          = 20000000
@@ -222,6 +230,14 @@ locals {
     integration = 20000000
     preprod     = 20000000
     production  = 20000000
+  }
+
+  k2hb_kafka_fetch_max_wait_ms = {
+    development = 60000
+    qa          = 60000
+    integration = 60000
+    preprod     = 60000
+    production  = 60000
   }
 
   k2hb_main_corporate_storage_coalesce_max_files = {
