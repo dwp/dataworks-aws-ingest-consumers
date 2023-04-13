@@ -306,7 +306,7 @@ locals {
     # increased to batch data more effectively (60s, 500ms for e2e tests)
     development = 500
     qa          = 500
-    integration = 500
+    integration = 60000
     preprod     = 60000
     production  = 60000
   }
@@ -315,7 +315,7 @@ locals {
     # increased to batch data more effectively (60s, 500ms for e2e tests)
     development = 500
     qa          = 500
-    integration = 500
+    integration = 60000
     preprod     = 60000
     production  = 60000
   }
