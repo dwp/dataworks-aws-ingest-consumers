@@ -116,6 +116,7 @@ resource "aws_launch_template" "k2hb_main_dedicated_london" {
     k2hb_pushgateway_hostname                        = local.ingest_pushgateway_hostname
     k2hb_kafka_fetch_min_bytes                       = local.k2hb_main_kafka_fetch_min_bytes[local.environment]
     k2hb_kafka_fetch_max_wait_ms                     = local.k2hb_main_kafka_fetch_max_wait_ms[local.environment]
+    k2hb_kafka_consumer_request_timeout_ms           = local.k2hb_main_kafka_consumer_request_timeout_ms[local.environment]
   }))
 
   instance_initiated_shutdown_behavior = "terminate"

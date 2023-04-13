@@ -320,6 +320,42 @@ locals {
     production  = 60000
   }
 
+  k2hb_main_kafka_consumer_request_timeout_ms = {
+    # kafka default value (30s)
+    development = 30000
+    qa          = 30000
+    integration = 30000
+    preprod     = 30000
+    production  = 30000
+  }
+
+  k2hb_equality_kafka_consumer_request_timeout_ms = {
+    # kafka default value (30s)
+    development = 30000
+    qa          = 30000
+    integration = 30000
+    preprod     = 30000
+    production  = 30000
+  }
+
+  k2hb_audit_kafka_consumer_request_timeout_ms = {
+    # 120s because max.wait.ms is 60s
+    development = 120000
+    qa          = 120000
+    integration = 120000
+    preprod     = 120000
+    production  = 120000
+  }
+
+  k2hb_s3only_kafka_consumer_request_timeout_ms = {
+    # 120s because max.wait.ms is 60s
+    development = 120000
+    qa          = 120000
+    integration = 120000
+    preprod     = 120000
+    production  = 120000
+  }
+
   k2hb_main_corporate_storage_coalesce_max_files = {
     development = 1000000
     qa          = 1000000
