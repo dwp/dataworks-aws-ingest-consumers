@@ -112,8 +112,8 @@ resource "aws_launch_template" "k2hb_audit_london" {
     k2hb_kafka_max_partition_fetch_bytes             = local.k2hb_audit_kafka_max_partition_fetch_bytes[local.environment]
     k2hb_hbase_bypass_topics                         = local.kafka_consumer_hbase_bypass_topics_regex.audit[local.environment]
     k2hb_pushgateway_hostname                        = local.ingest_pushgateway_hostname
-    k2hb_kafka_fetch_min_bytes                       = local.k2hb_kafka_fetch_min_bytes[local.environment]
-    k2hb_kafka_fetch_max_wait_ms                     = local.k2hb_kafka_fetch_max_wait_ms[local.environment]
+    k2hb_kafka_fetch_min_bytes                       = local.k2hb_audit_kafka_fetch_min_bytes[local.environment]
+    k2hb_kafka_fetch_max_wait_ms                     = local.k2hb_audit_kafka_fetch_max_wait_ms[local.environment]
   }))
 
   instance_initiated_shutdown_behavior = "terminate"
