@@ -177,51 +177,75 @@ locals {
   }
 
   k2hb_main_kafka_max_fetch_bytes = {
-    development = 20000000
-    qa          = 20000000
-    integration = 20000000
-    preprod     = 20000000
-    production  = 20000000
+    # ~128MB
+    development = 128000000
+    qa          = 128000000
+    integration = 128000000
+    preprod     = 128000000
+    production  = 128000000
   }
 
   k2hb_equality_kafka_max_fetch_bytes = {
-    development = 20000000
-    qa          = 20000000
-    integration = 20000000
-    preprod     = 20000000
-    production  = 20000000
+    # ~128MB
+    development = 128000000
+    qa          = 128000000
+    integration = 128000000
+    preprod     = 128000000
+    production  = 128000000
   }
 
   k2hb_audit_kafka_max_fetch_bytes = {
-    development = 20000000
-    qa          = 20000000
-    integration = 20000000
-    preprod     = 20000000
-    production  = 20000000
+    # ~128MB
+    development = 128000000
+    qa          = 128000000
+    integration = 128000000
+    preprod     = 128000000
+    production  = 128000000
+  }
+
+  k2hb_kafka_fetch_min_bytes = {
+    # ~128MB
+    development = 128000000
+    qa          = 128000000
+    integration = 128000000
+    preprod     = 128000000
+    production  = 128000000
   }
 
   k2hb_main_kafka_max_partition_fetch_bytes = {
-    development = 20000000
-    qa          = 20000000
-    integration = 20000000
-    preprod     = 20000000
-    production  = 20000000
+    # ~128MB
+    development = 128000000
+    qa          = 128000000
+    integration = 128000000
+    preprod     = 128000000
+    production  = 128000000
   }
 
   k2hb_equality_kafka_max_partition_fetch_bytes = {
-    development = 20000000
-    qa          = 20000000
-    integration = 20000000
-    preprod     = 20000000
-    production  = 20000000
+    # ~128MB
+    development = 128000000
+    qa          = 128000000
+    integration = 128000000
+    preprod     = 128000000
+    production  = 128000000
   }
 
   k2hb_audit_kafka_max_partition_fetch_bytes = {
-    development = 20000000
-    qa          = 20000000
-    integration = 20000000
-    preprod     = 20000000
-    production  = 20000000
+    # ~128MB
+    development = 128000000
+    qa          = 128000000
+    integration = 128000000
+    preprod     = 128000000
+    production  = 128000000
+  }
+
+  k2hb_kafka_fetch_max_wait_ms = {
+    # ~60s
+    development = 60000
+    qa          = 60000
+    integration = 60000
+    preprod     = 60000
+    production  = 60000
   }
 
   k2hb_main_corporate_storage_coalesce_max_files = {
