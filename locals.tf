@@ -482,8 +482,16 @@ locals {
     development = 25
     qa          = 50
     integration = 50
-    preprod     = 2000
-    production  = 2000
+    preprod     = 10000
+    production  = 10000
+  }
+
+  k2hb_s3only_max_poll_records_count = {
+    development = 25
+    qa          = 50
+    integration = 50
+    preprod     = 10000
+    production  = 10000
   }
 
   # Enable this to verify puts with exists checks
