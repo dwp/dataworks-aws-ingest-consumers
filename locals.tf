@@ -240,9 +240,9 @@ locals {
   }
 
   k2hb_kafka_fetch_max_wait_ms = {
-    # ~60s
-    development = 60000
-    qa          = 60000
+    # ~60s in higher environments, default of 500ms in dev/qa for tests
+    development = 500
+    qa          = 500
     integration = 60000
     preprod     = 60000
     production  = 60000
