@@ -95,7 +95,7 @@ resource "aws_launch_template" "k2hb_s3only_london" {
     k2hb_kafka_insecure                              = "false"
     k2hb_kafka_cert_mode                             = "RETRIEVE"
     k2hb_kafka_dlq_topic                             = local.dlq_kafka_consumer_topic
-    k2hb_kafka_poll_max_records                      = local.k2hb_main_max_poll_records_count[local.environment]
+    k2hb_kafka_poll_max_records                      = local.k2hb_s3only_max_poll_records_count[local.environment]
     k2hb_kafka_report_frequency                      = local.k2hb_report_frequency[local.environment]
     k2hb_qualified_table_pattern                     = local.k2hb_main_data_qualified_table_pattern
     k2hb_check_existence                             = local.k2hb_check_existence[local.environment]
@@ -114,6 +114,7 @@ resource "aws_launch_template" "k2hb_s3only_london" {
     k2hb_pushgateway_hostname                        = local.ingest_pushgateway_hostname
     k2hb_kafka_fetch_min_bytes                       = local.k2hb_s3only_kafka_fetch_min_bytes[local.environment]
     k2hb_kafka_fetch_max_wait_ms                     = local.k2hb_s3only_kafka_fetch_max_wait_ms[local.environment]
+    k2hb_kafka_consumer_request_timeout_ms           = local.k2hb_s3only_kafka_consumer_request_timeout_ms[local.environment]
   }))
 
   instance_initiated_shutdown_behavior = "terminate"

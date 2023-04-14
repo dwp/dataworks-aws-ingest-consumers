@@ -194,6 +194,7 @@ cat << EOF > /opt/k2hb/settings
     export K2HB_KAFKA_MAX_FETCH_BYTES="${k2hb_kafka_max_fetch_bytes}"
     export K2HB_KAFKA_FETCH_MAX_WAIT_MS="${k2hb_kafka_fetch_max_wait_ms}"
     export K2HB_KAFKA_MAX_PARTITION_FETCH_BYTES="${k2hb_kafka_max_partition_fetch_bytes}"
+    export K2HB_KAFKA_CONSUMER_REQUEST_TIMEOUT_MS="${k2hb_kafka_consumer_request_timeout_ms}"
     export K2HB_METRICS_PUSHGATEWAY="${k2hb_pushgateway_hostname}"
     export K2HB_HBASE_BYPASS_TOPICS="${k2hb_hbase_bypass_topics}"
     export METADATASTORE_TRUSTSTORE="$K2HB_TRUSTSTORE_PATH"
