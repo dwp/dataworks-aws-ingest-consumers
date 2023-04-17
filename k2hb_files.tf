@@ -16,6 +16,24 @@ resource "aws_s3_bucket_object" "amazon_root_ca1_pem" {
   )
 }
 
+data "local_file" "config_hcs" {
+  filename = "files/k2hb/config_hcs.sh"
+}
+
+resource "aws_s3_bucket_object" "config_hcs" {
+  bucket     = local.common_config_bucket.id
+  key        = "component/k2hb/config_hcs"
+  content    = data.local_file.config_hcs.content
+  kms_key_id = local.common_config_bucket_cmk_arn
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "config-hcs"
+    },
+  )
+}
+
 data "local_file" "k2hb_init_script" {
   filename = "files/k2hb/k2hb"
 }

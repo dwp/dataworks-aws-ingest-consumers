@@ -9,6 +9,7 @@ echo "${s3_script_hash_common_logging_sh}" > /dev/null
 echo "${s3_script_hash_logging_sh}" > /dev/null
 echo "${s3_script_hash_respawn_k2hb_sh}" > /dev/null
 echo "${s3_script_hash_amazon_root_ca1_pem}" > /dev/null
+echo "${s3_script_hash_config_hcs_sh}" > /dev/null
 
 export AWS_DEFAULT_REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | cut -d'"' -f4)
 export INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
@@ -53,6 +54,7 @@ S3_CLOUDWATCH_SHELL="s3://${s3_scripts_bucket}/${s3_script_k2hb_cloudwatch_sh}"
 S3_COMMON_LOGGING_SHELL="s3://${s3_scripts_bucket}/${s3_script_common_logging_sh}"
 S3_LOGGING_SHELL="s3://${s3_scripts_bucket}/${s3_script_logging_sh}"
 S3_RESPAWN_K2HB="s3://${s3_scripts_bucket}/${s3_script_respawn_k2hb_sh}"
+S3_CONFIG_HCS="s3://${s3_scripts_bucket}/${s3_script_config_hcs_sh}"
 echo "Configuring startup file paths"
 S3_AMAZON_ROOT_CA1_PEM="s3://${s3_scripts_bucket}/${s3_script_amazon_root_ca1_pem}"
 
@@ -64,6 +66,7 @@ $(which aws) s3 cp "$S3_CLOUDWATCH_SHELL"       /opt/k2hb/k2hb_cloudwatch.sh
 $(which aws) s3 cp "$S3_COMMON_LOGGING_SHELL"   /opt/k2hb/common_logging.sh
 $(which aws) s3 cp "$S3_LOGGING_SHELL"          /opt/k2hb/logging.sh
 $(which aws) s3 cp "$S3_RESPAWN_K2HB"           /opt/k2hb/respawn_k2hb.sh
+$(which aws) s3 cp "$S3_CONFIG_HCS"             /opt/k2hb/config_hcs.sh
 echo "Installing startup files"
 $(which aws) s3 cp "$S3_AMAZON_ROOT_CA1_PEM"    /opt/k2hb/AmazonRootCA1.pem
 
@@ -83,6 +86,11 @@ chmod u+x /opt/k2hb/k2hb_cloudwatch.sh
     "${cwa_disk_measurement_metrics_collection_interval}" "${cwa_disk_io_metrics_collection_interval}" \
     "${cwa_mem_metrics_collection_interval}" "${cwa_netstat_metrics_collection_interval}" "${cwa_log_group_name}" \
     "$AWS_DEFAULT_REGION"
+
+echo "setup hcs pre-requisites"
+chmod u+x /opt/k2hb/config_hcs.sh
+/opt/k2hb/config_hcs "${hcs_environment}" "${proxy_host}" "${proxy_port}"
+
 
 echo "Download & install latest k2hb service artifact"
 VERSION="${k2hb_version}"
