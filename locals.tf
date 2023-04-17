@@ -195,12 +195,12 @@ locals {
   }
 
   k2hb_audit_kafka_max_fetch_bytes = {
-    # ~128MB
-    development = 128000000
-    qa          = 128000000
-    integration = 128000000
-    preprod     = 128000000
-    production  = 128000000
+    # ~200MB
+    development = 200000000
+    qa          = 200000000
+    integration = 200000000
+    preprod     = 200000000
+    production  = 200000000
   }
 
   k2hb_s3only_kafka_max_fetch_bytes = {
@@ -231,12 +231,12 @@ locals {
   }
 
   k2hb_audit_kafka_fetch_min_bytes = {
-    # ~128MB
-    development = 128000000
-    qa          = 128000000
-    integration = 128000000
-    preprod     = 128000000
-    production  = 128000000
+    # ~200MB
+    development = 200000000
+    qa          = 200000000
+    integration = 200000000
+    preprod     = 200000000
+    production  = 200000000
   }
 
   k2hb_s3only_kafka_fetch_min_bytes = {
@@ -267,12 +267,12 @@ locals {
   }
 
   k2hb_audit_kafka_max_partition_fetch_bytes = {
-    # increased to batch data more effectively (~128MB)
-    development = 128000000
-    qa          = 128000000
-    integration = 128000000
-    preprod     = 128000000
-    production  = 128000000
+    # increased to batch data more effectively (~200MB)
+    development = 200000000
+    qa          = 200000000
+    integration = 200000000
+    preprod     = 200000000
+    production  = 200000000
   }
 
   k2hb_s3only_kafka_max_partition_fetch_bytes = {
@@ -303,12 +303,12 @@ locals {
   }
 
   k2hb_audit_kafka_fetch_max_wait_ms = {
-    # increased to batch data more effectively (60s, 500ms for e2e tests)
+    # increased to batch data more effectively (600s, 500ms for e2e tests)
     development = 500
     qa          = 500
-    integration = 60000
-    preprod     = 60000
-    production  = 60000
+    integration = 600000
+    preprod     = 600000
+    production  = 600000
   }
 
   k2hb_s3only_kafka_fetch_max_wait_ms = {
@@ -339,12 +339,12 @@ locals {
   }
 
   k2hb_audit_kafka_consumer_request_timeout_ms = {
-    # 120s because max.wait.ms is 60s
-    development = 120000
-    qa          = 120000
-    integration = 120000
-    preprod     = 120000
-    production  = 120000
+    # 1200s because max.wait.ms is 600s
+    development = 1200000
+    qa          = 1200000
+    integration = 1200000
+    preprod     = 1200000
+    production  = 1200000
   }
 
   k2hb_s3only_kafka_consumer_request_timeout_ms = {
@@ -482,8 +482,8 @@ locals {
     development = 25
     qa          = 50
     integration = 50
-    preprod     = 10000
-    production  = 10000
+    preprod     = 100000
+    production  = 100000
   }
 
   k2hb_s3only_max_poll_records_count = {
