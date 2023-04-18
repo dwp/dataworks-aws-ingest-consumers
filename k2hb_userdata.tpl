@@ -89,7 +89,7 @@ chmod u+x /opt/k2hb/k2hb_cloudwatch.sh
 
 echo "setup hcs pre-requisites"
 chmod u+x /opt/k2hb/config_hcs.sh
-/opt/k2hb/config_hcs "${hcs_environment}" "${proxy_host}" "${proxy_port}"
+/opt/k2hb/config_hcs.sh "${hcs_environment}" "${proxy_host}" "${proxy_port}"
 
 
 echo "Download & install latest k2hb service artifact"
