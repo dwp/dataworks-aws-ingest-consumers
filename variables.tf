@@ -250,3 +250,10 @@ variable "hbase_emr_ports" {
   description = "Ports open on Hbase EMR master and slave instances"
   default     = [16000, 16020, 16030]
 }
+
+variable "proxy_port" {
+  description = "proxy port"
+  type        = string
+  default     = "3128"
+}
+
