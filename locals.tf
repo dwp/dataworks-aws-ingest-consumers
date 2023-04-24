@@ -303,12 +303,12 @@ locals {
   }
 
   k2hb_audit_kafka_fetch_max_wait_ms = {
-    # increased to batch data more effectively (600s, 500ms for e2e tests)
+    # increased to batch data more effectively (60s, 500ms for e2e tests)
     development = 500
     qa          = 500
-    integration = 600000
-    preprod     = 600000
-    production  = 600000
+    integration = 60000
+    preprod     = 60000
+    production  = 60000
   }
 
   k2hb_s3only_kafka_fetch_max_wait_ms = {
@@ -339,12 +339,12 @@ locals {
   }
 
   k2hb_audit_kafka_consumer_request_timeout_ms = {
-    # 1200s because max.wait.ms is 600s
-    development = 1200000
-    qa          = 1200000
-    integration = 1200000
-    preprod     = 1200000
-    production  = 1200000
+    # 120s because max.wait.ms is 60s
+    development = 120000
+    qa          = 120000
+    integration = 120000
+    preprod     = 120000
+    production  = 120000
   }
 
   k2hb_s3only_kafka_consumer_request_timeout_ms = {
