@@ -231,7 +231,7 @@ locals {
   }
 
   k2hb_audit_kafka_fetch_min_bytes = {
-    # ~200MB, 20MB for prod
+    # ~200MB
     development = 200000000
     qa          = 200000000
     integration = 200000000
