@@ -5,7 +5,7 @@ data "local_file" "batch_config_hcs" {
 resource "aws_s3_object" "batch_config_hcs" {
   bucket     = local.common_config_bucket.id
   key        = "component/batch/batch_config_hcs"
-  content    = data.local_file.config_hcs.content
+  content    = data.local_file.batch_config_hcs.content
   kms_key_id = local.common_config_bucket_cmk_arn
 
   tags = merge(
