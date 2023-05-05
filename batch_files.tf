@@ -1,10 +1,10 @@
 data "local_file" "batch_config_hcs" {
-  filename = "files/batch/config_hcs.sh"
+  filename = "files/batch/batch_config_hcs.sh"
 }
 
 resource "aws_s3_object" "batch_config_hcs" {
   bucket     = local.common_config_bucket.id
-  key        = "component/batch/config_hcs"
+  key        = "component/batch/batch_config_hcs"
   content    = data.local_file.config_hcs.content
   kms_key_id = local.common_config_bucket_cmk_arn
 
@@ -58,7 +58,7 @@ data "local_file" "batch_logging_script" {
 
 resource "aws_s3_object" "batch_logging_script" {
   bucket     = local.common_config_bucket.id
-  key        = "component/batch/logging.sh"
+  key        = "component/batch/batch_logging.sh"
   content    = data.local_file.batch_logging_script.content
   kms_key_id = local.common_config_bucket_cmk_arn
 
