@@ -31,6 +31,16 @@ EOF
   )
 }
 
+resource "aws_iam_role_policy_attachment" "k2hb_reconciliation_trimmer_ecs_cwasp" {
+  role       = aws_iam_role.ecs_instance_role_k2hb_reconciliation_trimmer_batch.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "ec2_for_ssm_attachment" {
+  role       = aws_iam_role.ecs_instance_role_k2hb_reconciliation_trimmer_batch.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
 resource "aws_iam_role_policy_attachment" "ecs_instance_role_k2hb_reconciliation_trimmer_batch" {
   role       = aws_iam_role.ecs_instance_role_k2hb_reconciliation_trimmer_batch.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
@@ -58,6 +68,91 @@ data "aws_iam_policy_document" "ecs_instance_role_k2hb_reconciliation_trimmer_ba
 
     resources = [data.terraform_remote_state.security-tools.outputs.ebs_cmk.arn]
   }
+
+
+  statement {
+    effect = "Allow"
+    sid    = "AllowAccessToConfigBucket"
+
+    actions = [
+      "s3:ListBucket",
+      "s3:GetBucketLocation",
+    ]
+
+    resources = [data.terraform_remote_state.common.outputs.config_bucket.arn]
+  }
+
+  statement {
+    effect = "Allow"
+    sid    = "AllowAccessToConfigBucketObjects"
+
+    actions = ["s3:GetObject"]
+
+    resources = ["${data.terraform_remote_state.common.outputs.config_bucket.arn}/*"]
+  }
+
+  statement {
+    sid    = "AllowKMSDecryptionOfS3ConfigBucketObj"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey",
+    ]
+
+    resources = [data.terraform_remote_state.common.outputs.config_bucket_cmk.arn]
+  }
+
+  statement {
+    sid    = "AllowAccessLogGroups"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogStreams"
+    ]
+    resources = data.terraform_remote_state.common.outputs.ami_ecs_test_services ? [aws_cloudwatch_log_group.k2hb_reconciliation_trimmer_ecs_cluster.arn, data.terraform_remote_state.common.outputs.ami_ecs_test_log_group_arn] : [aws_cloudwatch_log_group.k2hb_reconciliation_trimmer_ecs_cluster.arn]
+  }
+
+  statement {
+    sid    = "EnableEC2TaggingHost"
+    effect = "Allow"
+
+    actions = [
+      "ec2:ModifyInstanceMetadataOptions",
+      "ec2:*Tags",
+    ]
+    resources = ["arn:aws:ec2:${var.region}:${local.account[local.environment]}:instance/*"]
+  }
+
+  statement {
+    sid    = "ECSListClusters"
+    effect = "Allow"
+
+    actions = [
+      "ecs:ListClusters",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ssm:*",
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
+
+}
+
+resource "aws_cloudwatch_log_group" "k2hb_reconciliation_trimmer_ecs_cluster" {
+  name              = local.cw_agent_log_group_name_k2hb_reconciliation_trimmer_ecs
+  retention_in_days = 180
+  tags              = local.common_tags
 }
 
 resource "aws_iam_policy" "ecs_instance_role_k2hb_reconciliation_trimmer_batch_ebs_cmk" {
@@ -183,7 +278,7 @@ resource "aws_batch_compute_environment" "k2hb_reconciliation_trimmer_batch" {
   type                            = "MANAGED"
 
   compute_resources {
-    image_id      = var.ecs_hardened_ami_id
+
     instance_role = aws_iam_instance_profile.ecs_instance_role_k2hb_reconciliation_trimmer_batch.arn
     instance_type = ["optimal"]
 
@@ -194,6 +289,11 @@ resource "aws_batch_compute_environment" "k2hb_reconciliation_trimmer_batch" {
     security_group_ids = [data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id]
     subnets            = data.terraform_remote_state.ingest.outputs.ingestion_subnets.id
     type               = "EC2"
+
+    launch_template {
+      launch_template_id      = aws_launch_template.k2hb_reconciliation_trimmer_ecs_cluster.id
+      version                 = aws_launch_template.k2hb_reconciliation_trimmer_ecs_cluster.latest_version
+    }
 
     tags = merge(
       local.common_tags,
@@ -208,6 +308,68 @@ resource "aws_batch_compute_environment" "k2hb_reconciliation_trimmer_batch" {
   lifecycle {
     create_before_destroy = true
     ignore_changes        = [compute_resources.0.desired_vcpus]
+  }
+}
+
+resource "aws_launch_template" "k2hb_reconciliation_trimmer_ecs_cluster" {
+  name     = "k2hb-reconciliation-trimmer"
+  image_id = var.ecs_hardened_ami_id
+
+  user_data = base64encode(templatefile("files/batch/k2hb_recon_userdata.tpl", {
+    region                                           = data.aws_region.current.name
+    name                                             = "k2hb-reconciliation-trimmer"
+    proxy_port                                       = var.proxy_port
+    proxy_host                                       = data.terraform_remote_state.internal_compute.outputs.internet_proxy.host
+    hcs_environment                                  = local.hcs_environment[local.environment]
+    s3_scripts_bucket                                = data.terraform_remote_state.common.outputs.config_bucket.id
+    s3_script_logrotate                              = aws_s3_object.batch_logrotate_script.id
+    s3_script_cloudwatch_shell                       = aws_s3_object.batch_cloudwatch_script.id
+    s3_script_logging_shell                          = aws_s3_object.batch_logging_script.id
+    s3_script_config_hcs_shell                       = aws_s3_object.batch_config_hcs.id
+    cwa_namespace                                    = local.cw_k2hb_main_agent_namespace
+    cwa_log_group_name                               = "${local.cw_k2hb_main_agent_namespace}-${local.environment}"
+    cwa_metrics_collection_interval                  = local.cw_agent_metrics_collection_interval
+    cwa_cpu_metrics_collection_interval              = local.cw_agent_cpu_metrics_collection_interval
+    cwa_disk_measurement_metrics_collection_interval = local.cw_agent_disk_measurement_metrics_collection_interval
+    cwa_disk_io_metrics_collection_interval          = local.cw_agent_disk_io_metrics_collection_interval
+    cwa_mem_metrics_collection_interval              = local.cw_agent_mem_metrics_collection_interval
+    cwa_netstat_metrics_collection_interval          = local.cw_agent_netstat_metrics_collection_interval
+
+  }))
+
+  instance_initiated_shutdown_behavior = "terminate"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = local.s3_object_tagger_application_name
+    }
+  )
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = merge(
+      local.common_tags,
+      {
+        Name                = "k2hb-reconciliation-trimmer",
+        AutoShutdown        = local.k2hb_main_asg_autoshutdown[local.environment],
+        SSMEnabled          = local.k2hb_main_asg_ssmenabled[local.environment],
+        Persistence         = "Ignore",
+        propagate_at_launch = true,
+      }
+    )
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+
+    tags = merge(
+      local.common_tags,
+      {
+        Name = "k2hb-reconciliation-trimmer",
+      }
+    )
   }
 }
 
