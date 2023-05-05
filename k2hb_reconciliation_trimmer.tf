@@ -315,7 +315,7 @@ resource "aws_launch_template" "k2hb_reconciliation_trimmer_ecs_cluster" {
   name     = "k2hb-reconciliation-trimmer"
   image_id = var.ecs_hardened_ami_id
 
-  user_data = base64encode(templatefile("files/batch/k2hb_recon_userdata.tpl", {
+  user_data = base64encode(templatefile("files/batch/userdata.tpl", {
     region                                           = data.aws_region.current.name
     name                                             = "k2hb-reconciliation-trimmer"
     proxy_port                                       = var.proxy_port
