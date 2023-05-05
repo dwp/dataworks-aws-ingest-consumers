@@ -342,7 +342,7 @@ resource "aws_launch_template" "k2hb_reconciliation_trimmer_ecs_cluster" {
   tags = merge(
     local.common_tags,
     {
-      Name = local.s3_object_tagger_application_name
+      Name = "k2hb-reconciliation-trimmer"
     }
   )
 
