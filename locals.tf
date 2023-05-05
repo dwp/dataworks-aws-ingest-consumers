@@ -424,6 +424,7 @@ locals {
     production  = "s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem,s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca_old.pem"
   }
 
+  cw_k2hb_recon_trimmer_agent_namespace                 = "/app/k2hb-recon-trimmer"
 
   cw_k2hb_main_agent_namespace                          = "/app/kafka-to-hbase"
   cw_k2hb_equality_agent_namespace                      = "/app/kafka-to-hbase-equality"

@@ -326,8 +326,8 @@ resource "aws_launch_template" "k2hb_reconciliation_trimmer_ecs_cluster" {
     s3_script_cloudwatch_shell                       = aws_s3_object.batch_cloudwatch_script.id
     s3_script_logging_shell                          = aws_s3_object.batch_logging_script.id
     s3_script_config_hcs_shell                       = aws_s3_object.batch_config_hcs.id
-    cwa_namespace                                    = local.cw_k2hb_main_agent_namespace
-    cwa_log_group_name                               = "${local.cw_k2hb_main_agent_namespace}-${local.environment}"
+    cwa_namespace                                    = local.cw_k2hb_recon_trimmer_agent_namespace
+    cwa_log_group_name                               = "${local.cw_k2hb_recon_trimmer_agent_namespace}-${local.environment}"
     cwa_metrics_collection_interval                  = local.cw_agent_metrics_collection_interval
     cwa_cpu_metrics_collection_interval              = local.cw_agent_cpu_metrics_collection_interval
     cwa_disk_measurement_metrics_collection_interval = local.cw_agent_disk_measurement_metrics_collection_interval
