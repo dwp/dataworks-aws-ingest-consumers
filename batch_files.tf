@@ -2,7 +2,7 @@ data "local_file" "batch_config_hcs" {
   filename = "files/batch/config_hcs.sh"
 }
 
-resource "aws_s3_bucket_object" "batch_config_hcs" {
+resource "aws_s3_object" "batch_config_hcs" {
   bucket     = local.common_config_bucket.id
   key        = "component/batch/config_hcs"
   content    = data.local_file.config_hcs.content
@@ -20,7 +20,7 @@ data "local_file" "batch_logrotate_script" {
   filename = "files/batch/batch.logrotate"
 }
 
-resource "aws_s3_bucket_object" "batch_logrotate_script" {
+resource "aws_s3_object" "batch_logrotate_script" {
   bucket     = local.common_config_bucket.id
   key        = "component/batch/batch.logrotate"
   content    = data.local_file.batch_logrotate_script.content
@@ -38,7 +38,7 @@ data "local_file" "batch_cloudwatch_script" {
   filename = "files/batch/batch_cloudwatch.sh"
 }
 
-resource "aws_s3_bucket_object" "batch_cloudwatch_script" {
+resource "aws_s3_object" "batch_cloudwatch_script" {
   bucket     = local.common_config_bucket.id
   key        = "component/batch/batch_cloudwatch.sh"
   content    = data.local_file.batch_cloudwatch_script.content
@@ -56,7 +56,7 @@ data "local_file" "batch_logging_script" {
   filename = "files/batch/batch_logging.sh"
 }
 
-resource "aws_s3_bucket_object" "batch_logging_script" {
+resource "aws_s3_object" "batch_logging_script" {
   bucket     = local.common_config_bucket.id
   key        = "component/batch/logging.sh"
   content    = data.local_file.batch_logging_script.content

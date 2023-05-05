@@ -150,7 +150,7 @@ data "aws_iam_policy_document" "ecs_instance_role_k2hb_reconciliation_trimmer_ba
 }
 
 resource "aws_cloudwatch_log_group" "k2hb_reconciliation_trimmer_ecs_cluster" {
-  name              = local.cw_agent_log_group_name_k2hb_reconciliation_trimmer_ecs
+  name              = local.cw_k2hb_recon_trimmer_agent_log_group_name
   retention_in_days = 180
   tags              = local.common_tags
 }
