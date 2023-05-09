@@ -339,7 +339,7 @@ resource "aws_launch_template" "k2hb_reconciliation_trimmer_ecs_cluster" {
     region                                           = data.aws_region.current.name
     name                                             = "k2hb-reconciliation-trimmer"
     proxy_port                                       = var.proxy_port
-    proxy_host                                       = local.ingest_internet_proxy.sg
+    proxy_host                                       = local.ingest_internet_proxy.host
     hcs_environment                                  = local.hcs_environment[local.environment]
     s3_scripts_bucket                                = data.terraform_remote_state.common.outputs.config_bucket.id
     s3_script_logrotate                              = aws_s3_object.batch_logrotate_script.id
