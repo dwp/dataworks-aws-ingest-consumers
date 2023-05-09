@@ -272,6 +272,25 @@ resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_ingress_rds" {
   source_security_group_id = data.terraform_remote_state.ingest.outputs.metadata_store.rds.sg_id
 }
 
+resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_egress_internet_proxy" {
+  description              = "k2hb recon trimmer batch to Internet Proxy (for hcs services"
+  type                     = "egress"
+  protocol                 = "tcp"
+  from_port                = 3128
+  to_port                  = 3128
+  source_security_group_id = data.terraform_remote_state.internal_compute.outputs.internet_proxy.sg
+  security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id
+}
+resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_ingress_internet_proxy" {
+  description              = "Allow proxy access from k2hb recon trimmer batch"
+  type                     = "ingress"
+  from_port                = 3128
+  to_port                  = 3128
+  protocol                 = "tcp"
+  source_security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id
+  security_group_id        = data.terraform_remote_state.internal_compute.outputs.internet_proxy.sg
+}
+
 
 resource "aws_batch_compute_environment" "k2hb_reconciliation_trimmer_batch" {
   compute_environment_name_prefix = "k2hb_reconciliation_trimmer_"
