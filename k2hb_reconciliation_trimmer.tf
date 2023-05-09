@@ -278,7 +278,7 @@ resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_egress_internet_
   protocol                 = "tcp"
   from_port                = 3128
   to_port                  = 3128
-  source_security_group_id = data.terraform_remote_state.internal_compute.outputs.internet_proxy.sg
+  source_security_group_id = local.ingest_internet_proxy.sg
   security_group_id        = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id
 }
 resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_ingress_internet_proxy" {
@@ -288,7 +288,7 @@ resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_ingress_internet
   to_port                  = 3128
   protocol                 = "tcp"
   source_security_group_id = data.terraform_remote_state.ingest.outputs.ingestion_vpc.vpce_security_groups.k2hb_reconciliation_trimmer_batch.id
-  security_group_id        = data.terraform_remote_state.internal_compute.outputs.internet_proxy.sg
+  security_group_id        = local.ingest_internet_proxy.sg
 }
 
 
