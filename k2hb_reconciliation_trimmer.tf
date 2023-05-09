@@ -273,7 +273,7 @@ resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_ingress_rds" {
 }
 
 resource "aws_security_group_rule" "k2hb_reconciliation_trimmer_egress_internet_proxy" {
-  description              = "k2hb recon trimmer batch to Internet Proxy (for hcs services"
+  description              = "k2hb recon trimmer batch to Internet Proxy (for hcs services)"
   type                     = "egress"
   protocol                 = "tcp"
   from_port                = 3128
@@ -339,7 +339,7 @@ resource "aws_launch_template" "k2hb_reconciliation_trimmer_ecs_cluster" {
     region                                           = data.aws_region.current.name
     name                                             = "k2hb-reconciliation-trimmer"
     proxy_port                                       = var.proxy_port
-    proxy_host                                       = data.terraform_remote_state.internal_compute.outputs.internet_proxy.host
+    proxy_host                                       = local.ingest_internet_proxy.sg
     hcs_environment                                  = local.hcs_environment[local.environment]
     s3_scripts_bucket                                = data.terraform_remote_state.common.outputs.config_bucket.id
     s3_script_logrotate                              = aws_s3_object.batch_logrotate_script.id
