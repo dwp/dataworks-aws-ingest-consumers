@@ -13,12 +13,3 @@ resources:
 
   - name: meta-qa
     type: meta
-
-  - name: dataworks-aws-ingest-consumers-dev
-    type: git
-    source:
-      branch: DTWRKS-976
-      uri: https://github.com/dwp/dataworks-aws-ingest-consumers.git
-      access_token: ((dataworks-secrets.concourse_github_pat))
-    webhook_token: ((dataworks.concourse_github_webhook_token))
-    check_every: 5m
