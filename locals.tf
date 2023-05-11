@@ -1642,7 +1642,7 @@ locals {
 
   k2hb_trimmer_common_config = {
     log_level = {
-      development = "INFO"
+      development = "DEBUG"
       qa          = "INFO"
       integration = "INFO"
       preprod     = "INFO"
