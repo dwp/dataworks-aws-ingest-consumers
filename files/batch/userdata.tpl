@@ -35,15 +35,15 @@ $(which aws) s3 cp "$S3_CONFIG_HCS_SHELL"  /opt/batch/config_hcs.sh
 
 echo "Setup cloudwatch logs"
 chmod u+x /opt/batch/cloudwatch.sh
-/opt/batch/cloudwatch.sh \
-    "${cwa_metrics_collection_interval}" "${cwa_namespace}" "${cwa_cpu_metrics_collection_interval}" \
-    "${cwa_disk_measurement_metrics_collection_interval}" "${cwa_disk_io_metrics_collection_interval}" \
-    "${cwa_mem_metrics_collection_interval}" "${cwa_netstat_metrics_collection_interval}" "${cwa_log_group_name}" \
-    "$AWS_DEFAULT_REGION"
+# /opt/batch/cloudwatch.sh \
+#    "${cwa_metrics_collection_interval}" "${cwa_namespace}" "${cwa_cpu_metrics_collection_interval}" \
+#    "${cwa_disk_measurement_metrics_collection_interval}" "${cwa_disk_io_metrics_collection_interval}" \
+#    "${cwa_mem_metrics_collection_interval}" "${cwa_netstat_metrics_collection_interval}" "${cwa_log_group_name}" \
+#    "$AWS_DEFAULT_REGION"
 
 echo "Setup hcs pre-requisites"
 chmod u+x /opt/batch/config_hcs.sh
-// /opt/batch/config_hcs.sh "${hcs_environment}" "${proxy_host}" "${proxy_port}"
+/opt/batch/config_hcs.sh "${hcs_environment}" "${proxy_host}" "${proxy_port}"
 
 echo "Creating batch user"
 useradd batch -m
