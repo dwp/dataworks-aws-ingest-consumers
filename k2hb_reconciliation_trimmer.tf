@@ -31,6 +31,11 @@ EOF
   )
 }
 
+resource "aws_iam_role_policy_attachment" "k2hb_reconciliation_trimmer_ecs_ecr" {
+  role       = aws_iam_role.ecs_instance_role_k2hb_reconciliation_trimmer_batch.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
 resource "aws_iam_role_policy_attachment" "k2hb_reconciliation_trimmer_ecs_cwasp" {
   role       = aws_iam_role.ecs_instance_role_k2hb_reconciliation_trimmer_batch.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
@@ -38,7 +43,7 @@ resource "aws_iam_role_policy_attachment" "k2hb_reconciliation_trimmer_ecs_cwasp
 
 resource "aws_iam_role_policy_attachment" "ec2_for_ssm_attachment" {
   role       = aws_iam_role.ecs_instance_role_k2hb_reconciliation_trimmer_batch.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_instance_role_k2hb_reconciliation_trimmer_batch" {
@@ -51,7 +56,7 @@ resource "aws_iam_instance_profile" "ecs_instance_role_k2hb_reconciliation_trimm
   role = aws_iam_role.ecs_instance_role_k2hb_reconciliation_trimmer_batch.name
 }
 
-# Custom policy to allow use of default EBS encryption key by Batch instance role
+# Custom policy to allow use of default EBS encryption key and access to config bucket by Batch instance role
 data "aws_iam_policy_document" "ecs_instance_role_k2hb_reconciliation_trimmer_batch_ebs_cmk" {
 
   statement {
