@@ -23,11 +23,9 @@ jobs:
           trigger: true
           passed:
             - mirror-k2hb
-
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-apply ))
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
-
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.run-behave-job ))
         task: data-streaming-tests
         config:

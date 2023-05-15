@@ -424,6 +424,10 @@ locals {
     production  = "s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem,s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca_old.pem"
   }
 
+  cw_k2hb_recon_trimmer_agent_namespace                 = "/app/k2hb-recon-trimmer"
+  cw_k2hb_recon_trimmer_agent_log_group_name            = "/app/k2hb-recon-trimmer"
+  
+
   cw_k2hb_main_agent_namespace                          = "/app/kafka-to-hbase"
   cw_k2hb_equality_agent_namespace                      = "/app/kafka-to-hbase-equality"
   cw_k2hb_audit_agent_namespace                         = "/app/kafka-to-hbase-audit"
@@ -1638,7 +1642,7 @@ locals {
 
   k2hb_trimmer_common_config = {
     log_level = {
-      development = "INFO"
+      development = "DEBUG"
       qa          = "INFO"
       integration = "INFO"
       preprod     = "INFO"
