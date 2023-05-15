@@ -13,7 +13,7 @@ export AWS_DEFAULT_REGION=${region}
 export INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 UUID=$(dbus-uuidgen | cut -c 1-8)
 export HOSTNAME=${name}-$UUID
-hostnamectl set-hostname $HOSTNAME
+# hostnamectl set-hostname $HOSTNAME
 aws ec2 create-tags --resources $INSTANCE_ID --tags Key=Name,Value=$HOSTNAME
 
 echo "Creating directories"
@@ -35,11 +35,11 @@ $(which aws) s3 cp "$S3_CONFIG_HCS_SHELL"  /opt/batch/config_hcs.sh
 
 echo "Setup cloudwatch logs"
 chmod u+x /opt/batch/cloudwatch.sh
-# /opt/batch/cloudwatch.sh \
-#    "${cwa_metrics_collection_interval}" "${cwa_namespace}" "${cwa_cpu_metrics_collection_interval}" \
-#    "${cwa_disk_measurement_metrics_collection_interval}" "${cwa_disk_io_metrics_collection_interval}" \
-#    "${cwa_mem_metrics_collection_interval}" "${cwa_netstat_metrics_collection_interval}" "${cwa_log_group_name}" \
-#    "$AWS_DEFAULT_REGION"
+/opt/batch/cloudwatch.sh \
+    "${cwa_metrics_collection_interval}" "${cwa_namespace}" "${cwa_cpu_metrics_collection_interval}" \
+    "${cwa_disk_measurement_metrics_collection_interval}" "${cwa_disk_io_metrics_collection_interval}" \
+    "${cwa_mem_metrics_collection_interval}" "${cwa_netstat_metrics_collection_interval}" "${cwa_log_group_name}" \
+    "$AWS_DEFAULT_REGION"
 
 echo "Setup hcs pre-requisites"
 chmod u+x /opt/batch/config_hcs.sh
