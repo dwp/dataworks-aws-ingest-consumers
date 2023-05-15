@@ -43,7 +43,7 @@ chmod u+x /opt/batch/cloudwatch.sh
 
 echo "Setup hcs pre-requisites"
 chmod u+x /opt/batch/config_hcs.sh
-/opt/batch/config_hcs.sh "${hcs_environment}" "${proxy_host}" "${proxy_port}"
+// /opt/batch/config_hcs.sh "${hcs_environment}" "${proxy_host}" "${proxy_port}"
 
 echo "Creating batch user"
 useradd batch -m
