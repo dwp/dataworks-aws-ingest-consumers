@@ -30,7 +30,7 @@ resource "aws_iam_role_policy_attachment" "csc_batch_ecs_cwasp" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
-resource "aws_iam_role_policy_attachment" "ec2_for_ssm_attachment" {
+resource "aws_iam_role_policy_attachment" "csc_batch_ec2_for_ssm_attachment" {
   role       = aws_iam_role.ecs_instance_role_csc_batch.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
 }

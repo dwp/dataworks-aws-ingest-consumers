@@ -11,6 +11,8 @@ jobs:
           trigger: true
         - get: dataworks-aws-ingest-consumers
           trigger: true
+        - get: dataworks-aws-ingest-consumers-dev
+          trigger: true
         - get: dw-al2-ecs-ami
           trigger: true
         - get: k2hb-reconciliation-image
@@ -24,8 +26,14 @@ jobs:
           passed:
             - mirror-k2hb
       - .: (( inject meta.plan.terraform-bootstrap ))
+        input_mapping:
+          dataworks-aws-ingest-consumers: dataworks-aws-ingest-consumers-dev
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-apply ))
+        input_mapping:
+          dataworks-aws-ingest-consumers: dataworks-aws-ingest-consumers-dev
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
+        input_mapping:
+          dataworks-aws-ingest-consumers: dataworks-aws-ingest-consumers-dev
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.run-behave-job ))
         task: data-streaming-tests
         config:
