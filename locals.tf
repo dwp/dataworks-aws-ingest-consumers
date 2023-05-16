@@ -424,6 +424,10 @@ locals {
     production  = "s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca.pem,s3://${local.certificate_auth_public_cert_bucket.id}/ca_certificates/ucfs/root_ca_old.pem"
   }
 
+
+  cw_batch_coalescer_agent_namespace                    = "/app/batch-coalescer"
+  cw_batch_coalescer_agent_log_group_name               = "/app/batch_coalescer"
+
   cw_k2hb_recon_trimmer_agent_namespace                 = "/app/k2hb-recon-trimmer"
   cw_k2hb_recon_trimmer_agent_log_group_name            = "/app/k2hb-recon-trimmer"
   
