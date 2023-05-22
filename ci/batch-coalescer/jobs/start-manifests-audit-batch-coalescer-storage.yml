@@ -2,8 +2,17 @@ jobs:
   - name: start-manifests-audit-batch-coalescer-development
     max_in_flight: 1
     plan:
-      - put: meta
-        resource: meta-development
+      - in_parallel:
+          - put: meta
+            resource: meta-development
+          - get: dataworks-aws-ingest-consumers
+            trigger: false
+          - get: aws-ingestion
+            trigger: false
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
+        config:
+          params:
+            TF_WORKSPACE: default
       - .: (( inject meta-batch-coalescer.plan.manifests-audit-batch-coalescer ))
         config:
           params:
@@ -12,8 +21,17 @@ jobs:
   - name: start-manifests-audit-batch-coalescer-qa
     max_in_flight: 1
     plan:
-      - put: meta
-        resource: meta-qa
+      - in_parallel:
+          - put: meta
+            resource: meta-qa
+          - get: dataworks-aws-ingest-consumers
+            trigger: false
+          - get: aws-ingestion
+            trigger: false
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
+        config:
+          params:
+            TF_WORKSPACE: qa
       - .: (( inject meta-batch-coalescer.plan.manifests-audit-batch-coalescer ))
         config:
           params:
@@ -22,8 +40,17 @@ jobs:
   - name: start-manifests-audit-batch-coalescer-integration
     max_in_flight: 1
     plan:
-      - put: meta
-        resource: meta-integration
+      - in_parallel:
+          - put: meta
+            resource: meta-integration
+          - get: dataworks-aws-ingest-consumers
+            trigger: false
+          - get: aws-ingestion
+            trigger: false
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
+        config:
+          params:
+            TF_WORKSPACE: integration
       - .: (( inject meta-batch-coalescer.plan.manifests-audit-batch-coalescer ))
         config:
           params:
@@ -32,8 +59,17 @@ jobs:
   - name: start-manifests-audit-batch-coalescer-preprod
     max_in_flight: 1
     plan:
-      - put: meta
-        resource: meta-preprod
+      - in_parallel:
+          - put: meta
+            resource: meta-preprod
+          - get: dataworks-aws-ingest-consumers
+            trigger: false
+          - get: aws-ingestion
+            trigger: false
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
+        config:
+          params:
+            TF_WORKSPACE: preprod
       - .: (( inject meta-batch-coalescer.plan.manifests-audit-batch-coalescer ))
         config:
           params:
@@ -42,8 +78,17 @@ jobs:
   - name: start-manifests-audit-batch-coalescer-production
     max_in_flight: 1
     plan:
-      - put: meta
-        resource: meta-production
+      - in_parallel:
+          - put: meta
+            resource: meta-production
+          - get: dataworks-aws-ingest-consumers
+            trigger: false
+          - get: aws-ingestion
+            trigger: false
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
+        config:
+          params:
+            TF_WORKSPACE: production
       - .: (( inject meta-batch-coalescer.plan.manifests-audit-batch-coalescer ))
         config:
           params:
