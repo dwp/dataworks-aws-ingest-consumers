@@ -7,6 +7,7 @@ groups:
       - start-storage-batch-coalescer-preprod
       - start-storage-batch-coalescer-production
 
+## Below groups require further work
   - name: manifests
     jobs:
       - start-manifests-batch-coalescer-development
