@@ -1,0 +1,50 @@
+jobs:
+  - name: start-manifests-audit-batch-coalescer-development
+    max_in_flight: 1
+    plan:
+      - put: meta
+        resource: meta-development
+      - .: (( inject meta-batch-coalescer.plan.manifests-audit-batch-coalescer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
+
+  - name: start-manifests-audit-batch-coalescer-qa
+    max_in_flight: 1
+    plan:
+      - put: meta
+        resource: meta-qa
+      - .: (( inject meta-batch-coalescer.plan.manifests-audit-batch-coalescer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
+
+  - name: start-manifests-audit-batch-coalescer-integration
+    max_in_flight: 1
+    plan:
+      - put: meta
+        resource: meta-integration
+      - .: (( inject meta-batch-coalescer.plan.manifests-audit-batch-coalescer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.integration)):role/ci
+
+  - name: start-manifests-audit-batch-coalescer-preprod
+    max_in_flight: 1
+    plan:
+      - put: meta
+        resource: meta-preprod
+      - .: (( inject meta-batch-coalescer.plan.manifests-audit-batch-coalescer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.preprod)):role/ci
+
+  - name: start-manifests-audit-batch-coalescer-production
+    max_in_flight: 1
+    plan:
+      - put: meta
+        resource: meta-production
+      - .: (( inject meta-batch-coalescer.plan.manifests-audit-batch-coalescer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci

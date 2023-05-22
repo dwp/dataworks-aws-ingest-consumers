@@ -1,0 +1,29 @@
+jobs:
+  - name: update-pipeline
+    plan:
+      - get: dataworks-aws-ingest-consumers
+        resource: dataworks-aws-ingest-consumers-batch-coalescer
+        trigger: true
+      - task: aviator
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: ((dataworks.docker_aviator_repository))
+              version: ((dataworks.docker_aviator_version))
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                sed -i 's/fly/nofly/' aviator-batch-coalescer.yml
+                /usr/bin/aviator -f aviator-batch-coalescer.yml
+                mv aviator_pipeline_batch_coalescer.yml ../pipeline
+            dir: dataworks-aws-ingest-consumers
+          inputs:
+            - name: dataworks-aws-ingest-consumers
+          outputs:
+            - name: pipeline
+      - set_pipeline: batch-coalescer
+        file: pipeline/aviator_pipeline_batch_coalescer.yml
