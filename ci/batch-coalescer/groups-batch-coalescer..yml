@@ -1,0 +1,29 @@
+groups:
+  - name: storage
+    jobs:
+      - start-storage-batch-coalescer-development
+      - start-storage-batch-coalescer-qa
+      - start-storage-batch-coalescer-integration
+      - start-storage-batch-coalescer-preprod
+      - start-storage-batch-coalescer-production
+
+## Below groups require further work
+  - name: manifests
+    jobs:
+      - start-manifests-batch-coalescer-development
+      - start-manifests-batch-coalescer-qa
+      - start-manifests-batch-coalescer-integration
+      - start-manifests-batch-coalescer-preprod
+      - start-manifests-batch-coalescer-production
+
+  - name: manifests-audit
+    jobs:
+      - start-manifests-audit-batch-coalescer-development
+      - start-manifests-audit-batch-coalescer-qa
+      - start-manifests-audit-batch-coalescer-integration
+      - start-manifests-audit-batch-coalescer-preprod
+      - start-manifests-audit-batch-coalescer-production
+
+  - name: update-pipeline
+    jobs:
+      - update-pipeline

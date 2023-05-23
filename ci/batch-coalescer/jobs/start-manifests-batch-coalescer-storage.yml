@@ -1,0 +1,135 @@
+jobs:
+  - name: start-manifests-batch-coalescer-development
+    max_in_flight: 1
+    plan:
+      - in_parallel:
+          - put: meta
+            resource: meta-development
+          - get: dataworks-aws-ingest-consumers
+            trigger: false
+          - get: aws-ingestion
+            trigger: false
+          - get: aws-internal-compute
+            trigger: false
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-internal-compute ))
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
+        config:
+          params:
+            TF_WORKSPACE: default
+      - .: (( inject meta-batch-coalescer.plan.manifests-batch-coalescer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
+            PARTITION: "-1"
+            THREADS: "1"
+            MAXFILES: "1000000"
+            MAXSIZE: "128000000"
+            DATETOADD: "NOT_SET"
+
+  - name: start-manifests-batch-coalescer-qa
+    max_in_flight: 1
+    plan:
+      - in_parallel:
+          - put: meta
+            resource: meta-qa
+          - get: dataworks-aws-ingest-consumers
+            trigger: false
+          - get: aws-ingestion
+            trigger: false
+          - get: aws-internal-compute
+            trigger: false
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-internal-compute ))
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
+        config:
+          params:
+            TF_WORKSPACE: qa
+      - .: (( inject meta-batch-coalescer.plan.manifests-batch-coalescer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
+            PARTITION: "-1"
+            THREADS: "1"
+            MAXFILES: "1000000"
+            MAXSIZE: "128000000"
+            DATETOADD: "NOT_SET"
+
+  - name: start-manifests-batch-coalescer-integration
+    max_in_flight: 1
+    plan:
+      - in_parallel:
+          - put: meta
+            resource: meta-integration
+          - get: dataworks-aws-ingest-consumers
+            trigger: false
+          - get: aws-ingestion
+            trigger: false
+          - get: aws-internal-compute
+            trigger: false
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-internal-compute ))
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
+        config:
+          params:
+            TF_WORKSPACE: integration
+      - .: (( inject meta-batch-coalescer.plan.manifests-batch-coalescer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.integration)):role/ci
+            PARTITION: "-1"
+            THREADS: "1"
+            MAXFILES: "1000000"
+            MAXSIZE: "128000000"
+            DATETOADD: "NOT_SET"
+
+  - name: start-manifests-batch-coalescer-preprod
+    max_in_flight: 1
+    plan:
+      - in_parallel:
+          - put: meta
+            resource: meta-preprod
+          - get: dataworks-aws-ingest-consumers
+            trigger: false
+          - get: aws-ingestion
+            trigger: false
+          - get: aws-internal-compute
+            trigger: false
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-internal-compute ))
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
+        config:
+          params:
+            TF_WORKSPACE: preprod
+      - .: (( inject meta-batch-coalescer.plan.manifests-batch-coalescer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.preprod)):role/ci
+            PARTITION: "-1"
+            THREADS: "1"
+            MAXFILES: "1000000"
+            MAXSIZE: "128000000"
+            DATETOADD: "NOT_SET"
+
+  - name: start-manifests-batch-coalescer-production
+    max_in_flight: 1
+    plan:
+      - in_parallel:
+          - put: meta
+            resource: meta-production
+          - get: dataworks-aws-ingest-consumers
+            trigger: false
+          - get: aws-ingestion
+            trigger: false
+          - get: aws-internal-compute
+            trigger: false
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-internal-compute ))
+      - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
+        config:
+          params:
+            TF_WORKSPACE: production
+      - .: (( inject meta-batch-coalescer.plan.manifests-batch-coalescer ))
+        config:
+          params:
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.production)):role/ci
+            PARTITION: "-1"
+            THREADS: "1"
+            MAXFILES: "1000000"
+            MAXSIZE: "128000000"
+            DATETOADD: "NOT_SET"

@@ -1,0 +1,18 @@
+spruce:
+  - base: ci/batch-coalescer/meta-batch-coalescer.yml
+    prune:
+      - meta-batch-coalescer
+    merge:
+      - with_in: ci/batch-coalescer/
+        regexp: ".*yml"
+      - with_in: ci/batch-coalescer/jobs/
+        regexp: ".*yml"
+    to: aviator_pipeline_batch_coalescer.yml
+fly:
+  name: batch-coalescer
+  target: utility
+  config: aviator_pipeline_batch_coalescer.yml
+  expose: true
+  check_creds: true
+  load_vars_from:
+    - ci/vars.yml
