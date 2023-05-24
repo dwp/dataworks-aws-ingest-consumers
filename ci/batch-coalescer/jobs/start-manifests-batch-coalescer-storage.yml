@@ -12,6 +12,9 @@ jobs:
           - get: aws-internal-compute
             trigger: false
       - .: (( inject meta-batch-coalescer.plan.terraform-output-internal-compute ))
+        config:
+          params:
+            TF_WORKSPACE: default
       - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
         config:
           params:
@@ -39,6 +42,9 @@ jobs:
           - get: aws-internal-compute
             trigger: false
       - .: (( inject meta-batch-coalescer.plan.terraform-output-internal-compute ))
+        config:
+          params:
+            TF_WORKSPACE: qa
       - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
         config:
           params:
@@ -66,6 +72,9 @@ jobs:
           - get: aws-internal-compute
             trigger: false
       - .: (( inject meta-batch-coalescer.plan.terraform-output-internal-compute ))
+        config:
+          params:
+            TF_WORKSPACE: integration
       - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
         config:
           params:
@@ -93,6 +102,9 @@ jobs:
           - get: aws-internal-compute
             trigger: false
       - .: (( inject meta-batch-coalescer.plan.terraform-output-internal-compute ))
+        config:
+          params:
+            TF_WORKSPACE: preprod
       - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
         config:
           params:
@@ -120,6 +132,9 @@ jobs:
           - get: aws-internal-compute
             trigger: false
       - .: (( inject meta-batch-coalescer.plan.terraform-output-internal-compute ))
+        config:
+          params:
+            TF_WORKSPACE: production
       - .: (( inject meta-batch-coalescer.plan.terraform-output-ingest ))
         config:
           params:
