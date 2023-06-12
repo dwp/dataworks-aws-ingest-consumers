@@ -33,6 +33,13 @@ jobs:
         params:
           TF_WORKSPACE: 'qa'
 
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.scale-stub-kafka-broker-asg ))
+        task: scale-up-stub-kafka-broker-asg
+        config:
+          params:
+            AWS_ACC: ((aws_account.qa))
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
+            ASG_SCALE_DIRECTION: "UP"
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.run-behave-job ))
         task: data-streaming-tests
         config:
@@ -49,7 +56,7 @@ jobs:
             AWS_ACC: ((aws_account.qa))
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
             E2E_FEATURE_TAG_FILTER: "end-to-end"
-      
+
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-ingest-consumers ))
         params:
           TF_WORKSPACE: 'qa'
@@ -73,3 +80,10 @@ jobs:
             params:
               AWS_ACC: ((aws_account.qa))
               AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
+        - .: (( inject meta-dataworks-aws-ingest-consumers.plan.scale-stub-kafka-broker-asg ))
+          task: scale-down-stub-kafka-broker-asg
+          config:
+            params:
+              AWS_ACC: ((aws_account.qa))
+              AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
+              ASG_SCALE_DIRECTION: "DOWN"

@@ -8,6 +8,63 @@ meta-dataworks-aws-ingest-consumers:
         AWS_ROLE_ARN: arn:aws:iam::((aws_account.management)):role/ci
 
   plan:
+    scale-stub-kafka-broker-asg:
+      task: scale-stub-kafka-broker-asg
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.docker_awscli_repository))
+            version: ((dataworks.docker_awscli_version))
+            tag: ((dataworks.docker_awscli_version))
+        params:
+          AWS_REGION: ((dataworks.aws_region))
+          AWS_DEFAULT_REGION: ((dataworks.aws_region))
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              source /assume-role
+              set -x
+
+              if [[ -z "$ASG_SCALE_DIRECTION" ]]; then
+                echo "Scale direction was not provided."
+                exit 1
+              fi
+
+              ASG_NAME="$(aws autoscaling describe-auto-scaling-groups --query 'AutoScalingGroups[]' \
+              | jq -r '.[] | select(.AutoScalingGroupName | test('\"$ASG_NAME_PREFIX\"')) | .AutoScalingGroupName')"
+
+              if [[ -z "$ASG_NAME" ]]; then
+                echo "Unable to find the auto-scaling group name."
+                exit 1
+              fi
+
+              DESIRED_CAPACITY_BEFORE=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name "$ASG_NAME" | jq -r '.AutoScalingGroups[0].DesiredCapacity')
+
+              ASG_DESIRED_CAPACITY_SCALE_VALUE=0
+              if [[ $ASG_SCALE_DIRECTION == "UP" ]]; then
+                ASG_DESIRED_CAPACITY_SCALE_VALUE=1
+              fi
+
+              echo "Scaling $ASG_SCALE_DIRECTION the auto-scaling group: ${ASG_NAME} from $DESIRED_CAPACITY_BEFORE to $ASG_DESIRED_CAPACITY_SCALE_VALUE."
+              RC_ASG_SCALE_OP=$(aws autoscaling set-desired-capacity --auto-scaling-group-name ${ASG_NAME} --desired-capacity $ASG_DESIRED_CAPACITY_SCALE_VALUE)
+              if $RC_ASG_SCALE_OP; then
+                DESIRED_CAPACITY_AFTER=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name "$ASG_NAME" | jq -r '.AutoScalingGroups[0].DesiredCapacity')
+                echo "Successfully set desired capacity to $DESIRED_CAPACITY_AFTER for auto-scaling group $ASG_NAME."
+                if [[ $ASG_SCALE_DIRECTION == "UP" ]]; then
+                  echo "Waiting for 300s for node to come up ..."
+                  sleep 300
+                fi
+              else
+                echo "Failed to scale $ASG_SCALE_DIRECTION the auto-scaling group $ASG_NAME."
+                exit 1
+              fi
+      params:
+        ASG_NAME_PREFIX: "stub_ucfs_kafka_broker"
+
     terraform-apply:
       task: terraform-apply
       .: (( inject meta.plan.terraform-common-config ))

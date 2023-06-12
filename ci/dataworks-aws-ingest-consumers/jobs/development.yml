@@ -26,6 +26,13 @@ jobs:
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-apply ))
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
+      - .: (( inject meta-dataworks-aws-ingest-consumers.plan.scale-stub-kafka-broker-asg ))
+        task: scale-up-stub-kafka-broker-asg
+        config:
+          params:
+            AWS_ACC: ((aws_account.development))
+            AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
+            ASG_SCALE_DIRECTION: "UP"
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.run-behave-job ))
         task: data-streaming-tests
         config:
@@ -41,7 +48,6 @@ jobs:
             AWS_ACC: ((aws_account.development))
             AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
             E2E_FEATURE_TAG_FILTER: "end-to-end"
-      
       - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-output-ingest-consumers ))
         params:
           TF_WORKSPACE: 'default'
@@ -65,3 +71,10 @@ jobs:
             params:
               AWS_ACC: ((aws_account.development))
               AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
+        - .: (( inject meta-dataworks-aws-ingest-consumers.plan.scale-stub-kafka-broker-asg ))
+          task: scale-up-stub-kafka-broker-asg
+          config:
+            params:
+              AWS_ACC: ((aws_account.development))
+              AWS_ROLE_ARN: arn:aws:iam::((aws_account.development)):role/ci
+              ASG_SCALE_DIRECTION: "DOWN"
