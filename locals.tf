@@ -182,7 +182,7 @@ locals {
     qa          = 200000000
     integration = 200000000
     preprod     = 200000000
-    production  = 20000000    // not prod yet
+    production  = 20000000 // not prod yet
   }
 
   k2hb_equality_kafka_max_fetch_bytes = {
@@ -191,7 +191,7 @@ locals {
     qa          = 200000000
     integration = 200000000
     preprod     = 200000000
-    production  = 20000000    // not prod yet
+    production  = 20000000 // not prod yet
   }
 
   k2hb_audit_kafka_max_fetch_bytes = {
@@ -254,7 +254,7 @@ locals {
     qa          = 200000000
     integration = 200000000
     preprod     = 200000000
-    production  = 20000000    // not prod yet
+    production  = 20000000 // not prod yet
   }
 
   k2hb_equality_kafka_max_partition_fetch_bytes = {
@@ -263,7 +263,7 @@ locals {
     qa          = 200000000
     integration = 200000000
     preprod     = 200000000
-    production  = 20000000    // not prod yet
+    production  = 20000000 // not prod yet
   }
 
   k2hb_audit_kafka_max_partition_fetch_bytes = {
@@ -294,7 +294,7 @@ locals {
   }
 
   k2hb_equality_kafka_fetch_max_wait_ms = {
-     # preprod 1 minute, kafka default value (500)
+    # preprod 1 minute, kafka default value (500)
     development = 500
     qa          = 500
     integration = 500
@@ -425,12 +425,12 @@ locals {
   }
 
 
-  cw_batch_coalescer_agent_namespace                    = "/app/batch-coalescer"
-  cw_batch_coalescer_agent_log_group_name               = "/app/batch_coalescer"
+  cw_batch_coalescer_agent_namespace      = "/app/batch-coalescer"
+  cw_batch_coalescer_agent_log_group_name = "/app/batch_coalescer"
 
-  cw_k2hb_recon_trimmer_agent_namespace                 = "/app/k2hb-recon-trimmer"
-  cw_k2hb_recon_trimmer_agent_log_group_name            = "/app/k2hb-recon-trimmer"
-  
+  cw_k2hb_recon_trimmer_agent_namespace      = "/app/k2hb-recon-trimmer"
+  cw_k2hb_recon_trimmer_agent_log_group_name = "/app/k2hb-recon-trimmer"
+
 
   cw_k2hb_main_agent_namespace                          = "/app/kafka-to-hbase"
   cw_k2hb_equality_agent_namespace                      = "/app/kafka-to-hbase-equality"
@@ -1763,4 +1763,87 @@ locals {
   manifest_comparison_missing_exports_parquet_table_name       = "manifest_missing_exports_parquet"
   manifest_comparison_counts_parquet_table_name                = "manifest_counts_parquet"
   manifest_comparison_mismatched_timestamps_parquet_table_name = "manifest_mismatched_timestamps_parquet"
+
+  tenable_install = {
+    development    = "true"
+    qa             = "true"
+    integration    = "true"
+    preprod        = "true"
+    production     = "true"
+    management-dev = "true"
+    management     = "true"
+  }
+
+  trend_install = {
+    development    = "true"
+    qa             = "true"
+    integration    = "true"
+    preprod        = "true"
+    production     = "true"
+    management-dev = "true"
+    management     = "true"
+  }
+
+  tanium_install = {
+    development    = "false"
+    qa             = "false"
+    integration    = "false"
+    preprod        = "false"
+    production     = "false"
+    management-dev = "false"
+    management     = "false"
+  }
+
+
+  ## Tanium config
+  ## Tanium Servers
+  tanium1 = jsondecode(data.aws_secretsmanager_secret_version.terraform_secrets.secret_binary).tanium[local.environment].server_1
+  tanium2 = jsondecode(data.aws_secretsmanager_secret_version.terraform_secrets.secret_binary).tanium[local.environment].server_2
+
+  ## Tanium Env Config
+  tanium_env = {
+    development    = "pre-prod"
+    qa             = "prod"
+    integration    = "prod"
+    preprod        = "prod"
+    production     = "prod"
+    management-dev = "pre-prod"
+    management     = "prod"
+  }
+
+  ## Tanium prefix list for TGW for Security Group rules
+  tanium_prefix = {
+    development    = [data.aws_ec2_managed_prefix_list.list.id]
+    qa             = [data.aws_ec2_managed_prefix_list.list.id]
+    integration    = [data.aws_ec2_managed_prefix_list.list.id]
+    preprod        = [data.aws_ec2_managed_prefix_list.list.id]
+    production     = [data.aws_ec2_managed_prefix_list.list.id]
+    management-dev = [data.aws_ec2_managed_prefix_list.list.id]
+    management     = [data.aws_ec2_managed_prefix_list.list.id]
+  }
+
+  tanium_log_level = {
+    development    = "41"
+    qa             = "41"
+    integration    = "41"
+    preprod        = "41"
+    production     = "41"
+    management-dev = "41"
+    management     = "41"
+  }
+
+  ## Trend config
+  tenant   = jsondecode(data.aws_secretsmanager_secret_version.terraform_secrets.secret_binary).trend.tenant
+  tenantid = jsondecode(data.aws_secretsmanager_secret_version.terraform_secrets.secret_binary).trend.tenantid
+  token    = jsondecode(data.aws_secretsmanager_secret_version.terraform_secrets.secret_binary).trend.token
+
+  policy_id = {
+    development    = "69"
+    qa             = "69"
+    integration    = "69"
+    preprod        = "69"
+    production     = "69"
+    management-dev = "69"
+    management     = "69"
+  }
 }

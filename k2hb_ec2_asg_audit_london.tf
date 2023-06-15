@@ -43,6 +43,18 @@ resource "aws_launch_template" "k2hb_audit_london" {
     proxy_host            = local.ingest_internet_proxy.host
     proxy_port            = var.proxy_port
     hcs_environment       = local.hcs_environment[local.environment]
+    install_tenable       = local.tenable_install[local.environment]
+    install_trend         = local.trend_install[local.environment]
+    install_tanium        = local.tanium_install[local.environment]
+    tanium_server_1       = local.tanium1
+    tanium_server_2       = local.tanium2
+    tanium_env            = local.tanium_env[local.environment]
+    tanium_port           = var.tanium_port_1
+    tanium_log_level      = local.tanium_log_level[local.environment]
+    tenant                = local.tenant
+    tenantid              = local.tenantid
+    token                 = local.token
+    policyid              = local.policy_id[local.environment]
 
     hbase_master_url                                 = local.ingest_hbase_fqdn
     k2hb_max_memory_allocation                       = var.k2hb_audit_max_memory_allocation[local.environment]
@@ -72,7 +84,7 @@ resource "aws_launch_template" "k2hb_audit_london" {
     s3_script_hash_logging_sh                        = md5(data.local_file.logging_script.content)
     s3_script_hash_respawn_k2hb_sh                   = md5(data.local_file.respawn_k2hb_script.content)
     s3_script_hash_amazon_root_ca1_pem               = md5(data.local_file.amazon_root_ca1_pem.content)
-    s3_script_hash_config_hcs_sh                     = md5(data.local_file.config_hcs.content) 
+    s3_script_hash_config_hcs_sh                     = md5(data.local_file.config_hcs.content)
     k2hb_hbase_zookeeper_parent                      = "/hbase"
     k2hb_hbase_zookeeper_quorum                      = local.ingest_hbase_fqdn
     k2hb_hbase_zookeeper_port                        = "2181"
