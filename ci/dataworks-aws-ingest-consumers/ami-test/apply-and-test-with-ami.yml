@@ -102,6 +102,23 @@ jobs:
               AWS_ROLE_ARN: arn:aws:iam::((aws_account.qa)):role/ci
     on_failure:
       do:
+        - get: dw-al2-jvm-ami-restored
+          resource: dw-al2-jvm-ami
+          trigger: false
+        - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-apply ))
+          input_mapping:
+            dw-al2-jvm-ami: dw-al2-jvm-ami-restored
+          config:
+            params:
+              TF_WORKSPACE: qa
+              TEST_AMI_RUN: true
+        - .: (( inject meta-dataworks-aws-ingest-consumers.plan.terraform-plan ))
+          input_mapping:
+            dw-al2-jvm-ami: dw-al2-jvm-ami-restored
+          config:
+            params:
+              TF_WORKSPACE: qa
+              TEST_AMI_RUN: true
         - .: (( inject meta-dataworks-aws-ingest-consumers.plan.ami-test-results ))
           task: ami-test-result-fail
           config:
