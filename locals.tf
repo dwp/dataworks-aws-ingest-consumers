@@ -100,7 +100,7 @@ locals {
     development = "DEBUG"
     qa          = "INFO"
     integration = "INFO"
-    preprod     = "INFO"
+    preprod     = "DEBUG"
     production  = "INFO"
   }
 
