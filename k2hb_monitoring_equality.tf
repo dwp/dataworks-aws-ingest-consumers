@@ -232,7 +232,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
   count       = local.k2hb_alarm_on_number_of_batches_equalities[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_equalities.name
 
-  namespace           = local.cw_k2hb_main_agent_namespace
+  namespace           = local.cw_k2hb_equality_agent_namespace
   alarm_name          = "K2HB equalities - Processed batches under 20 in 11 of last 12 hours"
   alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
@@ -261,7 +261,7 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_e
   count       = local.k2hb_alarm_on_number_of_batches_equalities[local.environment] ? 1 : 0
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_equalities.name
 
-  namespace           = local.cw_k2hb_main_agent_namespace
+  namespace           = local.cw_k2hb_equality_agent_namespace
   alarm_name          = "K2HB equalities - Processed batches under 20 in 20 of last 21 hours (Saturday)"
   alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
