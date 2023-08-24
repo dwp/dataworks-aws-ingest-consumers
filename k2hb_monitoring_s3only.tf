@@ -251,13 +251,13 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_s
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_s3only.name
 
   namespace           = local.cw_k2hb_s3only_agent_namespace
-  alarm_name          = "K2HB s3only - Processed batches under 1000 in 11 of last 12 hours"
+  alarm_name          = "K2HB s3only - Processed batches under 100 in 11 of last 12 hours"
   alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 12
   period              = 3600
   datapoints_to_alarm = 11
-  threshold           = 1000
+  threshold           = 100
   statistic           = "Sum"
   comparison_operator = "LessThanThreshold"
   treat_missing_data  = "breaching"
@@ -280,13 +280,13 @@ resource "aws_cloudwatch_metric_alarm" "processed_k2hb_batches_under_threshold_s
   metric_name = aws_cloudwatch_log_metric_filter.number_of_batches_written_filter_k2hb_s3only.name
 
   namespace           = local.cw_k2hb_s3only_agent_namespace
-  alarm_name          = "K2HB s3only - Processed batches under 1000 in 20 of last 21 hours (Saturday)"
+  alarm_name          = "K2HB s3only - Processed batches under 100 in 20 of last 21 hours (Saturday)"
   alarm_description   = "Managed by ${local.common_tags.DWX_Application} repository"
   alarm_actions       = [local.monitoring_topic_arn]
   evaluation_periods  = 21
   period              = 3600
   datapoints_to_alarm = 20
-  threshold           = 1000
+  threshold           = 100
   statistic           = "Sum"
   comparison_operator = "LessThanThreshold"
   treat_missing_data  = "breaching"
