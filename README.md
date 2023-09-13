@@ -1,3 +1,5 @@
+# DO NOT USE THIS REPO - MIGRATED TO GITLAB
+
 # dataworks-aws-ingest-consumers
 
 This repository contains the Terraform required to stand up the DataWorks Kafka Consumers from the upstream UC brokers.
